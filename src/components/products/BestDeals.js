@@ -143,6 +143,7 @@ class BestDeals extends Component {
     }
     render() {
         const settings = {
+            // responsive: "",
             dots: true,
             infinite: true,
             speed: 500,

@@ -43,7 +43,6 @@ class BannerHome extends Component {
                         <div className="col">
                             <Slider className="hero-slider hero-slider-one" {...settings} >
                                 {banners.map((item) => {
-                                    console.log(item);
                                     return (
                                         <div className="hero-item" key={item.id}>
                                             <div className="row align-items-center justify-content-between">

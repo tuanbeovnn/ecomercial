@@ -1,5 +1,49 @@
 import React, { Component } from 'react';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 
+const menusUp = [
+
+    {
+        name: 'TRACK YOUR ORDER',
+        to: '/order',
+        exact: false
+    },
+    {
+        name: 'LOCATE STORE',
+        to: '/locate',
+        exact: false
+    },
+    {
+        name: 'MY ACCOUNT',
+        to: '/account',
+        exact: false
+    },
+    {
+        name: 'LOGIN',
+        to: '/login',
+        exact: false
+    }
+
+]
+const menuLink = ({ label, to, activeOnlyWhenExact }) => {
+    return (
+        <Route
+            path={to} exact={activeOnlyWhenExact} children={(match) => {
+                let active = match ? 'active' : '';
+                return (
+                    // <li className={match ? 'active' : ''}>
+                    //     <Link className="nav-link" to={to}>{label}</Link>
+                    // </li>
+                    <div className="header-account-links">
+                        <Link to={to}>{label}<img src="/images/icons/car.png" alt="Car Icon" /> <span>Track your order</span></Link>
+                        {/* <a href="store.html"><img src="/images/icons/marker.png" alt="Car Icon" /> <span>Locate Store</span></a> */}
+                    </div>
+
+                )
+            }}
+        />
+    )
+}
 class Header extends Component {
 
     state = {
@@ -90,8 +134,11 @@ class Header extends Component {
         ]
     }
 
+
+
     render() {
         const { menus, categories } = this.state;
+
         return (
 
             <div className="header-section section">
@@ -128,6 +175,7 @@ class Header extends Component {
                                 <div className="header-account-links">
                                     <a href="register.html"><i className="icofont icofont-user-alt-7" /> <span>my account</span></a>
                                     <a href="login.html"><i className="icofont icofont-login d-none" /> <span>Login</span></a>
+                                     {this.showMenu(menus)}
                                 </div>{/* Header Account Links End */}
                             </div>
                         </div>
@@ -158,19 +206,19 @@ class Header extends Component {
                                                             <li className="menu-item-has-children" key={item.id}><a href={item.url}>{item.name}</a>
                                                                 <ul className="sub-menu">
                                                                     {item.children.map((item2) => {
-                                                                        if(item2.children) {
+                                                                        if (item2.children) {
                                                                             return (
                                                                                 <li className="menu-item-has-children" key={item2.id}><a href={item2.url}>{item2.name}</a>
                                                                                     <ul className="sub-menu">
-                                                                                        {item2.children.map((item3)=>{
+                                                                                        {item2.children.map((item3) => {
                                                                                             return (
-                                                                                            <li key={item3.id}><a href={item3.url}>{item3.name}</a></li>
+                                                                                                <li key={item3.id}><a href={item3.url}>{item3.name}</a></li>
                                                                                             )
                                                                                         })}
                                                                                     </ul>
                                                                                 </li>
                                                                             )
-                                                                        }else {
+                                                                        } else {
                                                                             return (
                                                                                 <li key={item2.id}><a href={item2.url}>{item2.name}</a></li>
                                                                             )
@@ -271,6 +319,19 @@ class Header extends Component {
             </div>
 
         );
+    }
+    showMenu = (menus) => {
+        var result = null;
+        if (menus.length > 0) {
+            result = menus.map((menu, index) => {
+                return (
+                    <h1></h1>
+                    // <MenuLink key={index} label={menu.name} to={menu.to} activeOnlyWhenExact={menu.exact} />
+                );
+
+            });
+        }
+        return result;
     }
 }
 

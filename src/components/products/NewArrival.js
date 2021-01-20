@@ -67,7 +67,7 @@ class NewArrival extends Component {
                                                     {/* Category & Title */}
                                                     <div className="category-title">
                                                         <a href="#" className="cat">Tv &amp; Audio</a>
-                                    <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
+                                                        <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
                                                     </div>
                                                     {/* Price & Ratting */}
                                                     <div className="price-ratting">
