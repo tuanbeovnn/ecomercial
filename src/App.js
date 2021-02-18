@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Footer from './module/Footer';
 import Header from './module/Header';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import routes from './routes';
+import routes from './routers/routes';
 
 class App extends Component {
     render() {

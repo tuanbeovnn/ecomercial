@@ -1,31 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import routes from './../routers/routes';
+import { fetchCategoriesRequest } from '../redux/actions/index';
+import { connect } from 'react-redux';
 
-const menusUp = [
-
-    {
-        name: 'TRACK YOUR ORDER',
-        to: '/order',
-        exact: false
-    },
-    {
-        name: 'LOCATE STORE',
-        to: '/locate',
-        exact: false
-    },
-    {
-        name: 'MY ACCOUNT',
-        to: '/account',
-        exact: false
-    },
-    {
-        name: 'LOGIN',
-        to: '/login',
-        exact: false
-    }
-
-]
-const menuLink = ({ label, to, activeOnlyWhenExact }) => {
+const MenuLink = ({ label, to, activeOnlyWhenExact }) => {
     return (
         <Route
             path={to} exact={activeOnlyWhenExact} children={(match) => {
@@ -34,10 +13,9 @@ const menuLink = ({ label, to, activeOnlyWhenExact }) => {
                     // <li className={match ? 'active' : ''}>
                     //     <Link className="nav-link" to={to}>{label}</Link>
                     // </li>
-                    <div className="header-account-links">
-                        <Link to={to}>{label}<img src="/images/icons/car.png" alt="Car Icon" /> <span>Track your order</span></Link>
-                        {/* <a href="store.html"><img src="/images/icons/marker.png" alt="Car Icon" /> <span>Locate Store</span></a> */}
-                    </div>
+                     <div className="header-account-links">
+                        <Link to={to}>{label}<i className="icofont icofont-user-alt-7" /><span>my account</span></Link>
+                     </div>
 
                 )
             }}
@@ -118,30 +96,22 @@ class Header extends Component {
                 typeMemu: 2,
             }
         ],
-        categories: [
-            {
-                id: 1,
-                label: "Mobile"
-            },
-            {
-                id: 2,
-                label: "Laptop"
-            },
-            {
-                id: 3,
-                label: "Camera"
-            }
-        ]
+    }
+    componentDidMount() {
+        
+        this.props.fetchAllCategories();
+        
     }
 
 
 
     render() {
-        const { menus, categories } = this.state;
+        const {menus} = this.state;
+        const { categories } = this.props;
 
         return (
-
-            <div className="header-section section">
+        
+                <div className="header-section section">
                 {/* Header Top Start */}
                 <div className="header-top header-top-one header-top-border pt-10 pb-10">
                     <div className="container">
@@ -162,7 +132,7 @@ class Header extends Component {
                                             <select className="nice-select">
                                                 <option value="0">All Categories</option>
                                                 {categories.map((item) => {
-                                                    return <option value={item.id} key={item.id}>{item.label}</option>
+                                                    return <option value={item.id} key={item.id}>{item.name}</option>
                                                 })}
                                             </select>
                                         </div>
@@ -174,9 +144,12 @@ class Header extends Component {
                                 {/* Header Account Links Start */}
                                 <div className="header-account-links">
                                     <a href="register.html"><i className="icofont icofont-user-alt-7" /> <span>my account</span></a>
-                                    <a href="login.html"><i className="icofont icofont-login d-none" /> <span>Login</span></a>
-                                     {this.showMenu(menus)}
-                                </div>{/* Header Account Links End */}
+                                    <Link to="/login">
+                                        <a><i className="icofont icofont-login d-none" /> <span>Login</span></a>
+                                    </Link>
+                                     {/* {this.showMenu(menusUp)} */}
+                                </div>
+                                {/* Header Account Links End */}
                             </div>
                         </div>
                     </div>
@@ -317,22 +290,54 @@ class Header extends Component {
                     </div>
                 </div>
             </div>
-
+        
+            
+            
         );
     }
-    showMenu = (menus) => {
-        var result = null;
-        if (menus.length > 0) {
-            result = menus.map((menu, index) => {
-                return (
-                    <h1></h1>
-                    // <MenuLink key={index} label={menu.name} to={menu.to} activeOnlyWhenExact={menu.exact} />
-                );
+    // showMenu = (menusUp) => {
+    //     var result = null;
+    //     if (menusUp.length > 0) {
+    //         console.log(menusUp.length);
+    //         result = menusUp.map((menu, index) => {
+    //             return (
+    //                  <MenuLink key={index} label={menu.name} to={menu.to} activeOnlyWhenExact={menu.exact} />
+    //             );
 
-            });
-        }
-        return result;
-    }
+    //         });
+    //     }
+    //     return result;
+    // }
+    // showContentMenu = (routes) => {
+    //     let res = null;
+    //     if (routes.length > 0) {
+    //         res = routes.map((route, index) => {
+    //             return (
+    //                 <Route
+    //                     key={index}
+    //                     path={route.path}
+    //                     exact={route.exact}
+    //                     component={route.main}
+    //                 />
+    //             )
+    //         });
+    //     }
+    //     return res;
+    // }
 }
 
-export default Header;
+const mapStateToProps = state => {
+    return {
+        
+        categories: state.Ecomercial.categories
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchAllCategories: () => {
+            dispatch(fetchCategoriesRequest());
+        
+        }
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps) (Header);

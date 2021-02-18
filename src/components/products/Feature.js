@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
-
+import {connect} from 'react-redux';
+import { fetchProductRequest,fetchFeatureCategoriesProductsRequest } from '../../redux/actions/index';
 class Feature extends Component {
 
     state = {
@@ -137,10 +138,32 @@ class Feature extends Component {
 
         ]
     }
-    activeCategory = (currentCategories) => {
+    componentDidMount() {
+        //call all categories [{id:1, name: 'Laptop'}];
+    //  goi list product all ve: all ProductFeature;
+    //=> kich laptop => sp cuua laptop  => luu vao cateogries [{id: 1, name: 'Laptop', prodcts: [...]}]
+        this.props.fetchAllProducts();
+
+    }
+    
+    activeCategory = (currentCategories) => { 
+        //goji sp categories nay ve.
+        const {categories}= this.props;
+        console.log(categories);
+        const idex = categories.findIndex(c => c.code === currentCategories);
+    
+        if(idex != -1 && !categories[idex].products){
+            //goi api
+            this.props.fetchFeatureProducts(currentCategories);
+        } 
+        else{
+            ///k can goi
+        }
+        console.log(currentCategories)
         this.setState({
             currentCategories
-        })
+        });
+
     }
     render() {
         const settings = {
@@ -153,7 +176,8 @@ class Feature extends Component {
             prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
 
         };
-        const { currentCategories, categories, allProducts } = this.state;
+        const { currentCategories } = this.state;
+        const {allProducts, categories } = this.props;
         return (
 
             <div className="product-section section mb-70">
@@ -174,7 +198,7 @@ class Feature extends Component {
                                         <a className={currentCategories === 0 ? "active" : ""} data-toggle="tab" href="#featureItem">all</a></li>
                                     {categories.map((item) => {
                                         return (
-                                            <li onClick={() => { this.activeCategory(item.id) }} key={item.id}><a href="#featureItem" className={currentCategories === item.id ? "active" : ""} data-toggle="tab">{item.name}</a></li>
+                                            <li onClick={() => { this.activeCategory(item.code) }} key={item.id}><a href="#featureItem" className={currentCategories === item.code ? "active" : ""} data-toggle="tab">{item.name}</a></li>
                                         )
                                     })}
 
@@ -197,7 +221,7 @@ class Feature extends Component {
                                                         <div className="ee-product">
                                                             {/* Image */}
                                                             <div className="image">
-                                                                <a href="single-product.html" className="img"><img src={item.img} alt="Product Image" /></a>
+                                                                <a href="single-product.html" className="img"><img src={item.image[0]} alt="Product Image" /></a>
                                                                 <div className="wishlist-compare">
                                                                     <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                     <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
@@ -233,53 +257,104 @@ class Feature extends Component {
                                 </div>{/* Tab Pane End */}
                                 {/* Tab Pane Start */}
                                 {categories.map((categ) => {
+                                    console.log(categ.products);
                                     return (
-                                        <div key={categ.id} className={"tab-pane fade " + (currentCategories === categ.id ? "active show" : "")}>
-                                            {/* Product Slider Wrap Start */}
-                                            <div className="product-slider-wrap product-slider-arrow-one">
-                                                {/* Product Slider Start */}
-                                                <Slider key={categ.id} className="product-slider product-slider-4" {...settings}>
-                                                    {categ.products.map((item) => {
-                                                        return (
-                                                            <div key={item.id} className="col pb-20 pt-10">
-                                                                {/* Product Start */}
-                                                                <div className="ee-product">
-                                                                    {/* Image */}
-                                                                    <div className="image">
-                                                                        <a href="single-product.html" className="img"><img src={item.img} alt="Product Image" /></a>
-                                                                        <div className="wishlist-compare">
-                                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                        </div>
-                                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                    </div>
-                                                                    {/* Content */}
-                                                                    <div className="content">
-                                                                        {/* Category & Title */}
-                                                                        <div className="category-title">
-                                                                            <a href="#" className="cat">Laptop</a>
-                                                                            <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
-                                                                        </div>
-                                                                        {/* Price & Ratting */}
-                                                                        <div className="price-ratting">
-                                                                            <h5 className="price">${item.price}</h5>
-                                                                            <div className="ratting">
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star-half-o" />
-                                                                                <i className="fa fa-star-o" />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>{/* Product End */}
+                                        <div className={"tab-pane fade " + (currentCategories === categ.code ? "active show" : "")}>
+                                    {/* Product Slider Wrap Start */}
+                                    <div className="product-slider-wrap product-slider-arrow-one">
+                                        {/* Product Slider Start */}
+                                        <Slider className="product-slider product-slider-4" {...settings}>
+                                            {categ.products && categ.products.map((item) => {
+                                                return (
+                                                    <div key={item.id} className="col pb-20 pt-10">
+                                                        {/* Product Start */}
+                                                        <div className="ee-product">
+                                                            {/* Image */}
+                                                            <div className="image">
+                                                                <a href="single-product.html" className="img"><img src={item.image[0]} alt="Product Image" /></a>
+                                                                <div className="wishlist-compare">
+                                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                </div>
+                                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
                                                             </div>
-                                                        )
-                                                    })}
-                                                </Slider>{/* Product Slider End */}
-                                            </div>{/* Product Slider Wrap End */}
-                                        </div>
-                                    )
+                                                            {/* Content */}
+                                                            <div className="content">
+                                                                {/* Category & Title */}
+                                                                <div className="category-title">
+                                                                    <a href="#" className="cat">Laptop</a>
+                                                                    <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
+                                                                </div>
+                                                                {/* Price & Ratting */}
+                                                                <div className="price-ratting">
+                                                                    <h5 className="price">${item.price}</h5>
+                                                                    <div className="ratting">
+                                                                        <i className="fa fa-star" />
+                                                                        <i className="fa fa-star" />
+                                                                        <i className="fa fa-star" />
+                                                                        <i className="fa fa-star-half-o" />
+                                                                        <i className="fa fa-star-o" />
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>{/* Product End */}
+                                                    </div>
+
+                                                )
+                                            })}
+                                        </Slider>{/* Product Slider End */}
+                                    </div>
+                                </div>
+                                
+                                    );
+                                    // return (
+                                    //     <div key={categ.id} className={"tab-pane fade " + (currentCategories === categ.code ? "active show" : "")}>
+                                    //         {/* Product Slider Wrap Start */}
+                                    //         <div className="product-slider-wrap product-slider-arrow-one">
+                                    //             {/* Product Slider Start */}
+                                    //             {categ.products ? <Slider key={categ.id} className="product-slider product-slider-4" {...settings}>
+                                    //                 {categ.products.map((item) => {
+                                    //                     return (
+                                    //                         <div key={item.id} className="col pb-20 pt-10">
+                                    //                             {/* Product Start */}
+                                    //                             <div className="ee-product">
+                                    //                                 {/* Image */}
+                                    //                                 <div className="image">
+                                    //                                     <a href="single-product.html" className="img"><img src={item.image[0]} alt="Product Image" /></a>
+                                    //                                     <div className="wishlist-compare">
+                                    //                                         <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                    //                                         <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                    //                                     </div>
+                                    //                                     <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                    //                                 </div>
+                                    //                                 {/* Content */}
+                                    //                                 <div className="content">
+                                    //                                     {/* Category & Title */}
+                                    //                                     <div className="category-title">
+                                    //                                         <a href="#" className="cat">Laptop</a>
+                                    //                                         <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
+                                    //                                     </div>
+                                    //                                     {/* Price & Ratting */}
+                                    //                                     <div className="price-ratting">
+                                    //                                         <h5 className="price">${item.price}</h5>
+                                    //                                         <div className="ratting">
+                                    //                                             <i className="fa fa-star" />
+                                    //                                             <i className="fa fa-star" />
+                                    //                                             <i className="fa fa-star" />
+                                    //                                             <i className="fa fa-star-half-o" />
+                                    //                                             <i className="fa fa-star-o" />
+                                    //                                         </div>
+                                    //                                     </div>
+                                    //                                 </div>
+                                    //                             </div>{/* Product End */}
+                                    //                         </div>
+                                    //                     )
+                                    //                 })}
+                                    //             </Slider>
+                                    //         : '' }
+                                    //             </div>{/* Product Slider Wrap End */}
+                                    //     </div>
+                                    // )
                                 })}
                             </div>
                         </div>{/* Product Tab Content End */}
@@ -289,5 +364,22 @@ class Feature extends Component {
         );
     }
 }
+const mapStateToProps = (state) =>{
+    return {
+        allProducts: state.Ecomercial.productFeatureAlll,
+        categories: state.Ecomercial.featureCategories
+    }
+}
 
-export default Feature;
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchAllProducts: () => {
+            dispatch(fetchProductRequest());
+        
+        },
+        fetchFeatureProducts : (code) =>{
+            dispatch(fetchFeatureCategoriesProductsRequest(code));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps) (Feature);

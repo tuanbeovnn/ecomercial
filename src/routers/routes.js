@@ -1,7 +1,7 @@
 import React from 'react';
-import Home from './module/Home';
-import Login from './module/Login';
-import Regiter from './module/Regiter';
+import Home from './../module/Home';
+import Login from './../module/Login';
+import Regiter from './../module/Regiter';
 
 const routes = [
     {
