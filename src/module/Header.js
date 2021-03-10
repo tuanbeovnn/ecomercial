@@ -1,30 +1,13 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
-import routes from './../routers/routes';
+import {  Link } from 'react-router-dom';
 import { fetchCategoriesRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
+import MiniCart from '../components/products/MiniCart';
 
-const MenuLink = ({ label, to, activeOnlyWhenExact }) => {
-    return (
-        <Route
-            path={to} exact={activeOnlyWhenExact} children={(match) => {
-                let active = match ? 'active' : '';
-                return (
-                    // <li className={match ? 'active' : ''}>
-                    //     <Link className="nav-link" to={to}>{label}</Link>
-                    // </li>
-                     <div className="header-account-links">
-                        <Link to={to}>{label}<i className="icofont icofont-user-alt-7" /><span>my account</span></Link>
-                     </div>
-
-                )
-            }}
-        />
-    )
-}
 class Header extends Component {
 
     state = {
+        visibleSelect: false,
         menus: [
             {
                 id: 1,
@@ -98,20 +81,24 @@ class Header extends Component {
         ],
     }
     componentDidMount() {
-        
         this.props.fetchAllCategories();
-        
+
     }
-
-
-
+    handleSubmit= (e)=> {
+        e.preventDefault();
+    }
+    handdleToggle=()=>{
+        this.setState({
+            openToggle : !this.state.openToggle
+        })
+    }
     render() {
-        const {menus} = this.state;
-        const { categories } = this.props;
-
+        const { menus, visibleSelect, selected, openToggle} = this.state;
+        const { categories, user } = this.props;
+        const category = categories.find(c => c.code === selected);
+       
         return (
-        
-                <div className="header-section section">
+            <div className="header-section section">
                 {/* Header Top Start */}
                 <div className="header-top header-top-one header-top-border pt-10 pb-10">
                     <div className="container">
@@ -119,41 +106,61 @@ class Header extends Component {
                             <div className="col mt-10 mb-10">
                                 {/* Header Links Start */}
                                 <div className="header-links">
-                                    <a href="track-order.html"><img src="/images/icons/car.png" alt="Car Icon" /> <span>Track your order</span></a>
-                                    <a href="store.html"><img src="/images/icons/marker.png" alt="Car Icon" /> <span>Locate Store</span></a>
+                                    <Link to="/track">
+                                        <img src="/images/icons/car.png" alt="Car Icon" /> <span>Track your order</span>
+                                    </Link>
+                                    <Link to="/store">
+                                        <img src="/images/icons/marker.png" alt="Car Icon" /> <span>Locate Store</span>
+                                    </Link>
                                 </div>{/* Header Links End */}
                             </div>
                             <div className="col order-12 order-xs-12 order-lg-2 mt-10 mb-10">
                                 {/* Header Advance Search Start */}
                                 <div className="header-advance-search">
-                                    <form action="#">
+                                    <form action="#"onSubmit = {this.handleSubmit}>
                                         <div className="input"><input type="text" placeholder="Search your product" /></div>
                                         <div className="select">
-                                            <select className="nice-select">
-                                                <option value="0">All Categories</option>
-                                                {categories.map((item) => {
-                                                    return <option value={item.id} key={item.id}>{item.name}</option>
-                                                })}
-                                            </select>
+                                            <div className={visibleSelect ? "nice-select open" : "nice-select"}>
+                                                <span onClick={()=>this.setState({visibleSelect : !visibleSelect})} className="current">{category && category.name || "All Categories"}</span>
+                                                <ul className="list">
+                                                    <li onClick={() => this.setState({ selected: undefined, visibleSelect : false })} className={!selected ? "option selected focus" : "option"}>All Categories</li>
+                                                    {categories.map((item, index) => {
+                                                        return <li 
+                                                        key={index} 
+                                                        onClick={() => this.setState({ selected: item.code, visibleSelect : false })}
+                                                        className={selected === item.code ? "option selected focus" : "option"}
+                                                        >
+                                                        {item.name}
+                                                        </li>
+                                                    })}
+                                                </ul>
+                                            </div>
                                         </div>
                                         <div className="submit"><button><i className="icofont icofont-search-alt-1" /></button></div>
                                     </form>
                                 </div>{/* Header Advance Search End */}
                             </div>
                             <div className="col order-2 order-xs-2 order-lg-12 mt-10 mb-10">
-                                {/* Header Account Links Start */}
-                                <div className="header-account-links">
-                                    <a href="register.html"><i className="icofont icofont-user-alt-7" /> <span>my account</span></a>
-                                    <Link to="/login">
-                                        <a><i className="icofont icofont-login d-none" /> <span>Login</span></a>
-                                    </Link>
-                                     {/* {this.showMenu(menusUp)} */}
-                                </div>
-                                {/* Header Account Links End */}
+                                {user && user.id >= 0 ?
+                                    <div className="header-account-links">
+                                        <Link to="/myaccount">
+                                            <i className="icofont icofont-user-alt-7" /> <span>{user.username}</span>
+                                        </Link>
+                                    </div>
+                                    : <div className="header-account-links">
+                                        {/* <Link to="/register">
+                                            <i className="icofont icofont-login d-none" /> <span>Register</span>
+                                        </Link> */}
+                                        <Link to="/login">
+                                            <i className="icofont icofont-login d-none" /> <span>Login</span>
+                                        </Link>
+                                    </div>
+                                }
                             </div>
+                            {/* Header Account Links End */}
                         </div>
                     </div>
-                </div>{/* Header Top End */}
+                </div>
                 {/* Header Bottom Start */}
                 <div className="header-bottom header-bottom-one header-sticky">
                     <div className="container">
@@ -161,10 +168,13 @@ class Header extends Component {
                             <div className="col mt-15 mb-15">
                                 {/* Logo Start */}
                                 <div className="header-logo">
-                                    <a href="index.html">
-                                        <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
-                                        <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
-                                    </a>
+                                    <Link to="/">
+                                       
+                                            <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
+                                            <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
+                                       
+                                    </Link>
+
                                 </div>{/* Logo End */}
                             </div>
                             <div className="col order-12 order-lg-2 order-xl-2 d-none d-lg-block">
@@ -211,13 +221,13 @@ class Header extends Component {
                                                         <ul>
                                                             <li><a href="about-us.html">About us</a></li>
                                                             <li><a href="best-deals.html">Best Deals</a></li>
-                                                            <li><a href="cart.html">Cart</a></li>
+                                                            <li><a>Cart</a></li>
                                                             <li><a href="checkout.html">Checkout</a></li>
                                                         </ul>
                                                     </li>
                                                     <li><a href="#">Column Two</a>
                                                         <ul>
-                                                            <li><a href="compare.html">Compare</a></li>
+                                                            <li><a >Compare</a></li>
                                                             <li><a href="faq.html">Faq</a></li>
                                                             <li><a href="feature.html">Feature</a></li>
                                                             <li><a href="login.html">Login</a></li>
@@ -240,7 +250,7 @@ class Header extends Component {
                                                     <li><a href="single-blog-left-sidebar.html">Single Blog Left Sidebar</a></li>
                                                 </ul>
                                             </li>
-                                            <li><a href="contact.html">CONTACT</a></li>
+                                            <li><a>CONTACT</a></li>
                                         </ul>
                                     </nav>
                                 </div>{/* Main Menu End */}
@@ -249,11 +259,17 @@ class Header extends Component {
                                 {/* Header Shop Links Start */}
                                 <div className="header-shop-links">
                                     {/* Compare */}
-                                    <a href="compare.html" className="header-compare"><i className="ti-control-shuffle" /></a>
+                                    <Link className="header-compare" to="/compare">
+                                        <i className="ti-control-shuffle" />
+                                    </Link>
+                                    <Link className="header-wishlist" to="/wishlist">
+                                       <i className="ti-heart" /> <span className="number">3</span>
+                                    </Link>
+
                                     {/* Wishlist */}
-                                    <a href="wishlist.html" className="header-wishlist"><i className="ti-heart" /> <span className="number">3</span></a>
+
                                     {/* Cart */}
-                                    <a href="cart.html" className="header-cart"><i className="ti-shopping-cart" /> <span className="number">3</span></a>
+                                    <a onClick={this.handdleToggle} className="header-cart"><i className="ti-shopping-cart" /> <span className="number">3</span></a>
                                 </div>{/* Header Shop Links End */}
                             </div>
                             {/* Mobile Menu */}
@@ -262,82 +278,25 @@ class Header extends Component {
                     </div>
                 </div>{/* Header Bottom End */}
                 {/* Header Category Start */}
-                <div className="header-category-section">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col">
-                                {/* Header Category */}
-                                <div className="header-category">
-                                    {/* Category Toggle Wrap */}
-                                    <div className="category-toggle-wrap d-block d-lg-none">
-                                        {/* Category Toggle */}
-                                        <button className="category-toggle">Categories <i className="ti-menu" /></button>
-                                    </div>
-                                    {/* Category Menu */}
-                                    <nav className="category-menu">
-                                        <ul>
-                                            <li><a href="category-1.html">Tv &amp; Audio System</a></li>
-                                            <li><a href="category-2.html">Computer &amp; Laptop</a></li>
-                                            <li><a href="category-3.html">Phones &amp; Tablets</a></li>
-                                            <li><a href="category-1.html">Home Appliances</a></li>
-                                            <li><a href="category-2.html">Kitchen appliances</a></li>
-                                            <li><a href="category-3.html">Accessories</a></li>
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-            
-            
+                <MiniCart openToggle = {openToggle} handdleClose = {this.handdleToggle}/>
+            </div >
         );
     }
-    // showMenu = (menusUp) => {
-    //     var result = null;
-    //     if (menusUp.length > 0) {
-    //         console.log(menusUp.length);
-    //         result = menusUp.map((menu, index) => {
-    //             return (
-    //                  <MenuLink key={index} label={menu.name} to={menu.to} activeOnlyWhenExact={menu.exact} />
-    //             );
 
-    //         });
-    //     }
-    //     return result;
-    // }
-    // showContentMenu = (routes) => {
-    //     let res = null;
-    //     if (routes.length > 0) {
-    //         res = routes.map((route, index) => {
-    //             return (
-    //                 <Route
-    //                     key={index}
-    //                     path={route.path}
-    //                     exact={route.exact}
-    //                     component={route.main}
-    //                 />
-    //             )
-    //         });
-    //     }
-    //     return res;
-    // }
 }
 
 const mapStateToProps = state => {
     return {
-        
-        categories: state.Ecomercial.categories
+        categories: state.Ecomercial.categories,
+        user: state.Ecomercial.user
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchAllCategories: () => {
             dispatch(fetchCategoriesRequest());
-        
         }
+
     }
 }
-export default connect(mapStateToProps,mapDispatchToProps) (Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

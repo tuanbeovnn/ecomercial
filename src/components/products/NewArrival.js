@@ -1,42 +1,19 @@
 import React, { Component } from 'react';
+import { fetchProductNewRequest } from '../../redux/actions/index';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 
 class NewArrival extends Component {
     state = {
-        newArrial: [
-            {
-                id: 1,
-                name: "Abfsdfsdfcd",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 2,
-                name: "dadasd",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 3,
-                name: "2",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 4,
-                name: "3333",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 5,
-                name: "55555",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-        ]
+        addToCart: true,
+    }
+    componentDidMount() {
+        this.props.fetchProductNew();
     }
     render() {
-        const { newArrial } = this.state
+        const { addToCart } = this.state
+        const { productNew, categories } = this.props;
         return (
             <div className="product-section section mb-60">
                 <div className="container">
@@ -47,43 +24,53 @@ class NewArrival extends Component {
                         </div>{/* Section Title End */}
                         <div className="col-12">
                             <div className="row">
-                                {newArrial.map((item) => {
+                                {productNew.map((item, index) => {
+                                    const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                     return (
-                                        <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
+                                        <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
                                             {/* Product Start */}
                                             <div className="ee-product">
                                                 {/* Image */}
                                                 <div className="image">
                                                     <span className="label sale">sale</span>
-                                                    <a href="single-product.html" className="img"><img src={item.img} alt={item.img} /></a>
+                                                    <Link className="img" to={"/details/" + item.code}>
+                                                        <img src={item.image[0]} alt={item.image} />
+                                                    </Link>
+
                                                     <div className="wishlist-compare">
-                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                        <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                        <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                     </div>
-                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                                    <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
+                                                        <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
+                                                        <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                    </a>
                                                 </div>
                                                 {/* Content */}
                                                 <div className="content">
                                                     {/* Category & Title */}
                                                     <div className="category-title">
-                                                        <a href="#" className="cat">Tv &amp; Audio</a>
-                                                        <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
+                                                        <a href="#" className="cat">{categoryProduct && categoryProduct.name}</a>
+
+                                                        <h5 className="title">
+                                                            <Link to={"/details/" + item.code}>
+                                                                {item.name}
+                                                            </Link>
+
+                                                        </h5>
                                                     </div>
                                                     {/* Price & Ratting */}
                                                     <div className="price-ratting">
-                                                        <h5 className="price"><span className="old">{item.price} </span>$250.00</h5>
+                                                        <h5 className="price">{item.price}$</h5>
                                                         <div className="ratting">
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star-half-o" />
+                                                            {new Array(5).fill(0).map((star, index) => {
+                                                                return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                            })}
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>{/* Product End */}
+                                            </div>
                                         </div>
-
                                     )
                                 })}
                             </div>
@@ -96,4 +83,20 @@ class NewArrival extends Component {
     }
 }
 
-export default NewArrival;
+const mapStateToProps = (state) => {
+    return {
+        productNew: state.Ecomercial.productNew,
+        categories: state.Ecomercial.categories,
+    }
+}
+
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+
+        fetchProductNew: () => {
+            dispatch(fetchProductNewRequest());
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(NewArrival);
+

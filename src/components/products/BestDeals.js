@@ -1,149 +1,44 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
+import { connect } from 'react-redux';
+import { fetchBestDealProductsRequest } from '../../redux/actions/index';
+import { Link } from 'react-router-dom';
 
 class BestDeals extends Component {
-    state = {
-        allProducts: [
-            {
-                id: 1,
-                name: "Abfsdfsdfcd",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 2,
-                name: "dadasd",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 3,
-                name: "2",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 4,
-                name: "3333",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-            {
-                id: 5,
-                name: "55555",
-                price: 1000,
-                img: "/images/product/product-1.png"
-            },
-        ],
-        currentCategories: 0,
-        categories: [
-            {
-                id: 1,
-                name: "LapTop",
-                products: [
-                    {
-                        id: 1,
-                        name: "Abcd",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 2,
-                        name: "Abfsdfsdfcd",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 3,
-                        name: "4324dsfsdfsdfsdf",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 4,
-                        name: "2",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 5,
-                        name: "3333",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 6,
-                        name: "55555",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "Camera",
-                products: [
-                    {
-                        id: 1,
-                        name: "Abcd",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 2,
-                        name: "2",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 3,
-                        name: "3333",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    },
-                    {
-                        id: 4,
-                        name: "55555",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    }
-                ]
-            },
-            {
-                id: 3,
-                name: "Tv",
-                products: [
-                    {
-                        id: 1,
-                        name: "Abcd",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    }
-                ]
-            },
-            {
-                id: 4,
-                name: "Printer",
-                products: [
-                    {
-                        id: 1,
-                        name: "Abcd",
-                        price: 1000,
-                        img: "/images/product/product-1.png"
-                    }
-                ]
-            }
 
-        ]
+    state = {
+        currentCategories: 0,
+        addToCart: true,
     }
+    componentDidMount() {
+        //call all categories [{id:1, name: 'Laptop'}];
+        //  goi list product all ve: all ProductFeature;
+        //=> kich laptop => sp cuua laptop  => luu vao cateogries [{id: 1, name: 'Laptop', prodcts: [...]}]
+        this.props.fetchProducts();
+
+    }
+
     activeCategory = (currentCategories) => {
+        //goji sp categories nay ve.
+        const { categories } = this.props;
+
+        // console.log(categories);
+        const index = categories.findIndex(c => c.code === currentCategories);
+
+        if (index != -1 && !categories[index].products) {
+            //goi api
+            this.props.fetchProducts(currentCategories);
+        }
         this.setState({
             currentCategories
-        })
+        });
+
     }
+
     render() {
+        const { allProducts, categories } = this.props;
+        const { currentCategories, addToCart } = this.state;
         const settings = {
-            // responsive: "",
             dots: true,
             infinite: true,
             speed: 500,
@@ -151,9 +46,9 @@ class BestDeals extends Component {
             slidesToScroll: 1,
             nextArrow: <button type="button" className="slick-next slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-right"></i></button>,
             prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
+           
 
         };
-        const { currentCategories, categories, allProducts } = this.state;
         return (
             <div className="product-section section mb-40">
                 <div className="container">
@@ -172,10 +67,11 @@ class BestDeals extends Component {
                                         <button className="product-tab-filter-toggle">showing: <span /><i className="icofont icofont-simple-down" /></button>
                                         {/* Product Tab List */}
                                         <ul id="featureItem" className="nav product-tab-list">
-                                            <li onClick={() => { this.activeCategory(0) }}><a className="active" data-toggle="tab" href="#featureItem">all</a></li>
+                                            <li onClick={() => { this.activeCategory(0) }}>
+                                                <a className={currentCategories === 0 ? "active" : ""} data-toggle="tab" >all</a></li>
                                             {categories.map((item) => {
                                                 return (
-                                                    <li onClick={() => { this.activeCategory(item.id) }} key={item.id}><a data-toggle="tab" href="#featureItem">{item.name}</a></li>
+                                                    <li onClick={() => { this.activeCategory(item.code) }} key={item.id}><a className={currentCategories === item.code ? "active" : ""} data-toggle="tab">{item.name}</a></li>
                                                 )
                                             })}
 
@@ -200,8 +96,9 @@ class BestDeals extends Component {
                                             {/* Product Slider Wrap Start */}
                                             <div className="product-slider-wrap product-slider-arrow-two">
                                                 {/* Product Slider Start */}
-                                                <Slider className="product-slider product-slider-3" {...settings}>
+                                                <Slider key='bestDeal' className="product-slider product-slider-3" {...settings}>
                                                     {allProducts.map((item) => {
+                                                        const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -209,29 +106,32 @@ class BestDeals extends Component {
                                                                     {/* Image */}
                                                                     <div className="image">
                                                                         <span className="label sale">sale</span>
-                                                                        <a href="single-product.html" className="img"><img src={item.img} alt={item.img} /></a>
+                                                                        <Link className="img" to={"/details/" + item.code}>
+                                                                            <img src={item.image && item.image[0]} alt={item.image && item.image[0]} />
+                                                                        </Link>
                                                                         <div className="wishlist-compare">
-                                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                            <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                            <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                         </div>
-                                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                                                        <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
+                                                                            <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
+                                                                            <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                        </a>
                                                                     </div>
                                                                     {/* Content */}
                                                                     <div className="content">
                                                                         {/* Category & Title */}
                                                                         <div className="category-title">
-                                                                            <a href="#" className="cat">Games</a>
-                                                                            <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
+                                                                            <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                            <h5 className="title"><a >{item.name}</a></h5>
                                                                         </div>
                                                                         {/* Price & Ratting */}
                                                                         <div className="price-ratting">
-                                                                            <h5 className="price"><span className="old">$285</span>{item.price}</h5>
+                                                                            <h5 className="price"><span className="old">{item.originalPrice}</span>{item.price}</h5>
                                                                             <div className="ratting">
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
-                                                                                <i className="fa fa-star" />
+                                                                                {new Array(5).fill(0).map((star, index) => {
+                                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                                })}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -246,50 +146,62 @@ class BestDeals extends Component {
                                         {/* Tab Pane Start */}
                                         {categories.map((category) => {
                                             return (
-                                                <div key={category.id} className={"tab-pane fade " + (currentCategories === category.id ? "active show" : "")}>
+                                                <div key={category.id} className={"tab-pane fade " + (currentCategories === category.code ? "active show" : "")}>
                                                     {/* Product Slider Wrap Start */}
                                                     <div className="product-slider-wrap product-slider-arrow-two">
                                                         {/* Product Slider Start */}
-                                                        <Slider className="product-slider product-slider-3" {...settings}>
-                                                            {category.products.map((item) => {
-                                                                return (
-                                                                    <div key={item.id} className="col pb-20 pt-10">
-                                                                        {/* Product Start */}
-                                                                        <div className="ee-product">
-                                                                            {/* Image */}
-                                                                            <div className="image">
-                                                                                <a href="single-product.html" className="img"><img src="/images/product/product-18.png" alt="Product Image" /></a>
-                                                                                <div className="wishlist-compare">
-                                                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                        {category.products ?
+                                                            <Slider key={category.id} className="product-slider product-slider-3" {...settings}>
+                                                                {category.products.map((item) => {
+                                                                    const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+
+                                                                    return (
+                                                                        <div key={item.id} className="col pb-20 pt-10">
+                                                                            {/* Product Start */}
+                                                                            <div className="ee-product">
+                                                                                {/* Image */}
+                                                                                <div className="image">
+                                                                                    <Link className="img" to={"/details/" + item.code}>
+                                                                                        <img src={item.image && item.image[0]} alt={item.image[0]} />
+                                                                                    </Link>
+
+                                                                                    <div className="wishlist-compare">
+                                                                                        <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                                        <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                                    </div>
+                                                                                    <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
+                                                                                        <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
+                                                                                        <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                                    </a>
                                                                                 </div>
-                                                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                            </div>
-                                                                            {/* Content */}
-                                                                            <div className="content">
-                                                                                {/* Category & Title */}
-                                                                                <div className="category-title">
-                                                                                    <a href="#" className="cat">Tv &amp; Audio</a>
-                                                                                    <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
-                                                                                </div>
-                                                                                {/* Price & Ratting */}
-                                                                                <div className="price-ratting">
-                                                                                    <h5 className="price">{item.price}</h5>
-                                                                                    <div className="ratting">
-                                                                                        <i className="fa fa-star" />
-                                                                                        <i className="fa fa-star" />
-                                                                                        <i className="fa fa-star" />
-                                                                                        <i className="fa fa-star-half-o" />
-                                                                                        <i className="fa fa-star-o" />
+                                                                                {/* Content */}
+                                                                                <div className="content">
+                                                                                    {/* Category & Title */}
+                                                                                    <div className="category-title">
+                                                                                        <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                                        <h5 className="title">
+                                                                                            <Link to={"/details/" + item.code}>
+                                                                                               {item.name}
+                                                                                            </Link>
+
+                                                                                        </h5>
+                                                                                    </div>
+                                                                                    {/* Price & Ratting */}
+                                                                                    <div className="price-ratting">
+                                                                                        <h5 className="price"><span className="old">{item.originalPrice}</span>{item.price}</h5>
+                                                                                        <div className="ratting">
+                                                                                            {new Array(5).fill(0).map((star, index) => {
+                                                                                                return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                                            })}
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
-                                                                            </div>
-                                                                        </div>{/* Product End */}
-                                                                    </div>
-                                                                )
-                                                            })}
-                                                        </Slider>
-                                                    </div>
+                                                                            </div>{/* Product End */}
+                                                                        </div>
+                                                                    )
+                                                                })}
+                                                            </Slider>
+                                                            : ''}</div>
                                                 </div>
 
                                             )
@@ -304,5 +216,18 @@ class BestDeals extends Component {
         );
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        allProducts: state.Ecomercial.productsBestDealAll,
+        categories: state.Ecomercial.bestdealCategories,
+    }
+}
 
-export default BestDeals;
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchProducts: (code) => {
+            dispatch(fetchBestDealProductsRequest(code));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(BestDeals);

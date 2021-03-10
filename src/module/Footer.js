@@ -146,7 +146,7 @@ class Footer extends Component {
                                     <input type="email" defaultValue name="EMAIL" className="email" id="popup_subscribe" placeholder="Enter your email here" required />
                                     {/* real people should not fill this in and expect good things - do not remove this or risk form bot signups*/}
                                     <div style={{ position: 'absolute', left: '-5000px' }} aria-hidden="true"><input type="text" name="b_6bbb9b6f5827bd842d9640c82_05d85f18ef" tabIndex={-1} defaultValue /></div>
-                                    <button type="submit" name="subscribe" id className="button">subscribe</button>
+                                    <button type="submit" name="subscribe" className="button">subscribe</button>
                                 </div>
                             </form>
                             <p>Be the first in the by getting special deals and offers send directly to your inbox.</p>

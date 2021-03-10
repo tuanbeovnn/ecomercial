@@ -1,24 +1,44 @@
 import React, { Component } from 'react';
+import { fetchBannerRequest } from '../../redux/actions';
+import { connect } from 'react-redux';
 
 class BannerHome_2 extends Component {
+    componentDidMount() {
+        this.props.fetchBanner();
+    }
     render() {
+        const { banners } = this.props;
         return (
             <div className="banner-section section mb-60">
                 <div className="container">
-                    <div className="row row-10">
-                        {/* Banner */}
-                        <div className="col-md-8 col-12 mb-30">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-1.jpg" alt="Banner" /></a></div>
-                        </div>
-                        {/* Banner */}
-                        <div className="col-md-4 col-12 mb-30">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-2.jpg" alt="Banner" /></a></div>
-                        </div>
-                    </div>
+                    {banners.map((item, index) => {
+                        return (
+                            <div key={index} className="row row-10">
+                                <div className="col-md-8 col-12 mb-30">
+                                    <div className="banner"><a >{item.position === 2 ? <img src={item.image && item.image[0]} alt="Banner" /> : ''}</a></div>
+                                </div>
+                                <div className="col-md-4 col-12 mb-30">
+                                    <div className="banner"><a >{item.position === 2 ? <img src={item.image && item.image[1]} alt="Banner" /> : ''}</a></div>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         );
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        banners: state.Ecomercial.banners
+    }
+}
 
-export default BannerHome_2;
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchBanner: () => {
+            dispatch(fetchBannerRequest());
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(BannerHome_2);

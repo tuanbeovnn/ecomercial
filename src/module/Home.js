@@ -10,12 +10,15 @@ import BestSeller from '../components/products/BestSeller';
 import Feature from '../components/products/Feature';
 import MiniCart from '../components/products/MiniCart';
 import NewArrival from '../components/products/NewArrival';
+import SendMessage from '../components/chat/SendMessage';
+import Menus from './Menus';
 
-class Home extends Component {
+export default class Home extends Component {
     render() {
         return (
             <div>
                 <MiniCart />
+                <Menus/>
                 <BannerHome />
                 <BannerHome_2 />
                 <Feature />
@@ -27,8 +30,6 @@ class Home extends Component {
                 <BannerHome_5 />
                 <BrandLogo />
             </div>
-        );
+        )
     }
 }
-
-export default Home;

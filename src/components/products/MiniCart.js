@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 
 class MiniCart extends Component {
+    
     render() {
+        const {openToggle, handdleClose} = this.props;
+        
         return (
-            <div className="mini-cart-wrap">
+            <div>
+                <div className={openToggle ? "mini-cart-wrap open" : "mini-cart-wrap"}>
                 {/* Mini Cart Top */}
                 <div className="mini-cart-top">
-                    <button className="close-cart">Close Cart<i className="icofont icofont-close" /></button>
+                    <button onClick={handdleClose} className="close-cart">Close Cart<i className="icofont icofont-close" /></button>
                 </div>
                 {/* Mini Cart Products */}
                 <ul className="mini-cart-products">
@@ -46,7 +50,9 @@ class MiniCart extends Component {
                     </div>
                 </div>
             </div>
-
+            <div onClick={handdleClose} className= {openToggle ? "cart-overlay visible" : "cart-overlay"}></div>
+            </div>
+            
         );
     }
 }

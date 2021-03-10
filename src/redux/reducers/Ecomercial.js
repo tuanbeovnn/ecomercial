@@ -1,44 +1,74 @@
-import { FETCH_PRODUCT,FETCH_CATEGORIES, FETCH_PRODUCTS_CATEGORY_FEATURE } from "../const/ActionTypes";
-
+import { FETCH_PRODUCT,FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_FEATURE_ALL, FETCH_PRODUCT_BESTSELL, FETCH_BANNER } from "../const/ActionTypes";
+import jwt_decode from "jwt-decode";
 
 
 const initialState = {
     categories: [],
-    featureCategories:[{id: 1,code: 'laptop', name: 'laptop'}],
+    featureCategories:[],
     productFeatureAlll: [],
-    bestdeal: []
+    productNew: [],
+    bestSellProducts: [],
+    bestdealCategories: [],
+    productsBestDealAll: [],
+    banners: [],
+    user:{},
 };
 
 export default (state = initialState, action) => {
-    console.log(action);
+   
     const copyState = {...state}
+    
     switch (action.type) {
-        case FETCH_PRODUCT: {
-            copyState.productFeatureAlll = action.products;
-            return copyState;
-        }
         case FETCH_CATEGORIES: {
-            // copyState.categories= [...action.categories];
-            copyState.featureCategories=[...action.categories];
+            copyState.featureCategories = JSON.parse(JSON.stringify(action.categories));
+            copyState.bestdealCategories = JSON.parse(JSON.stringify(action.categories));
             copyState.categories = action.categories;
             return copyState;
         }
-        // case 'featureall':{
-        //     copyState.productFeatureAlll = [...action.products]
-        //     return copyState
-        // }
-        case FETCH_PRODUCTS_CATEGORY_FEATURE: {
+
+        case FETCH_PRODUCTS_FEATURE: {
             const index = copyState.featureCategories.findIndex(c => c.code ===action.code);
-            console.log(index);
-            copyState.featureCategories = [...copyState.featureCategories];
             if (index !== -1) {
+                copyState.featureCategories = [...copyState.featureCategories];
                 copyState.featureCategories[index].products = action.products;
             }else {
-                copyState.featureCategories[index].products = [];
+                copyState.productFeatureAlll = action.products;
             }
             return copyState;
+        }
+
+        case FETCH_PRODUCTS_BESTDEAL: {
             
-            //copylai state va return
+            const index = copyState.bestdealCategories.findIndex(c => c.code ===action.code);
+            if (index !== -1) {
+                copyState.bestdealCategories = [...copyState.bestdealCategories];
+                copyState.bestdealCategories[index].products = action.products;
+            }else {
+                copyState.productsBestDealAll = action.products;
+            }
+           
+            return copyState;
+        }
+
+        case LOG_IN: {
+            const data = jwt_decode(action.data.accessToken);
+            copyState.user = data;
+            return copyState;
+        }
+        case FETCH_PRODUCT_NEW: {
+            copyState.productNew = action.productsNew;
+            return copyState;
+        }
+
+        case FETCH_PRODUCT_BESTSELL : {
+            console.log(action);
+            copyState.bestSellProducts = action.productsBestSell;
+            return copyState;
+        }
+        case FETCH_BANNER : {
+            console.log(action);
+            copyState.banners = action.banner;
+            return copyState;
         }
         default:
             return copyState
