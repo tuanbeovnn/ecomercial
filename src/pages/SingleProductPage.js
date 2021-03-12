@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchProductDetailsRequest, fetchProductRequest } from "../redux/actions";
+import { fetchProductDetailsRequest, removeCartRequest, addCartRequest } from "../redux/actions";
 import Slider from 'react-slick';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { Skeleton, Space, Divider, Form, Radio } from 'antd';
@@ -11,8 +11,9 @@ class SingleProductPage extends Component {
         this.state = {
             product: {},
             relatedProduct: [],
-            addToCart: true
-        
+            addToCart: true,
+            qty: 1
+
         }
     }
     componentDidMount() {
@@ -21,7 +22,7 @@ class SingleProductPage extends Component {
             if (data) {
                 const product = data;
                 const relatedProduct = data.relatedProduct;
-                console.log(product, relatedProduct);
+                
                 this.setState({
                     product,
                     relatedProduct
@@ -29,14 +30,35 @@ class SingleProductPage extends Component {
             }
         }
         this.props.fetchProductDetails(code, callback);
-       
+
+    }
+    onHandleChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            qty: e.target.value
+        })
+
+    }
+    onMinus = () => {
+        if (this.state.qty - 1 > 0) {
+            this.setState({
+                qty: this.state.qty - 1
+            })
+        }
+    }
+
+    onPlus = () => {
+        this.setState({
+            qty: this.state.qty + 1
+        })
     }
 
     render() {
-        const { product, addToCart, relatedProduct } = this.state;
+        const { product, relatedProduct, qty } = this.state;
+       
+        const { categories, cart, addCart, removeCart } = this.props;
+        const existCart = cart.find(p => p.id === product.id);
 
-        console.log(product);
-        const { categories} = this.props;
         const categoryProduct = categories && categories.find(cate => cate.code === product.categoryCode);
         const settings = {
             dots: true,
@@ -47,7 +69,7 @@ class SingleProductPage extends Component {
             slidesToScroll: 1,
             nextArrow: <button type="button" className="slick-next slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-right"></i></button>,
             prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
-           
+
         };
         const settings1 = {
             dots: true,
@@ -148,7 +170,7 @@ class SingleProductPage extends Component {
                                     {/* Category & Title */}
                                     <div className="head-content">
                                         <div className="category-title">
-                                            <a  className="cat">{categoryProduct && categoryProduct.name}</a>
+                                            <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                             <h5 className="title">{product.name}</h5>
                                         </div>
                                         <h5 className="price">${product.price}</h5>
@@ -166,27 +188,32 @@ class SingleProductPage extends Component {
                                         <div className="quantity-colors">
                                             <div className="quantity">
                                                 <h5>Quantity</h5>
-                                                <div className="pro-qty"><input type="text" value="1" /></div>
+                                                <div class="pro-qty">
+                                                    <span onClick={() => { this.onMinus() }} class="dec qtybtn">-</span>
+                                                    <input
+                                                        type="text"
+                                                        name="qty"
+                                                        onChange={this.onHandleChange}
+                                                        value={qty}
+                                                    />
+                                                    <span onClick={() => { this.onPlus() }} class="inc qtybtn">+</span>
+                                                </div>
                                             </div>
                                             <div className="colors">
                                                 <h5>Color</h5>
-                                                <select className="nice-select">
-                                                    <option>red</option>
-                                                    <option>black</option>
-                                                    <option>yellow</option>
-                                                    <option>grey</option>
-                                                </select>
+
+                                                <div class="nice-select" tabindex="0"><span class="current">red</span><ul class="list"><li data-value="red" class="option selected">red</li><li data-value="black" class="option">black</li><li data-value="yellow" class="option">yellow</li><li data-value="grey" class="option">grey</li></ul></div>
                                             </div>
                                         </div>
                                         <div className="actions">
-                                            
-                                            <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick= {()=> this.setState({addToCart : !addToCart})}>
-                                                <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+
+                                            <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(product.id) : addCart({...product,qty}) }}>
+                                                <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                             </a>
                                             <div className="wishlist-compare">
-                                                <a  data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                <a  data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                             </div>
                                         </div>
                                         <div className="tags">
@@ -388,53 +415,57 @@ class SingleProductPage extends Component {
                                 <div className="product-slider-wrap product-slider-arrow-one">
                                     {/* Product Slider Start */}
                                     {relatedProduct.length > 0 ?
-                                    <Slider key ="relatedProduct" className="product-slider product-slider-4" {...settings}>
-                                        {relatedProduct.map((item) => {
-                                            return (
-                                                <div key={item.id} className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <Link to={"/details/" + item.code}>
-                                                                <a className="img"><img src={item.image[0]} alt="Product Image" /></a>
-                                                            </Link>
+                                        <Slider key="relatedProduct" className="product-slider product-slider-4" {...settings}>
+                                            {relatedProduct.map((item) => {
+                                                const existCartRelated = cart.find(p => p.id === item.id);
+                                                return (
+                                                    <div key={item.id} className="col pb-20 pt-10">
+                                                        {/* Product Start */}
+                                                        <div className="ee-product">
+                                                            {/* Image */}
+                                                            <div className="image">
+                                                                <Link to={"/details/" + item.code}>
+                                                                    <a className="img"><img src={item.image[0]} alt="Product Image" /></a>
+                                                                </Link>
 
-                                                            <div className="wishlist-compare">
-                                                                <a  data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a  data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                <div className="wishlist-compare">
+                                                                    <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                    <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                </div>
+                                                                <a className={existCartRelated ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCartRelated ? removeCart(item.id) : addCart(item) }}>
+                                                                    <i className={existCartRelated ? "ti-check" : "ti-shopping-cart"} />
+                                                                    <span>{existCartRelated ? "ADDED" : "ADD TO CART"}</span>
+                                                                </a>
                                                             </div>
-                                                            <a  className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a  className="cat">Laptop</a>
-                                                                <h5 className="title">
-                                                                    <Link to={"/details/" + item.code}>
-                                                                        <a>{item.name}</a>
-                                                                    </Link>
-                                                                </h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price">${item.price}</h5>
-                                                                <div className="ratting">
-                                                                    {new Array(5).fill(0).map((star, index) => {
-                                                                        return <i className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
-                                                                    })}
+                                                            {/* Content */}
+                                                            <div className="content">
+                                                                {/* Category & Title */}
+                                                                <div className="category-title">
+                                                                    <a className="cat">Laptop</a>
+                                                                    <h5 className="title">
+                                                                        <Link to={"/details/" + item.code}>
+                                                                            <a>{item.name}</a>
+                                                                        </Link>
+                                                                    </h5>
+                                                                </div>
+                                                                {/* Price & Ratting */}
+                                                                <div className="price-ratting">
+                                                                    <h5 className="price">${item.price}</h5>
+                                                                    <div className="ratting">
+                                                                        {new Array(5).fill(0).map((star, index) => {
+                                                                            return <i className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                        })}
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
-                                                </div>
+                                                        </div>{/* Product End */}
+                                                    </div>
 
-                                            )
-                                        })}
-                                    </Slider> 
-                                    : ""
-                                }
+                                                )
+                                            })}
+                                        </Slider>
+                                        : ""
+                                    }
                                 </div>{/* Product Slider Wrap End */}
                             </div>{/* Product Tab Content End */}
                         </div>
@@ -449,13 +480,20 @@ class SingleProductPage extends Component {
 const mapStateToProps = (state) => {
     return {
         categories: state.Ecomercial.categories,
-        
+        cart: state.Ecomercial.cart
+
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchProductDetails: (code, callback) => {
             dispatch(fetchProductDetailsRequest(code, callback));
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            dispatch(removeCartRequest(id));
         }
     }
 }

@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { fetchCategoriesRequest } from '../redux/actions/index';
+import { connect } from 'react-redux';
 
-export default class Menus extends Component {
+class Menus extends Component {
+    componentDidMount() {
+        this.props.fetchAllCategories();
+    }
     render() {
+        const { categories } = this.props;
         return (
             <div className="header-category-section">
                 <div className="container">
@@ -19,30 +25,17 @@ export default class Menus extends Component {
                                 </div>
                                 {/* Category Menu */}
                                 <nav className="category-menu">
-                                    <ul>
-                                        <li>
-                                            <a href="category-1.html">Tv &amp; Audio System</a>
-                                        </li>
-                                        <li>
-                                            <Link to="/laptop">
-                                                Computer &amp; Laptop
-                                            </Link>
 
-                                        </li>
-                                        <li>
-                                            <Link to="/mobile">
-                                                Phones &amp; Tablets
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <a href="category-1.html">Home Appliances</a>
-                                        </li>
-                                        <li>
-                                            <a href="category-2.html">Kitchen appliances</a>
-                                        </li>
-                                        <li>
-                                            <a href="category-3.html">Accessories</a>
-                                        </li>
+                                    <ul>
+                                        {categories.map((item, index) => {
+                                            return (
+                                                <li key={index}>
+                                                    <Link to={"/product/" + item.code}>
+                                                        {item.name}
+                                                    </Link>
+                                                </li>
+                                            )
+                                        })}
                                     </ul>
                                 </nav>
                             </div>
@@ -53,3 +46,17 @@ export default class Menus extends Component {
         );
     }
 }
+const mapStateToProps = state => {
+    return {
+        categories: state.Ecomercial.categories
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchAllCategories: () => {
+            dispatch(fetchCategoriesRequest());
+        }
+
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Menus);

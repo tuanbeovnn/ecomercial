@@ -57,9 +57,9 @@ export const routes = [
         main: () => <WishListPage />
     },
     {
-        path:'/mobile',
+        path:'/product/:code',
         exact : false,
-        main: () => <MobileCategories />
+        main: (props) => <MobileCategories {...props}/>
     },
     {
         path:'/laptop',

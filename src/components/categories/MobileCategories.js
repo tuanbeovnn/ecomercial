@@ -1,7 +1,31 @@
 import React, { Component } from 'react'
-
-export default class MobileCategories extends Component {
+import { connect } from 'react-redux';
+import { fetchProductByCategoriesRequest } from '../../redux/actions';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+class MobileCategories extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            products: [],
+            addToCart: true,
+        }
+    }
+    componentDidMount() {
+        const code = this.props.match.params.code;
+        console.log(code);
+        const callback = (data) => {
+            if (data) {
+                const products = data;
+                console.log(products)
+                this.setState({
+                    products
+                })
+            }
+        }
+        this.props.fetchProductListCategory(code, callback);
+    }
     render() {
+        const { products, addToCart } = this.state;
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -77,986 +101,98 @@ export default class MobileCategories extends Component {
                                 {/* Shop Product Wrap Start */}
                                 {/* Shop Product Wrap Start */}
                                 <div className="shop-product-wrap grid row">
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-1.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Laptop</a>
-                                                    <h5 className="title"><a href="single-product.html">Zeon Zen 4 Pro</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$295.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-1.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Laptop</a>
-                                                        <h5 className="title"><a href="single-product.html">Zeon Zen 4 Pro</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$295.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                    {products.map((item, index) => {
+                                        return (
+                                            <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
+                                                {/* Product Start */}
+                                                <div className="ee-product">
+                                                    {/* Image */}
+                                                    <div className="image">
+                                                        <Link className="img" to={"/details/" + item.code}>
+                                                            <img src={item.image[0]} alt={item.image} />
+                                                        </Link>
                                                         <div className="wishlist-compare">
                                                             <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                             <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                         </div>
+                                                        <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
+                                                            <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
+                                                            <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                        </a>
                                                     </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Intel Core i7 Processor</li>
-                                                            <li>Zeon Z 170 Pro Motherboad</li>
-                                                            <li>16 GB RAM</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-2.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Drone</a>
-                                                    <h5 className="title"><a href="single-product.html">Aquet Drone D 420</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price"><span className="old">$350</span>$275.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-2.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Drone</a>
-                                                        <h5 className="title"><a href="single-product.html">Aquet Drone D 420</a></h5>
-                                                    </div>
-                                                    <h5 className="price"><span className="old">$350</span>$275.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                    {/* Content */}
+                                                    <div className="content">
+                                                        {/* Category & Title */}
+                                                        <div className="category-title">
+                                                            <a href="#" className="cat">Laptop</a>
+
+                                                            <h5 className="title">
+                                                                <Link to={"/details/" + item.code}>
+                                                                    {item.name}
+                                                                </Link>
+                                                            </h5>
+                                                        </div>
+                                                        {/* Price & Ratting */}
+                                                        <div className="price-ratting">
+                                                            <h5 className="price">${item.price}</h5>
+                                                            <div className="ratting">
+                                                                {new Array(5).fill(0).map((star, index) => {
+                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                })}
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Diagonal Size 350mm</li>
-                                                            <li>Max Speed 16m/s (ATTI mode)</li>
-                                                            <li>Maz Flight Time  Approx. 25min</li>
-                                                        </ul>
+                                                </div>{/* Product End */}
+                                                {/* Product List Start */}
+                                                <div className="ee-product-list">
+                                                    {/* Image */}
+                                                    <div className="image">
+                                                        <a href="single-product.html" className="img"><img src="/images/product/product-1.png" alt="Product Image" /></a>
                                                     </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-3.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Games</a>
-                                                    <h5 className="title"><a href="single-product.html">Game Station X 22</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$295.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-3.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Games</a>
-                                                        <h5 className="title"><a href="single-product.html">Game Station X 22</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$295.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                    {/* Content */}
+                                                    <div className="content">
+                                                        {/* Category & Title */}
+                                                        <div className="head-content">
+                                                            <div className="category-title">
+                                                                <a href="#" className="cat">Laptop</a>
+                                                                <h5 className="title"><a href="single-product.html">Zeon Zen 4 Pro</a></h5>
+                                                            </div>
+                                                            <h5 className="price">$295.00</h5>
+                                                        </div>
+                                                        <div className="left-content">
+                                                            <div className="ratting">
+                                                                {new Array(5).fill(0).map((star, index) => {
+                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                })}
+                                                            </div>
+                                                            <div className="desc">
+                                                                <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
+                                                            </div>
+                                                            <div className="actions">
+                                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                                                <div className="wishlist-compare">
+                                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="right-content">
+                                                            <div className="specification">
+                                                                <h5>Specifications</h5>
+                                                                <ul>
+                                                                    <li>Intel Core i7 Processor</li>
+                                                                    <li>Zeon Z 170 Pro Motherboad</li>
+                                                                    <li>16 GB RAM</li>
+                                                                </ul>
+                                                            </div>
+                                                            <span className="availability">Availability: <span>In Stock</span></span>
                                                         </div>
                                                     </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Single-chip custom processor</li>
-                                                            <li>Memory GDDR5 8GB</li>
-                                                            <li>Game resolution 1080p</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
+                                                </div>{/* Product List End */}
                                             </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-4.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Accessories</a>
-                                                    <h5 className="title"><a href="single-product.html">Roxxe Headphone Z 75</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$110.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-4.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Accessories</a>
-                                                        <h5 className="title"><a href="single-product.html">Roxxe Headphone Z 75</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$110.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Bluetooth Version: 4.1</li>
-                                                            <li>Playback Time: 13 hours</li>
-                                                            <li>Battery Capacity: 250mAh</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-5.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Camera</a>
-                                                    <h5 className="title"><a href="single-product.html">Mony Handycam Z 105</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$110.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-5.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Camera</a>
-                                                        <h5 className="title"><a href="single-product.html">Mony Handycam Z 105</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$110.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Full HD Camcorder</li>
-                                                            <li>Dual Video Recording</li>
-                                                            <li>X type battery operation</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-6.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Camera</a>
-                                                    <h5 className="title"><a href="single-product.html">Axor Digital camera</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price"><span className="old">$265</span>$199.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-6.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Camera</a>
-                                                        <h5 className="title"><a href="single-product.html">Axor Digital camera</a></h5>
-                                                    </div>
-                                                    <h5 className="price"><span className="old">$265</span>$199.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>5x optical zoom</li>
-                                                            <li>26 mm Wide Angle lens</li>
-                                                            <li>Super HAD CCD 20.1 MP sensor</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-7.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Camera</a>
-                                                    <h5 className="title"><a href="single-product.html">Silvex DSLR Camera T 32</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$580.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-7.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Camera</a>
-                                                        <h5 className="title"><a href="single-product.html">Silvex DSLR Camera T 32</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$580.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>24 MP CMOS sensor</li>
-                                                            <li>Vari Angle LCD Monitor </li>
-                                                            <li>Noise reduction, High Sensitivity</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label new">new</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-8.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Camera</a>
-                                                    <h5 className="title"><a href="single-product.html">Necta Instant Camera</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$320.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-8.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Camera</a>
-                                                        <h5 className="title"><a href="single-product.html">Necta Instant Camera</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$320.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>10.0 megapixel digital camera</li>
-                                                            <li>Prints 2x3" full color images</li>
-                                                            <li>No Ink. No Hassles</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-9.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Watch</a>
-                                                    <h5 className="title"><a href="single-product.html">Mascut Smart Watch</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price"><span className="old">$365</span>$295.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label sale">sale</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-9.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Watch</a>
-                                                        <h5 className="title"><a href="single-product.html">Mascut Smart Watch</a></h5>
-                                                    </div>
-                                                    <h5 className="price"><span className="old">$365</span>$295.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Amoled 390X390 326 ppi</li>
-                                                            <li>Andriod Wear 2.0</li>
-                                                            <li>Built-in GPS</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-10.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Accessories</a>
-                                                    <h5 className="title"><a href="single-product.html">Z Bluetooth Headphone</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$189.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-10.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Accessories</a>
-                                                        <h5 className="title"><a href="single-product.html">Z Bluetooth Headphone</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$189.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Built-in Microphone</li>
-                                                            <li>Multi-function keys</li>
-                                                            <li>Ear Cap</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <span className="label new">new</span>
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-11.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Printer</a>
-                                                    <h5 className="title"><a href="single-product.html">Pranon Photo Printer Y 25</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$210.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-11.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Printer</a>
-                                                        <h5 className="title"><a href="single-product.html">Pranon Photo Printer Y 25</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$210.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Print Resolution 300 dots/inch</li>
-                                                            <li>Connectivity: WiFi, PictBridge</li>
-                                                            <li>Maximum Paper size A6</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
-                                    <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                        {/* Product Start */}
-                                        <div className="ee-product">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-12.png" alt="Product Image" /></a>
-                                                <div className="wishlist-compare">
-                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                </div>
-                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="category-title">
-                                                    <a href="#" className="cat">Audio</a>
-                                                    <h5 className="title"><a href="single-product.html">Roses Speaker Box</a></h5>
-                                                </div>
-                                                {/* Price & Ratting */}
-                                                <div className="price-ratting">
-                                                    <h5 className="price">$210.00</h5>
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-o" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product End */}
-                                        {/* Product List Start */}
-                                        <div className="ee-product-list">
-                                            {/* Image */}
-                                            <div className="image">
-                                                <a href="single-product.html" className="img"><img src="/images/product/product-12.png" alt="Product Image" /></a>
-                                            </div>
-                                            {/* Content */}
-                                            <div className="content">
-                                                {/* Category & Title */}
-                                                <div className="head-content">
-                                                    <div className="category-title">
-                                                        <a href="#" className="cat">Audio</a>
-                                                        <h5 className="title"><a href="single-product.html">Roses Speaker Box</a></h5>
-                                                    </div>
-                                                    <h5 className="price">$210.00</h5>
-                                                </div>
-                                                <div className="left-content">
-                                                    <div className="ratting">
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star" />
-                                                        <i className="fa fa-star-half-o" />
-                                                    </div>
-                                                    <div className="desc">
-                                                        <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
-                                                    </div>
-                                                    <div className="actions">
-                                                        <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="right-content">
-                                                    <div className="specification">
-                                                        <h5>Specifications</h5>
-                                                        <ul>
-                                                            <li>Wireless connectivity </li>
-                                                            <li>Lightweight, Portable</li>
-                                                            <li>AUX Function</li>
-                                                        </ul>
-                                                    </div>
-                                                    <span className="availability">Availability: <span>In Stock</span></span>
-                                                </div>
-                                            </div>
-                                        </div>{/* Product List End */}
-                                    </div>
+
+                                        )
+                                    })}
                                 </div>{/* Shop Product Wrap End */}
                                 <div className="row mt-30">
                                     <div className="col">
@@ -1082,3 +218,19 @@ export default class MobileCategories extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        categories: state.Ecomercial.categories,
+
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchProductListCategory: (code, callback) => {
+            dispatch(fetchProductByCategoriesRequest(code, callback));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(MobileCategories);
+

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import {  fetchFeaturecategoriessRequest, fetchFeatureProductRequest, fetchProductNewRequest } from '../../redux/actions/index';
+import { fetchFeatureProductRequest } from '../../redux/actions/index';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 class Feature extends Component {
 

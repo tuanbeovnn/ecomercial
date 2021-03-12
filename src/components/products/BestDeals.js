@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { fetchBestDealProductsRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchBestDealProductsRequest,removeCartRequest } from '../../redux/actions/index';
 import { Link } from 'react-router-dom';
 
 class BestDeals extends Component {
@@ -36,7 +36,8 @@ class BestDeals extends Component {
     }
 
     render() {
-        const { allProducts, categories } = this.props;
+        const { allProducts, categories,cart, addCart, removeCart } = this.props;
+        console.log(cart);
         const { currentCategories, addToCart } = this.state;
         const settings = {
             dots: true,
@@ -46,7 +47,7 @@ class BestDeals extends Component {
             slidesToScroll: 1,
             nextArrow: <button type="button" className="slick-next slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-right"></i></button>,
             prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
-           
+
 
         };
         return (
@@ -85,7 +86,23 @@ class BestDeals extends Component {
                                         <h1><span>UP TO</span> 55%</h1>
                                         <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                         <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
-                                        <div className="countdown" data-countdown="2019/06/20" />
+                                        <div className="countdown" data-countdown="2019/06/20">
+                                            <span className="cdown day">
+                                                <span className="time-count">0</span>
+                                                <p>Days</p></span>
+                                            <span className="cdown hour">
+                                                <span className="time-count">0</span>
+                                                <p>Hours</p>
+                                            </span>
+                                            <span className="cdown minutes">
+                                                <span className="time-count">00</span>
+                                                <p>Minute</p>
+                                            </span>
+                                            <span className="cdown second">
+                                                <span className="time-count">00</span>
+                                                <p>Second</p>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>{/* Offer Time Wrap End */}
                                 {/* Product Tab Content Start */}
@@ -99,6 +116,9 @@ class BestDeals extends Component {
                                                 <Slider key='bestDeal' className="product-slider product-slider-3" {...settings}>
                                                     {allProducts.map((item) => {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                                        const existCart = cart.find(p => p.id === item.id);
+
+
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -113,9 +133,10 @@ class BestDeals extends Component {
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                             <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                         </div>
-                                                                        <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                                            <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                                            <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                        
+                                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => {existCart ? removeCart(item.id) : addCart(item)}}>
+                                                                            <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                            <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                                         </a>
                                                                     </div>
                                                                     {/* Content */}
@@ -181,7 +202,7 @@ class BestDeals extends Component {
                                                                                         <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                                                                         <h5 className="title">
                                                                                             <Link to={"/details/" + item.code}>
-                                                                                               {item.name}
+                                                                                                {item.name}
                                                                                             </Link>
 
                                                                                         </h5>
@@ -220,6 +241,7 @@ const mapStateToProps = (state) => {
     return {
         allProducts: state.Ecomercial.productsBestDealAll,
         categories: state.Ecomercial.bestdealCategories,
+        cart: state.Ecomercial.cart
     }
 }
 
@@ -227,7 +249,14 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchProducts: (code) => {
             dispatch(fetchBestDealProductsRequest(code));
+        },
+        addCart :(product)=>{
+            dispatch(addCartRequest(product));
+        },
+        removeCart :(id)=>{
+            dispatch(removeCartRequest(id));
         }
+        
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(BestDeals);
