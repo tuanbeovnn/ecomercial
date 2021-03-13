@@ -120,6 +120,25 @@ export const loginRequest = (body, callback) => {
         });
     }
 }
+// USER init 
+export const getUserFromStorage = (token) => {
+    return {
+        type: Types.USER_INIT,
+        token
+    }
+}
+
+
+export const getUserFromStorageRequest = () => {
+    return (dispatch) => {
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                dispatch(getUserFromStorage(token));
+            }
+    }
+    
+}
 // PRODUCT DETAILS
 export const fetchDetails = (data) => {
     return {
@@ -195,12 +214,9 @@ export const getCartFromLocal = (cart) => {
         cart
     }
 }
-
-
 export const getCartFromLocalRequest = () => {
     return (dispatch) => {
             const cartLocal = localStorage.getItem('cart');
-           
             if (cartLocal) {
                 dispatch(getCartFromLocal(JSON.parse(cartLocal)));
             }
@@ -237,6 +253,46 @@ export const removeCartRequest = (id) => {
     
     return (dispatch) => {
         dispatch(removeCart(id));
+    }
+}
+
+// register 
+
+export const register = (user) => {
+    return {
+        type: Types.REGISTER,
+        user
+    }
+}
+
+export const registerRequest = (body, callback) => {
+    return(dispatch) => {
+        return callAPI('api/auth/register', 'POST', body).then(res => {
+            dispatch(register(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}
+
+// UPLOAD IMAGE avarta
+
+export const uploadRequest = (body, callback) => {
+    return(dispatch) => {
+        return callAPI('api/uploadfile?scaledWidth=250&scaledHeight=250', 'POST', body).then(res => {
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
     }
 }
 

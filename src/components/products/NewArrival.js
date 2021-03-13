@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
-import { fetchProductNewRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchProductNewRequest, removeCartRequest } from '../../redux/actions/index';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 
 class NewArrival extends Component {
-    state = {
-        addToCart: true,
-    }
+
     componentDidMount() {
         this.props.fetchProductNew();
     }
     render() {
-        const { addToCart } = this.state
-        const { productNew, categories } = this.props;
+       
+        const { productNew, categories, cart, addCart, removeCart } = this.props;
         return (
             <div className="product-section section mb-60">
                 <div className="container">
@@ -26,6 +24,7 @@ class NewArrival extends Component {
                             <div className="row">
                                 {productNew.map((item, index) => {
                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                    const existCart = cart.find(p => p.id === item.id);
                                     return (
                                         <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
                                             {/* Product Start */}
@@ -41,10 +40,11 @@ class NewArrival extends Component {
                                                         <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                         <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                     </div>
-                                                    <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                        <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                        <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                    <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                        <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                        <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                     </a>
+
                                                 </div>
                                                 {/* Content */}
                                                 <div className="content">
@@ -87,6 +87,7 @@ const mapStateToProps = (state) => {
     return {
         productNew: state.Ecomercial.productNew,
         categories: state.Ecomercial.categories,
+        cart: state.Ecomercial.cart
     }
 }
 
@@ -95,6 +96,12 @@ const mapDispatchToProps = (dispatch, props) => {
 
         fetchProductNew: () => {
             dispatch(fetchProductNewRequest());
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            dispatch(removeCartRequest(id));
         }
     }
 }

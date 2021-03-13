@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import {  Link } from 'react-router-dom';
-import { fetchCategoriesRequest } from '../redux/actions/index';
+import { Link } from 'react-router-dom';
+import { fetchCategoriesRequest, getUserFromStorageRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
 
@@ -82,21 +82,32 @@ class Header extends Component {
     }
     componentDidMount() {
         this.props.fetchAllCategories();
+        this.props.getUserFromToken();
 
     }
-    handleSubmit= (e)=> {
+    handleSubmit = (e) => {
         e.preventDefault();
     }
-    handdleToggle=()=>{
+    handdleToggle = () => {
         this.setState({
-            openToggle : !this.state.openToggle
+            openToggle: !this.state.openToggle
         })
     }
+    renderSoLuong = () => {
+        return this.props.cart.map((total,product,index)=>{
+            return total +=  product.qty;
+            console.log(total);
+        },0).toLocaleString();
+    }
     render() {
-        const { menus, visibleSelect, selected, openToggle} = this.state;
-        const { categories, user } = this.props;
+        const { menus, visibleSelect, selected, openToggle } = this.state;
+        const { categories, user,cart } = this.props;
+        let totalQty = 0;
+        cart.map((item)=>{
+            totalQty += item.qty;
+        })
         const category = categories.find(c => c.code === selected);
-       
+
         return (
             <div className="header-section section">
                 {/* Header Top Start */}
@@ -117,20 +128,20 @@ class Header extends Component {
                             <div className="col order-12 order-xs-12 order-lg-2 mt-10 mb-10">
                                 {/* Header Advance Search Start */}
                                 <div className="header-advance-search">
-                                    <form action="#"onSubmit = {this.handleSubmit}>
+                                    <form action="#" onSubmit={this.handleSubmit}>
                                         <div className="input"><input type="text" placeholder="Search your product" /></div>
                                         <div className="select">
                                             <div className={visibleSelect ? "nice-select open" : "nice-select"}>
-                                                <span onClick={()=>this.setState({visibleSelect : !visibleSelect})} className="current">{category && category.name || "All Categories"}</span>
+                                                <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{category && category.name || "All Categories"}</span>
                                                 <ul className="list">
-                                                    <li onClick={() => this.setState({ selected: undefined, visibleSelect : false })} className={!selected ? "option selected focus" : "option"}>All Categories</li>
+                                                    <li onClick={() => this.setState({ selected: undefined, visibleSelect: false })} className={!selected ? "option selected focus" : "option"}>All Categories</li>
                                                     {categories.map((item, index) => {
-                                                        return <li 
-                                                        key={index} 
-                                                        onClick={() => this.setState({ selected: item.code, visibleSelect : false })}
-                                                        className={selected === item.code ? "option selected focus" : "option"}
+                                                        return <li
+                                                            key={index}
+                                                            onClick={() => this.setState({ selected: item.code, visibleSelect: false })}
+                                                            className={selected === item.code ? "option selected focus" : "option"}
                                                         >
-                                                        {item.name}
+                                                            {item.name}
                                                         </li>
                                                     })}
                                                 </ul>
@@ -169,10 +180,10 @@ class Header extends Component {
                                 {/* Logo Start */}
                                 <div className="header-logo">
                                     <Link to="/">
-                                       
-                                            <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
-                                            <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
-                                       
+
+                                        <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
+                                        <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
+
                                     </Link>
 
                                 </div>{/* Logo End */}
@@ -263,13 +274,16 @@ class Header extends Component {
                                         <i className="ti-control-shuffle" />
                                     </Link>
                                     <Link className="header-wishlist" to="/wishlist">
-                                       <i className="ti-heart" /> <span className="number">3</span>
+                                        <i className="ti-heart" /> <span className="number">3</span>
                                     </Link>
 
                                     {/* Wishlist */}
 
                                     {/* Cart */}
-                                    <a onClick={this.handdleToggle} className="header-cart"><i className="ti-shopping-cart" /> <span className="number">3</span></a>
+                                    <a onClick={this.handdleToggle} className="header-cart">
+                                        <i className="ti-shopping-cart" />
+                                        <span className="number">{totalQty}</span>
+                                    </a>
                                 </div>{/* Header Shop Links End */}
                             </div>
                             {/* Mobile Menu */}
@@ -278,7 +292,7 @@ class Header extends Component {
                     </div>
                 </div>{/* Header Bottom End */}
                 {/* Header Category Start */}
-                <MiniCart openToggle = {openToggle} handdleClose = {this.handdleToggle}/>
+                <MiniCart openToggle={openToggle} handdleClose={this.handdleToggle} />
             </div >
         );
     }
@@ -288,15 +302,21 @@ class Header extends Component {
 const mapStateToProps = state => {
     return {
         categories: state.Ecomercial.categories,
-        user: state.Ecomercial.user
+        user: state.Ecomercial.user,
+        cart: state.Ecomercial.cart
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchAllCategories: () => {
             dispatch(fetchCategoriesRequest());
-        }
+        },
+        getUserFromToken: () => {
+            dispatch(getUserFromStorageRequest());
+        },
 
     }
 }
+
+
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

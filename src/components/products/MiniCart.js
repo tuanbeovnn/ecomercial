@@ -28,7 +28,7 @@ class MiniCart extends Component {
                         {cart.map((item, index) => {
                             return (
                                 <li key={index}>
-                                    <a className="image"><img src={item.image[0]} alt={item.image[0]} /></a>
+                                    <a className="image"><img src={item.image[0]} alt={item.image} /></a>
                                     <div className="content">
                                         <Link className="title" to={"/details/" + item.code}>
                                           {item.name}

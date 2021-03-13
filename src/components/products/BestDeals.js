@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, fetchBestDealProductsRequest,removeCartRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchBestDealProductsRequest, removeCartRequest } from '../../redux/actions/index';
 import { Link } from 'react-router-dom';
 
 class BestDeals extends Component {
@@ -36,7 +36,7 @@ class BestDeals extends Component {
     }
 
     render() {
-        const { allProducts, categories,cart, addCart, removeCart } = this.props;
+        const { allProducts, categories, cart, addCart, removeCart } = this.props;
         console.log(cart);
         const { currentCategories, addToCart } = this.state;
         const settings = {
@@ -133,8 +133,8 @@ class BestDeals extends Component {
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                             <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                         </div>
-                                                                        
-                                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => {existCart ? removeCart(item.id) : addCart(item)}}>
+
+                                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
                                                                             <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
                                                                             <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                                         </a>
@@ -175,7 +175,7 @@ class BestDeals extends Component {
                                                             <Slider key={category.id} className="product-slider product-slider-3" {...settings}>
                                                                 {category.products.map((item) => {
                                                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
-
+                                                                    const existCart = cart.find(p => p.id === item.id);
                                                                     return (
                                                                         <div key={item.id} className="col pb-20 pt-10">
                                                                             {/* Product Start */}
@@ -190,9 +190,9 @@ class BestDeals extends Component {
                                                                                         <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                                         <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                                     </div>
-                                                                                    <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                                                        <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                                                        <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                                    <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                                        <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                                        <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                                                     </a>
                                                                                 </div>
                                                                                 {/* Content */}
@@ -250,13 +250,13 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchProducts: (code) => {
             dispatch(fetchBestDealProductsRequest(code));
         },
-        addCart :(product)=>{
+        addCart: (product) => {
             dispatch(addCartRequest(product));
         },
-        removeCart :(id)=>{
+        removeCart: (id) => {
             dispatch(removeCartRequest(id));
         }
-        
+
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(BestDeals);

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 
 export default class MyAccountPage extends Component {
     render() {
@@ -10,12 +11,12 @@ export default class MyAccountPage extends Component {
                         {/* Page Banner */}
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
-                                <h1>Register</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                <h1>My Account</h1>
+                                <p></p>
                                 <div className="breadcrumb">
                                     <ul>
-                                        <li><a href="#">HOME</a></li>
-                                        <li><a href="#">Register</a></li>
+                                        <li><Link to="/">HOME</Link></li>
+                                        <li><a>My Infomation</a></li>
                                     </ul>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { fetchFeatureProductRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchFeatureProductRequest, removeCartRequest } from '../../redux/actions/index';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 class Feature extends Component {
 
@@ -38,7 +38,7 @@ class Feature extends Component {
     render() {
         const settings = {
             dots: true,
-            currentSlide : 0,
+            currentSlide: 0,
             infinite: true,
             speed: 500,
             slidesToShow: 4,
@@ -48,7 +48,7 @@ class Feature extends Component {
 
         };
         const { currentCategories, addToCart } = this.state;
-        const { allProducts, categories } = this.props;
+        const { allProducts, categories, cart, addCart, removeCart } = this.props;
         return (
 
             <div className="product-section section mb-70">
@@ -87,7 +87,7 @@ class Feature extends Component {
                                         <Slider className="product-slider product-slider-4" {...settings}>
                                             {allProducts.map((item) => {
                                                 const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
-
+                                                const existCart = cart.find(p => p.id === item.id);
                                                 return (
                                                     <div key={item.id} className="col pb-20 pt-10">
                                                         {/* Product Start */}
@@ -102,9 +102,9 @@ class Feature extends Component {
                                                                     <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                     <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                 </div>
-                                                                <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                                    <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                                    <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                    <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                    <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                                 </a>
                                                             </div>
                                                             {/* Content */}
@@ -114,7 +114,7 @@ class Feature extends Component {
                                                                     <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                                                     <h5 className="title">
                                                                         <Link to={"/details/" + item.code}>
-                                                                           {item.name}
+                                                                            {item.name}
                                                                         </Link>
                                                                     </h5>
                                                                 </div>
@@ -136,7 +136,7 @@ class Feature extends Component {
                                     </div>{/* Product Slider Wrap End */}
                                 </div>{/* Tab Pane End */}
                                 {/* Tab Pane Start */}
-                                {categories.map((categ,index) => {
+                                {categories.map((categ, index) => {
                                     return (
                                         <div key={index} className={"tab-pane fade " + (currentCategories === categ.code ? "active show" : "")}>
                                             {/* Product Slider Wrap Start */}
@@ -145,7 +145,7 @@ class Feature extends Component {
                                                 <Slider key={categ.id} className="product-slider product-slider-4" {...settings}>
                                                     {categ.products && categ.products.map((item) => {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
-
+                                                        const existCart = cart.find(p => p.id === item.id);
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -160,9 +160,9 @@ class Feature extends Component {
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
                                                                             <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
                                                                         </div>
-                                                                        <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                                            <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                                            <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                            <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                            <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                                         </a>
                                                                     </div>
                                                                     {/* Content */}
@@ -173,7 +173,7 @@ class Feature extends Component {
 
                                                                             <h5 className="title">
                                                                                 <Link to={"/details/" + item.code}>
-                                                                                   {item.name}
+                                                                                    {item.name}
                                                                                 </Link>
                                                                             </h5>
                                                                         </div>
@@ -208,6 +208,7 @@ const mapStateToProps = (state) => {
     return {
         allProducts: state.Ecomercial.productFeatureAlll,
         categories: state.Ecomercial.featureCategories,
+        cart: state.Ecomercial.cart
     }
 }
 
@@ -215,6 +216,12 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchFeatureProducts: (code) => {
             dispatch(fetchFeatureProductRequest(code));
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            dispatch(removeCartRequest(id));
         }
     }
 }

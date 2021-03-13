@@ -1,4 +1,4 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE } from "../const/ActionTypes";
+import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
@@ -12,7 +12,8 @@ const initialState = {
     productsBestDealAll: [],
     banners: [],
     user:{},
-    cart: []
+    cart: [],
+    register: {}
 };
 
 export default (state = initialState, action) => {
@@ -47,9 +48,13 @@ export default (state = initialState, action) => {
             return copyState;
         }
         case LOG_IN: {
-            console.log(action.data, action.data.accessToken);
             const data = jwt_decode(action.data.accessToken);
-
+            localStorage.setItem('token', action.data.accessToken);
+            copyState.user = data;
+            return copyState;
+        }
+        case USER_INIT :{
+            const data = jwt_decode(action.token);
             copyState.user = data;
             return copyState;
         }
@@ -81,6 +86,10 @@ export default (state = initialState, action) => {
         case CART_REMOVE : {
             copyState.cart = copyState.cart.filter(product => product.id !== action.id);
             localStorage.setItem('cart',JSON.stringify(copyState.cart));
+            return copyState;
+        }
+        case REGISTER : {
+            copyState.register = action.user;
             return copyState;
         }
         default:

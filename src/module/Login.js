@@ -5,58 +5,58 @@ import { Redirect, useHistory } from 'react-router-dom';
 
 class Login extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
-            email:'hai123@gmail.com',
+            email: 'hai123@gmail.com',
             password: '123456',
             remember: true
         }
     }
-    
-    handleSubmit= (e) =>{
+
+    handleSubmit = (e) => {
         e.preventDefault();
-        const {email, password, remember} = this.state;
-        const body = {email,password, remember};
-        this.props.userLogin(body,(data)=>{
-           if (!data) {
-               this.setState (
-                   {
-                       error : true
-                   } 
-               )
-           }else {
-               this.setState ({
-                   success : true
-               })
-           }
-            
+        const { email, password, remember } = this.state;
+        const body = { email, password, remember };
+        this.props.userLogin(body, (data) => {
+            if (!data) {
+                this.setState(
+                    {
+                        error: true
+                    }
+                )
+            } else {
+                this.setState({
+                    success: true
+                })
+            }
+
         });
     }
-    onChange=(e)=>{
-    
+    onChange = (e) => {
+
         if (e.target.name === 'remember') {
-            this.setState (
+            this.setState(
                 {
-                    [e.target.name] : e.target.checked,
-                    error : false,
+                    [e.target.name]: e.target.checked,
+                    error: false,
                 }
             )
-        }else {
-            this.setState (
+        } else {
+            this.setState(
                 {
-                    [e.target.name] : e.target.value,
-                    error : false,
+                    [e.target.name]: e.target.value,
+                    error: false,
 
                 }
             )
         }
     }
     render() {
-        const {error,success} = this.state;
+        const { error, success } = this.state;
         return (
             <div>
-                {success ? <Redirect to="/"/> : ''}
+                {success ? <Redirect to="/" /> : ''}
                 {/* <Headers/> */}
                 {/* Page Banner Section Start */}
                 <div className="page-banner-section section">
@@ -117,31 +117,31 @@ class Login extends Component {
                                     {/* Login Form */}
                                     <form action="#" onSubmit={this.handleSubmit}>
                                         <div className="row">
-                                        {error ? 
-                                            <div className="col-12 mb-30">
-                                                <span>Email or Password Wrong !</span>
-                                            </div>
-                                            : '' }
+                                            {error ?
+                                                <div className="col-12 mb-30">
+                                                    <span>Email or Password Wrong !</span>
+                                                </div>
+                                                : ''}
                                             <div className="col-12 mb-30">
                                                 <input
                                                     type="text"
                                                     placeholder="Type your username or email address"
-                                                    name = "email"
-                                                    onChange = {this.onChange}
+                                                    name="email"
+                                                    onChange={this.onChange}
                                                 />
                                             </div>
                                             <div className="col-12 mb-20">
                                                 <input
                                                     type="password"
                                                     placeholder="Enter your passward"
-                                                    name = "password"
-                                                    onChange = {this.onChange}
+                                                    name="password"
+                                                    onChange={this.onChange}
                                                 />
                                             </div>
                                             <div className="col-12 mb-15">
-                                                <input type="checkbox" id="remember_me" 
-                                                name="remember"
-                                                onChange = {this.onChange}
+                                                <input type="checkbox" id="remember_me"
+                                                    name="remember"
+                                                    onChange={this.onChange}
                                                 />
                                                 <label htmlFor="remember_me">Remember me</label>
                                                 <a href="#">Forgotten pasward?</a>
