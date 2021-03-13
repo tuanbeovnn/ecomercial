@@ -1,3 +1,4 @@
+import axios from 'axios';
 import callAPI from '../../utils/apiCaller';
 import * as Types from './../const/ActionTypes';
 //feature
@@ -99,6 +100,7 @@ export const fetchCategoriesRequest = () => {
     }
 }
 // login
+// login
 export const login = (data) => {
     return {
         type: Types.LOG_IN,
@@ -119,6 +121,47 @@ export const loginRequest = (body, callback) => {
             }
         });
     }
+}
+
+
+// change password - 
+export const changePassword = () => {
+    return {
+        type: Types.CHANGE_PASSWORD,
+        
+    }
+}
+export const changePasswordRequest = (body, callback) => {
+    console.log(body, "body")
+    return async dispatch => {
+        try {
+            let { data, status, ...res } = await axios({
+                url: 'http://saunakovaasa.ml:8080/api/auth/changePassword',
+                method: 'POST',
+                data: body
+            });
+            if (status === 200) {
+                 dispatch(changePassword())
+                console.log(data)
+            }
+        } catch (err) {
+            console.log(err.response.data)
+        }
+    }
+  
+    // return (dispatch) => {
+    //     return callAPI('api/auth/changePassword', 'POST', body).then(res => {
+
+    //         dispatch(changePassword());
+    //         if (typeof callback === 'function') {
+    //             callback(res.data.details)
+    //         }
+    //     }).catch(() => {
+    //         if (typeof callback === 'function') {
+    //             callback()
+    //         }
+    //      });
+    // }
 }
 // PRODUCT DETAILS
 export const fetchDetails = (data) => {
@@ -216,7 +259,7 @@ export const addCart = (product) => {
     }
 }
 export const addCartRequest = (product) => {
-    
+
     return (dispatch) => {
         console.log(product.qty);
         if (!product.qty) {

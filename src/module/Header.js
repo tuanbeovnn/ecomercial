@@ -3,7 +3,7 @@ import {  Link } from 'react-router-dom';
 import { fetchCategoriesRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
-
+import { Popover, Button } from 'antd';
 class Header extends Component {
 
     state = {
@@ -144,7 +144,20 @@ class Header extends Component {
                                 {user && user.id >= 0 ?
                                     <div className="header-account-links">
                                         <Link to="/myaccount">
+                                            <Popover placement="bottom"  content={()=>{                   
+                                                return <div style={{width: "30%", position: "absolute", left: "71.5%", top: "15px", "z-index":"100"}}>
+                                                      <Link to="/changepassword/">
+                                                     <p>Change Password</p>
+                                                    </Link>
+                                             
+
+                                               </div>}
+                                            } trigger="click">
                                             <i className="icofont icofont-user-alt-7" /> <span>{user.username}</span>
+                                            </Popover>
+
+
+
                                         </Link>
                                     </div>
                                     : <div className="header-account-links">
@@ -152,7 +165,7 @@ class Header extends Component {
                                             <i className="icofont icofont-login d-none" /> <span>Register</span>
                                         </Link> */}
                                         <Link to="/login">
-                                            <i className="icofont icofont-login d-none" /> <span>Login</span>
+                                            <i className="icofont icofont-login d-none" style={{width: "100%", position: "relative"}} /> <span>Login</span>
                                         </Link>
                                     </div>
                                 }

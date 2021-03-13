@@ -8,8 +8,8 @@ class Login extends Component {
     constructor(props){
         super(props);
         this.state = {
-            email:'hai123@gmail.com',
-            password: '123456',
+            email:'',
+            password: '',
             remember: true
         }
     }
@@ -144,7 +144,7 @@ class Login extends Component {
                                                 onChange = {this.onChange}
                                                 />
                                                 <label htmlFor="remember_me">Remember me</label>
-                                                <a href="#">Forgotten pasward?</a>
+                                                <a href="#">Forgot Password?</a>
                                             </div>
                                             <div className="col-12">
                                                 <input type="submit" defaultValue="LOGIN" />

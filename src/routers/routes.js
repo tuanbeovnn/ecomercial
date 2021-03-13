@@ -14,6 +14,7 @@ import LoginPage from './../components/admin/LoginPage';
 import ProductPage from '../components/admin/ProductPage';
 import Categories from '../components/admin/Categories';
 import LaptopCategories from '../components/categories/LaptopCategories';
+import ChangePassword from '../pages/ChangePassword';
 
 export const routes = [
     {
@@ -25,6 +26,11 @@ export const routes = [
         path:'/login',
         exact : false,
         main: () => <Login />
+    },
+    {
+        path: '/changepassword',
+        exact: true,
+        main: () => <ChangePassword/>
     },
     {
         path:'/myaccount',
@@ -83,6 +89,7 @@ export const routesAdmin = [
         exact: true,
         main: () => <LoginPage />
     },
+    
     {
         path: '/products',
         exact: true,

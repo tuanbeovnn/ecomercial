@@ -1,7 +1,6 @@
 import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
-
 const initialState = {
     categories: [],
     featureCategories:[],
