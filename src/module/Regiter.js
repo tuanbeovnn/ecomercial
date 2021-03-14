@@ -7,49 +7,83 @@ class Regiter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: '',
-            password: '',
-            name: '',
-            confirmPassword: '',
+            email: 'translatorvamkv1@gmail.com',
+            password: '123456',
+            name: 'tuan',
+            confirmPassword: '123456',
             files: '',
+
         }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { files,url } = this.state;
-        const bodyImage = { files };
-        console.log(files)
+        const { files, url } = this.state;
         if (files && !url) {
-            this.props.uploadImage(bodyImage, (avatar) => {
-                console.log(avatar);
-                // this.setState({
-                //     url : avatar
-                // })
-                // this.handleRegister(avatar);
+            var data = new FormData();
+            data.append("files", files);
+            this.props.uploadImage(data, (avatar) => {
+
+                if (avatar && avatar[0]) {
+                    this.setState({
+                        url: avatar[0]
+                    })
+
+                    this.handleRegister(avatar[0]);
+
+                }
             })
         } else {
-            // this.handleRegister(url);
+            this.handleRegister(url);
         }
     }
 
     handleRegister = (avatar) => {
         const { email, password, name, confirmPassword } = this.state;
-        const body = { email, password, name, avatar };
-        this.props.registerUser(body, (data) => {
-            if (!data) {
-                this.setState(
-                    {
-                        error: true
-                    }
-                )
-            } else {
-                this.setState({
-                    success: true
-                })
-            }
+        if (!email || !name || !password || !confirmPassword) {
+            let message = 'Email is required';
+            if (!name) message = 'Name is required';
+            if (!password) message = 'Password is required';
+            if (!confirmPassword) message = 'ConfirmPassword is required';
 
-        });
+            this.setState({
+                error: true,
+                message: message,
+            })
+        } else if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email))) {
+            this.setState({
+                error: true,
+                message: 'Email is not correct format',
+            })
+        } else if (password.length < 4) {
+            this.setState({
+                error: true,
+                message: 'Password Length must more than 4 digits',
+            })
+        } else if (password !== confirmPassword) {
+            this.setState({
+                error: true,
+                message: 'Password and ConfirmPassword are different',
+            })
+        } else {
+            const body = { email, password, name, avatar };
+            this.props.registerUser(body, (data) => {
+                if (data && data.success) {
+                    this.setState(
+                        {
+                            success: true
+                        }
+                    )
+                } else {
+                    this.setState({
+                        error: true,
+                        message: data && data.message
+                    })
+                }
+
+            });
+        }
+
     }
     onChange = (e) => {
         let target = e.target;
@@ -63,15 +97,26 @@ class Regiter extends Component {
     onChangeFile = (e) => {
         let target = e.target;
         let name = target.name;
+        let value = target.value;
         let files = target.files[0];
         this.setState({
-            [name]: files
+            [name]: files,
         });
+        if (FileReader && files) {
+            const fr = new FileReader();
+            const thisRegister = this;
+            fr.onload = function () {
+                thisRegister.setState({// this trong la this belongs 
+                    image: fr.result
+                })
+            }
+            fr.readAsDataURL(files);
+        }
     }
 
     render() {
-        const { error, success } = this.state;
-
+        const { error, success, image } = this.state;
+        console.log(this.state);
         return (
             <div>
                 {success ? <Redirect to="/" /> : ''}
@@ -112,23 +157,30 @@ class Regiter extends Component {
                                     {/* Register Form */}
                                     <form onSubmit={this.handleSubmit}>
                                         <div className="row">
+                                            {error ?
+                                                <div className="col-12 mb-30">
+                                                    <span>{this.state.message}</span>
+                                                </div>
+                                                : ''}
                                             <div className="col-12 mb-30">
-                                                <input type="text" placeholder="Your name here" name="name" onChange={this.onChange} />
+                                                <input type="text" placeholder="Your name here" name="name" onChange={this.onChange} defaultValue="tuan" />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="email" placeholder="Your email here" name="email" onChange={this.onChange} />
+
+                                                <input type="email" placeholder="Your email here" name="email" onChange={this.onChange} defaultValue="translatorvamkv1@gmail.com" />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Enter passward" name="password" onChange={this.onChange} />
+                                                <input type="password" placeholder="Enter passward" name="password" onChange={this.onChange} defaultValue="123456" />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Conform password" name="confirmPassword" onChange={this.onChange} />
+                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange} defaultValue="123456" />
                                             </div>
                                             <div className="col-12">
                                                 <input type="submit" defaultValue="register" />
                                             </div>
                                         </div>
                                     </form>
+                                    
                                 </div>
                             </div>
                             <div className="col-md-1 col-12 d-flex">
@@ -138,7 +190,7 @@ class Regiter extends Component {
                             <div className="col-md-5 col-12 d-flex">
                                 <div className="ee-account-image">
                                     <h3>Upload your Image</h3>
-                                    <img src="/images/account-image-placeholder.jpg" alt="Account Image Placeholder" className="image-placeholder" />
+                                    <img src={image ? image : "/images/account-image-placeholder.jpg"} alt="Account Image Placeholder" className="image-placeholder" />
                                     <div className="account-image-upload">
                                         <input type="file" name="files" id="account-image-upload" onChange={this.onChangeFile} />
                                         <label className="account-image-label" htmlFor="account-image-upload">Choose your image</label>

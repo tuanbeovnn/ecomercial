@@ -1,4 +1,4 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT } from "../const/ActionTypes";
+import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
@@ -13,7 +13,7 @@ const initialState = {
     banners: [],
     user:{},
     cart: [],
-    register: {}
+    register: {},
 };
 
 export default (state = initialState, action) => {
@@ -90,6 +90,10 @@ export default (state = initialState, action) => {
         }
         case REGISTER : {
             copyState.register = action.user;
+            return copyState;
+        }
+        case UPDATE_USER : {
+            copyState.user = action.data;
             return copyState;
         }
         default:

@@ -14,6 +14,8 @@ import LoginPage from './../components/admin/LoginPage';
 import ProductPage from '../components/admin/ProductPage';
 import Categories from '../components/admin/Categories';
 import LaptopCategories from '../components/categories/LaptopCategories';
+import ForgetPassword from '../module/ForgetPassword';
+import ChangePassword from '../module/ChangePassword';
 
 export const routes = [
     {
@@ -70,6 +72,16 @@ export const routes = [
         path:'/details/:code',
         exact : false,
         main: (props) => <SingleProductPage {...props}/>
+    },
+    {
+        path:'/forgot',
+        exact : false,
+        main: ()=> <ForgetPassword/>
+    },
+    {
+        path:'/changePassword',
+        exact : false,
+        main: ()=> <ChangePassword/>
     }
 ];
 export const routesAdmin = [

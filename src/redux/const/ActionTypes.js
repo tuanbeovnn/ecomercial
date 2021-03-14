@@ -17,6 +17,9 @@ export const CART_REMOVE = 'CART_REMOVE';
 export const CART_UPDATE = 'CART_UPDATE';
 export const CART_ADD = 'CART_ADD';
 export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
+export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
+export const UPDATE_USER = 'UPDATE_USER';
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 
 
 

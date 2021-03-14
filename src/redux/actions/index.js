@@ -1,5 +1,6 @@
-import callAPI from '../../utils/apiCaller';
+import callAPI,{uploadAPI} from '../../utils/apiCaller';
 import * as Types from './../const/ActionTypes';
+
 //feature
 export const fetchFeatureProduct = (products, code) => {
     return {
@@ -272,9 +273,9 @@ export const registerRequest = (body, callback) => {
             if (typeof callback === 'function') {
                 callback(res.data)
             }
-        }).catch(() => {
+        }).catch((e) => {
             if (typeof callback === 'function') {
-                callback()
+                callback(e.response.data);
             }
         });
     }
@@ -284,7 +285,7 @@ export const registerRequest = (body, callback) => {
 
 export const uploadRequest = (body, callback) => {
     return(dispatch) => {
-        return callAPI('api/uploadfile?scaledWidth=250&scaledHeight=250', 'POST', body).then(res => {
+        return uploadAPI('api/uploadfile?scaledWidth=250&scaledHeight=250', 'POST', body).then(res => {
             if (typeof callback === 'function') {
                 callback(res.data)
             }
@@ -296,7 +297,67 @@ export const uploadRequest = (body, callback) => {
     }
 }
 
+//FORGOT_PASSWORD
 
+export const forgotRequest = (email, callback) => {
+    return(dispatch) => {
+        console.log(email);
+        return callAPI('api/auth/forgot?email=' + email, 'GET', null).then(res => {
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    }
+}
+
+//UPDATE user
+
+export const updateUser = (data) => {
+    return {
+        type: Types.UPDATE_USER,
+        data
+    }
+}
+
+export const updateUserRequest = (id, body, callback) => {
+    return (dispatch) => {
+        
+        return uploadAPI('api/user/update/' + id, 'PUT', body).then(res => {
+            console.log(res);
+            dispatch(updateUser(res.data.details));
+            if (typeof callback === 'function') {
+                callback(res.data.details)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}
+
+//CHANGE PASSWORD
+
+export const changePasswordRequest = (body, callback) => {
+    return(dispatch) => {
+        return callAPI('api/auth/changePassword', 'POST', body).then(res => {
+            
+            if (typeof callback === 'function') {
+
+                callback(res.data)
+            }
+        }).catch((e) => {
+            console.log(e.response);
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    }
+}
 
 
 

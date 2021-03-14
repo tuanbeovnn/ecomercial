@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { updateUserRequest } from '../redux/actions';
+import { changePasswordRequest, updateUserRequest } from '../redux/actions';
 
-class MyAccountPage extends Component {
+class ChangePassword extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            birthday: '',
-            address: '',
-            phone: '',
-            name: ''
+            oldPassword: '',
+            newPasssword: ''
         }
     }
 
@@ -26,12 +24,9 @@ class MyAccountPage extends Component {
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        const { birthday, address, phone, name } = this.state;
-        const body = { birthday, address, phone, name };
-        const { user } = this.props;
-        
-        this.props.updateUser(user.id, body, (data) => {
-            
+        const { newPasssword, oldPassword } = this.state;
+        const body = { oldPassword, newPasssword };
+        this.props.changePassword(body, (data) => {
             console.log(data);
             if (!data) {
                 this.setState(
@@ -64,7 +59,7 @@ class MyAccountPage extends Component {
                                 <div className="breadcrumb">
                                     <ul>
                                         <li><Link to="/">HOME</Link></li>
-                                        <li><a>My Infomation</a></li>
+                                        <li><a>Change Password</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -86,7 +81,7 @@ class MyAccountPage extends Component {
                             {/* Register */}
                             <div className="col-md-6 col-12 d-flex">
                                 <div className="ee-login">
-                                    <h3>MY ACCOUNT</h3>
+                                    <h3>CHANGE PASSWORD</h3>
                                     <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain born an will give you a complete account of the system, and expound</p>
                                     {/* Register Form */}
                                     <form onSubmit={this.handleSubmit}>
@@ -94,52 +89,26 @@ class MyAccountPage extends Component {
 
                                             <div className="col-12 mb-30">
                                                 <input
-                                                    type="text"
-                                                    placeholder="Email address"
-                                                    name="email"
-                                                    defaultValue={user.email}
-                                                    readOnly
+                                                    type="password"
+                                                    placeholder="Type your old password"
+                                                    name="password"
+                                                    onChange={this.onChange}
                                                 />
                                             </div>
                                             <div className="col-12 mb-30">
                                                 <input
-                                                    type="date"
-                                                    placeholder="Type your username or email address"
-                                                    name="birthday"
+                                                    type="password"
+                                                    placeholder="Type your new password"
+                                                    name="newpassword"
                                                     onChange={this.onChange}
-                                                    defaultValue={user.birthday}
                                                 />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Type your address"
-                                                    name="address"
-                                                    onChange={this.onChange}
-                                                    defaultValue={user.address}
-                                                />
-                                            </div>
-                                            <div className="col-12 mb-30">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Type your phone number"
-                                                    name="phone"
-                                                    onChange={this.onChange}
-                                                    defaultValue={user.phone}
-                                                />
-                                            </div>
-                                            <div className="col-12 mb-20">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Enter your name"
-                                                    name="name"
-                                                    onChange={this.onChange}
-                                                    defaultValue={user.name}
-                                                />
+                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange}/>
                                             </div>
 
                                             <div className="col-12 mb-15">
-                                                <Link to="/changePassword">Change Your password ?</Link>
+                                                <Link to="/forgot">Forgot Your password ?</Link>
                                             </div>
                                             <div className="col-12">
                                                 <input type="submit" defaultValue="LOGIN" />
@@ -152,18 +121,7 @@ class MyAccountPage extends Component {
                             <div className="col-md-1 col-12 d-flex">
                                 <div className="login-reg-vertical-boder" />
                             </div>
-                            {/* Account Image */}
-                            <div className="col-md-5 col-12 d-flex">
-                                <div className="ee-account-image">
-                                    <h3>Upload your Image</h3>
-                                    <img src="/images/account-image-placeholder.jpg" alt="Account Image Placeholder" className="image-placeholder" />
-                                    <div className="account-image-upload">
-                                        <input type="file" name="chooseFile" id="account-image-upload" />
-                                        <label className="account-image-label" htmlFor="account-image-upload">Choose your image</label>
-                                    </div>
-                                    <p>jpEG 250x250</p>
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>{/* Register Section End */}
@@ -180,11 +138,11 @@ const mapStateToProps = state => {
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        updateUser: (id, body, callback) => {
-            dispatch(updateUserRequest(id, body, callback));
+        changePassword: (body, callback) => {
+            dispatch(changePasswordRequest(body, callback));
         }
 
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyAccountPage);
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePassword);

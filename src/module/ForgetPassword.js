@@ -1,24 +1,24 @@
 import React, { Component } from "react";
-import { loginRequest } from "../redux/actions";
+import { forgotRequest, loginRequest } from "../redux/actions";
 import { connect } from 'react-redux';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-class Login extends Component {
+class ForgetPassword extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            email: 'hai123@gmail.com',
-            password: '123456',
-            remember: true
+            email: ''
         }
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { email, password, remember } = this.state;
-        const body = { email, password, remember };
-        this.props.userLogin(body, (data) => {
+        const { email } = this.state;
+        const body = email;
+        this.props.forgot(body, (data) => {
+            console.log(data);
             if (!data) {
                 this.setState(
                     {
@@ -34,29 +34,18 @@ class Login extends Component {
         });
     }
     onChange = (e) => {
-
-        if (e.target.name === 'remember') {
-            this.setState(
-                {
-                    [e.target.name]: e.target.checked,
-                    error: false,
-                }
-            )
-        } else {
-            this.setState(
-                {
-                    [e.target.name]: e.target.value,
-                    error: false,
-
-                }
-            )
-        }
+        this.setState(
+            {
+                [e.target.name]: e.target.value,
+                error: false,
+            }
+        )
     }
     render() {
         const { error, success } = this.state;
         return (
             <div>
-                {success ? <Redirect to="/" /> : ''}
+                
                 {/* <Headers/> */}
                 {/* Page Banner Section Start */}
                 <div className="page-banner-section section">
@@ -64,7 +53,7 @@ class Login extends Component {
                         {/* Page Banner */}
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
-                                <h1>Login</h1>
+                                <h1>Forgot Password</h1>
                                 <p>
                                     similique sunt in culpa qui officia deserunt mollitia animi,
                                     id est laborum et dolorum fuga. Et harum quidem rerum facilis
@@ -76,7 +65,7 @@ class Login extends Component {
                                             <a href="#">HOME</a>
                                         </li>
                                         <li>
-                                            <a href="#">Login</a>
+                                            <a href="#">FORGOT PASSWORD</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -108,7 +97,7 @@ class Login extends Component {
                             {/* Login */}
                             <div className="col-md-6 col-12 d-flex">
                                 <div className="ee-login">
-                                    <h3>Login to your account</h3>
+                                    <h3>Enter Your Email to Reset Password</h3>
                                     <p>
                                         E&amp;E provide how all this mistaken idea of denouncing
                                         pleasure and sing pain born an will give you a complete
@@ -119,41 +108,30 @@ class Login extends Component {
                                         <div className="row">
                                             {error ?
                                                 <div className="col-12 mb-30">
-                                                    <span>Email or Password Wrong !</span>
+                                                    <span>Your email was not correctly format !</span>
+                                                </div>
+                                                : ''}
+                                                {success ?
+                                                <div className="col-12 mb-30" style={{color:'blue'}}>
+                                                    <span>Your email has been sent !</span>
                                                 </div>
                                                 : ''}
                                             <div className="col-12 mb-30">
                                                 <input
                                                     type="text"
-                                                    placeholder="Type your username or email address"
+                                                    placeholder="Type your email address"
                                                     name="email"
                                                     onChange={this.onChange}
                                                 />
                                             </div>
-                                            <div className="col-12 mb-20">
-                                                <input
-                                                    type="password"
-                                                    placeholder="Enter your passward"
-                                                    name="password"
-                                                    onChange={this.onChange}
-                                                />
-                                            </div>
-                                            <div className="col-12 mb-15">
-                                                <input type="checkbox" id="remember_me"
-                                                    name="remember"
-                                                    onChange={this.onChange}
-                                                />
-                                                <label htmlFor="remember_me">Remember me</label>
-                                                <Link to="/forgot">Forgotten password</Link>
-                                            </div>
                                             <div className="col-12">
-                                                <input type="submit" defaultValue="LOGIN" />
+                                                <input type="submit" defaultValue="SUBMIT" />
                                             </div>
                                         </div>
                                     </form>
                                     <h4>
-                                        Don’t have account? please click{" "}
-                                        <a href="register">Register</a>
+                                        Do you have an account? please click{" "}
+                                        <Link to="/login">Login</Link>
                                     </h4>
                                 </div>
                             </div>
@@ -183,18 +161,14 @@ class Login extends Component {
         );
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        userInfo: state.Ecomercial.user
-    }
-}
+
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        userLogin: (body, callback) => {
-            dispatch(loginRequest(body, callback));
+        forgot: (email, callback) => {
+            dispatch(forgotRequest(email, callback));
         },
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(ForgetPassword);
 
