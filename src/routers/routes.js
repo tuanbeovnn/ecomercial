@@ -16,6 +16,7 @@ import Categories from '../components/admin/Categories';
 import LaptopCategories from '../components/categories/LaptopCategories';
 import ForgetPassword from '../module/ForgetPassword';
 import ChangePassword from '../module/ChangePassword';
+import Checkout from '../components/products/Checkout';
 
 export const routes = [
     {
@@ -82,6 +83,11 @@ export const routes = [
         path:'/changePassword',
         exact : false,
         main: ()=> <ChangePassword/>
+    },
+    {
+        path:'/checkout',
+        exact : false,
+        main: ()=> <Checkout/>
     }
 ];
 export const routesAdmin = [

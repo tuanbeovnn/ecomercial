@@ -359,5 +359,22 @@ export const changePasswordRequest = (body, callback) => {
     }
 }
 
+//CHANGE PASSWORD
+
+export const paymentRequest = (body, callback) => {
+    return(dispatch) => {
+        return callAPI(`api/pay/?currency=USD&description=mua&intent=sale&method=${body.method}&price=${body.totalPrice}`, 'POST', null).then(res => {
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            console.log(e.response);
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    }
+}
+
 
 

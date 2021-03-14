@@ -45,7 +45,7 @@ class MiniCart extends Component {
                     <div className="mini-cart-bottom">
                         <h4 className="sub-total">Total: <span>${totalPrice}</span></h4>
                         <div className="button">
-                            <a href="checkout.html">CHECK OUT</a>
+                            <Link to="/checkout">CHECK OUT</Link>
                         </div>
                     </div>
                 </div>

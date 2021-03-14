@@ -90,7 +90,8 @@ class Regiter extends Component {
         let name = target.name;
         let value = target.value;
         this.setState({
-            [name]: value
+            [name]: value,
+            error : false
         });
     }
 

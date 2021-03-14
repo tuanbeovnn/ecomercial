@@ -9,7 +9,8 @@ class ChangePassword extends Component {
         super(props);
         this.state = {
             oldPassword: '',
-            newPasssword: ''
+            newPassword: '',
+            confirmPassword: ''
         }
     }
 
@@ -19,33 +20,56 @@ class ChangePassword extends Component {
         let name = target.name;
         let value = target.value;
         this.setState({
-            [name]: value
+            [name]: value,
+            error: false
         });
     }
     handleSubmit = (e) => {
         e.preventDefault();
-        const { newPasssword, oldPassword } = this.state;
-        const body = { oldPassword, newPasssword };
-        this.props.changePassword(body, (data) => {
-            console.log(data);
-            if (!data) {
-                this.setState(
-                    {
-                        error: true
-                    }
-                )
-            } else {
-                this.setState({
-                    success: true
-                })
-            }
+        const { newPassword, oldPassword, confirmPassword } = this.state;
+        if (!oldPassword || !newPassword || !confirmPassword) {
+            console.log(this.state);
+            let message = 'Old Password is required';
+            if (!newPassword) message = 'New Password is required';
+            if (!confirmPassword) message = 'Confirm Password is required';
+            this.setState({
+                error: true,
+                message: message,
+            })
+        } else if (newPassword.length < 4) {
+            this.setState({
+                error: true,
+                message: 'New Password Length must more than 4 digits',
+            })
+        } else if (newPassword !== confirmPassword) {
 
-        });
+            this.setState({
+                error: true,
+                message: 'Password and ConfirmPassword are different',
+            })
+        } else {
+            const body = { oldPassword, newPassword };
+            this.props.changePassword(body, (data) => {
+                console.log(data);
+                if (!data) {
+                    this.setState(
+                        {
+                            error: true
+                        }
+                    )
+                } else {
+                    this.setState({
+                        success: true
+                    })
+                }
+            });
+        }
+
     }
 
     render() {
-        const { user } = this.props;
 
+        const { success, error } = this.state;
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -84,14 +108,24 @@ class ChangePassword extends Component {
                                     <h3>CHANGE PASSWORD</h3>
                                     <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain born an will give you a complete account of the system, and expound</p>
                                     {/* Register Form */}
+
                                     <form onSubmit={this.handleSubmit}>
                                         <div className="row">
-
+                                            {error ?
+                                                <div className="col-12 mb-30">
+                                                    <span>{this.state.message}</span>
+                                                </div>
+                                                : ''}
+                                            {success ?
+                                                <div className="col-12 mb-30" style={{ color: 'blue' }}>
+                                                    <span>Your password has been changed</span>
+                                                </div>
+                                                : ''}
                                             <div className="col-12 mb-30">
                                                 <input
                                                     type="password"
                                                     placeholder="Type your old password"
-                                                    name="password"
+                                                    name="oldPassword"
                                                     onChange={this.onChange}
                                                 />
                                             </div>
@@ -99,12 +133,12 @@ class ChangePassword extends Component {
                                                 <input
                                                     type="password"
                                                     placeholder="Type your new password"
-                                                    name="newpassword"
+                                                    name="newPassword"
                                                     onChange={this.onChange}
                                                 />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange}/>
+                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange} />
                                             </div>
 
                                             <div className="col-12 mb-15">

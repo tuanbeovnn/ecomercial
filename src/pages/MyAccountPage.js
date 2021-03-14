@@ -27,12 +27,9 @@ class MyAccountPage extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { birthday, address, phone, name } = this.state;
-        const body = { birthday, address, phone, name };
         const { user } = this.props;
-        
+        const body = {...user, birthday, address, phone, name };
         this.props.updateUser(user.id, body, (data) => {
-            
-            console.log(data);
             if (!data) {
                 this.setState(
                     {
@@ -134,7 +131,7 @@ class MyAccountPage extends Component {
                                                     placeholder="Enter your name"
                                                     name="name"
                                                     onChange={this.onChange}
-                                                    defaultValue={user.name}
+                                                    defaultValue={user.username}
                                                 />
                                             </div>
 

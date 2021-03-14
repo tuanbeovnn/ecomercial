@@ -93,17 +93,21 @@ class Header extends Component {
             openToggle: !this.state.openToggle
         })
     }
+    handleLogout = () => {
+        localStorage.removeItem('token');
+        window.location.href="/";
+    }
     renderSoLuong = () => {
-        return this.props.cart.map((total,product,index)=>{
-            return total +=  product.qty;
-            console.log(total);
-        },0).toLocaleString();
+        return this.props.cart.map((total, product, index) => {
+            return total += product.qty;
+
+        }, 0).toLocaleString();
     }
     render() {
         const { menus, visibleSelect, selected, openToggle } = this.state;
-        const { categories, user,cart } = this.props;
+        const { categories, user, cart } = this.props;
         let totalQty = 0;
-        cart.map((item)=>{
+        cart.map((item) => {
             totalQty += item.qty;
         })
         const category = categories.find(c => c.code === selected);
@@ -155,8 +159,11 @@ class Header extends Component {
                                 {user && user.id >= 0 ?
                                     <div className="header-account-links">
                                         <Link to="/myaccount">
-                                            <i className="icofont icofont-user-alt-7" /> <span>{user.username}</span>
+                                            <i className="icofont icofont-user-alt-7" /> <span>{user.name}</span>
                                         </Link>
+                                        <a href="#" onClick={this.handleLogout}>
+                                            <i className="icofont icofont-logout" /> <span>Logout</span>
+                                        </a>
                                     </div>
                                     : <div className="header-account-links">
                                         {/* <Link to="/register">

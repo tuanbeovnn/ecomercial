@@ -20,6 +20,7 @@ export const UPLOAD_IMAGE = 'UPLOAD_IMAGE';
 export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
 export const UPDATE_USER = 'UPDATE_USER';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
+export const PAYMENT = 'PAYMENT';
 
 
 
