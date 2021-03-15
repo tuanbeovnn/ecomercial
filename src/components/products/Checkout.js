@@ -8,9 +8,9 @@ class Checkout extends Component {
         country: ['China', 'USA', 'India', 'Japan', 'VietNam'],
         selected: 'China',
         checkTerm: false,
-
-
-
+        currency: 'USD',
+        intent: 'sale',
+        method: '',
 
     }
     onChange = (e) => {
@@ -26,20 +26,27 @@ class Checkout extends Component {
                 [e.target.name]: e.target.value // create bien and pass value
             });
         }
-       
+
     }
     handelSubmit = (e) => {
         e.preventDefault();
         const { cart } = this.props;
-        let totalPrice = 0;
+        const { currency, intent, method } = this.state;
+        let price = 0;
         cart.map((item) => {
-            totalPrice += item.price * item.qty;
-            
+            price += item.price * item.qty;
+
         })
-        const {paypal} = this.state;
-        const body = {method:paypal,totalPrice}
-        this.props.payment(body);
-     
+        // const { paypal } = this.state;
+        const body = { currency, intent, method, price }
+        this.props.payment(body, (data) => {
+            if (data.success) {
+                console.log(data.success);
+                window.location.href = data.details;
+            }
+            console.log(data);
+        });
+
     }
     render() {
         const { visibleSelect, selected, country } = this.state;
@@ -48,7 +55,7 @@ class Checkout extends Component {
         let totalPrice = 0;
         cart.map((item) => {
             totalPrice += item.price * item.qty;
-            
+
         })
         return (
             <div>
@@ -300,7 +307,7 @@ class Checkout extends Component {
                                                             <input
                                                                 type="radio"
                                                                 id="payment_paypal"
-                                                                name="paypal"
+                                                                name="method"
                                                                 defaultValue="paypal"
                                                                 onChange={this.onChange}
 
@@ -323,7 +330,7 @@ class Checkout extends Component {
                                                             <label htmlFor="accept_terms">I’ve read and accept the terms &amp; conditions</label>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <button className="place-order" disabled={!this.state.checkTerm}>Place order</button>
                                                 </div>
                                             </div>

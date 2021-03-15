@@ -1,4 +1,4 @@
-import callAPI,{uploadAPI} from '../../utils/apiCaller';
+import callAPI, { uploadAPI } from '../../utils/apiCaller';
 import * as Types from './../const/ActionTypes';
 
 //feature
@@ -132,13 +132,13 @@ export const getUserFromStorage = (token) => {
 
 export const getUserFromStorageRequest = () => {
     return (dispatch) => {
-            const token = localStorage.getItem('token');
-            
-            if (token) {
-                dispatch(getUserFromStorage(token));
-            }
+        const token = localStorage.getItem('token');
+
+        if (token) {
+            dispatch(getUserFromStorage(token));
+        }
     }
-    
+
 }
 // PRODUCT DETAILS
 export const fetchDetails = (data) => {
@@ -195,7 +195,7 @@ export const fetchProductByCategories = (products) => {
 export const fetchProductByCategoriesRequest = (code, callback) => {
     return (dispatch) => {
         return callAPI('api/product/list?code=' + code, 'GET', null).then(res => {
-            
+
             dispatch(fetchProductByCategories(res.data.list));
             if (typeof callback === 'function') {
                 callback(res.data.list)
@@ -217,12 +217,12 @@ export const getCartFromLocal = (cart) => {
 }
 export const getCartFromLocalRequest = () => {
     return (dispatch) => {
-            const cartLocal = localStorage.getItem('cart');
-            if (cartLocal) {
-                dispatch(getCartFromLocal(JSON.parse(cartLocal)));
-            }
+        const cartLocal = localStorage.getItem('cart');
+        if (cartLocal) {
+            dispatch(getCartFromLocal(JSON.parse(cartLocal)));
+        }
     }
-    
+
 }
 
 // cart add
@@ -233,7 +233,7 @@ export const addCart = (product) => {
     }
 }
 export const addCartRequest = (product) => {
-    
+
     return (dispatch) => {
         console.log(product.qty);
         if (!product.qty) {
@@ -251,7 +251,7 @@ export const removeCart = (id) => {
     }
 }
 export const removeCartRequest = (id) => {
-    
+
     return (dispatch) => {
         dispatch(removeCart(id));
     }
@@ -267,7 +267,7 @@ export const register = (user) => {
 }
 
 export const registerRequest = (body, callback) => {
-    return(dispatch) => {
+    return (dispatch) => {
         return callAPI('api/auth/register', 'POST', body).then(res => {
             dispatch(register(res.data));
             if (typeof callback === 'function') {
@@ -284,7 +284,7 @@ export const registerRequest = (body, callback) => {
 // UPLOAD IMAGE avarta
 
 export const uploadRequest = (body, callback) => {
-    return(dispatch) => {
+    return (dispatch) => {
         return uploadAPI('api/uploadfile?scaledWidth=250&scaledHeight=250', 'POST', body).then(res => {
             if (typeof callback === 'function') {
                 callback(res.data)
@@ -300,7 +300,7 @@ export const uploadRequest = (body, callback) => {
 //FORGOT_PASSWORD
 
 export const forgotRequest = (email, callback) => {
-    return(dispatch) => {
+    return (dispatch) => {
         console.log(email);
         return callAPI('api/auth/forgot?email=' + email, 'GET', null).then(res => {
             if (typeof callback === 'function') {
@@ -325,7 +325,7 @@ export const updateUser = (data) => {
 
 export const updateUserRequest = (id, body, callback) => {
     return (dispatch) => {
-        
+
         return uploadAPI('api/user/update/' + id, 'PUT', body).then(res => {
             console.log(res);
             dispatch(updateUser(res.data.details));
@@ -343,9 +343,8 @@ export const updateUserRequest = (id, body, callback) => {
 //CHANGE PASSWORD
 
 export const changePasswordRequest = (body, callback) => {
-    return(dispatch) => {
+    return (dispatch) => {
         return callAPI('api/auth/changePassword', 'POST', body).then(res => {
-            
             if (typeof callback === 'function') {
 
                 callback(res.data)
@@ -359,11 +358,11 @@ export const changePasswordRequest = (body, callback) => {
     }
 }
 
-//CHANGE PASSWORD
+//PAYMENT
 
 export const paymentRequest = (body, callback) => {
-    return(dispatch) => {
-        return callAPI(`api/pay/?currency=USD&description=mua&intent=sale&method=${body.method}&price=${body.totalPrice}`, 'POST', null).then(res => {
+    return (dispatch) => {
+        return callAPI('api/pay', 'POST', body).then(res => {
             if (typeof callback === 'function') {
                 callback(res.data)
             }

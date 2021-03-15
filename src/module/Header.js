@@ -187,10 +187,8 @@ class Header extends Component {
                                 {/* Logo Start */}
                                 <div className="header-logo">
                                     <Link to="/">
-
                                         <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
                                         <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
-
                                     </Link>
 
                                 </div>{/* Logo End */}
