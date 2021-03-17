@@ -7,10 +7,10 @@ class Regiter extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: 'translatorvamkv1@gmail.com',
-            password: '123456',
-            name: 'tuan',
-            confirmPassword: '123456',
+            email: '',
+            password: '',
+            name: '',
+            confirmPassword: '',
             files: '',
 
         }
@@ -45,7 +45,6 @@ class Regiter extends Component {
             if (!name) message = 'Name is required';
             if (!password) message = 'Password is required';
             if (!confirmPassword) message = 'ConfirmPassword is required';
-
             this.setState({
                 error: true,
                 message: message,
@@ -164,17 +163,17 @@ class Regiter extends Component {
                                                 </div>
                                                 : ''}
                                             <div className="col-12 mb-30">
-                                                <input type="text" placeholder="Your name here" name="name" onChange={this.onChange} defaultValue="tuan" />
+                                                <input type="text" placeholder="Your name here" name="name" onChange={this.onChange}/>
                                             </div>
                                             <div className="col-12 mb-30">
 
-                                                <input type="email" placeholder="Your email here" name="email" onChange={this.onChange} defaultValue="translatorvamkv1@gmail.com" />
+                                                <input type="email" placeholder="Your email here" name="email" onChange={this.onChange}/>
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Enter passward" name="password" onChange={this.onChange} defaultValue="123456" />
+                                                <input type="password" placeholder="Enter password" name="password" onChange={this.onChange}/>
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange} defaultValue="123456" />
+                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange}/>
                                             </div>
                                             <div className="col-12">
                                                 <input type="submit" defaultValue="register" />

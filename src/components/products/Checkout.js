@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { getUserFromStorageRequest, paymentRequest } from '../../redux/actions';
+import { addOrderRequest, getUserFromStorageRequest, paymentRequest } from '../../redux/actions';
 import { connect } from 'react-redux';
+
 
 class Checkout extends Component {
     state = {
         visibleSelect: false,
-        country: ['China', 'USA', 'India', 'Japan', 'VietNam'],
-        selected: 'China',
+        countries: ['China', 'USA', 'India', 'Japan', 'VietNam'],
+        country: 'China',
         checkTerm: false,
         currency: 'USD',
         intent: 'sale',
@@ -31,25 +32,72 @@ class Checkout extends Component {
     handelSubmit = (e) => {
         e.preventDefault();
         const { cart } = this.props;
-        const { currency, intent, method } = this.state;
-        let price = 0;
-        cart.map((item) => {
-            price += item.price * item.qty;
+        console.log(cart);
 
-        })
-        // const { paypal } = this.state;
-        const body = { currency, intent, method, price }
-        this.props.payment(body, (data) => {
-            if (data.success) {
-                console.log(data.success);
-                window.location.href = data.details;
-            }
-            console.log(data);
-        });
+        const { currency, intent, method, firstName, lastName, mobile, zipCode, email, state, city, address, country } = this.state;
+        if (!firstName || !lastName || !mobile || !zipCode || !email || !state || !city || !address || !country) {
+            let message = 'firstName is required';
+            if (!lastName) message = 'New is required';
+            if (!mobile) message = 'Mobile is required';
+            if (!zipCode) message = 'ZipCode is required';
+            if (!email) message = 'Email is required';
+            if (!state) message = 'State is required';
+            if (!city) message = 'City is required';
+            if (!address) message = 'Address is required';
+            if (!country) message = 'Address is required';
+            this.setState({
+                error: true,
+                message: message,
+            })
+            console.log(message);
+        } else {
+            const body = {
+                firstName,
+                lastName,
+                mobile,
+                zipCode,
+                email,
+                state,
+                city,
+                address,
+                country,
+                details : cart.map(({ image, name, qty, id, price }) => {
+                    return {
+                        image: image && image[0],
+                        name: name,
+                         productId: id,
+                         quantity: qty,
+                         price: price,
+                        total: qty * price
+                    }
+                })
+                
+            };
+
+            console.log("body", body);
+            // this.props.payment(body)
+            this.props.addOrder(body, (data) => {
+                if (data) {
+                    let price = 0;
+                    cart.map((item) => {
+                        price += item.price * item.qty;
+                    })
+                    const body = { currency, intent, method, price }
+                    this.props.payment(body, (data) => {
+                        console.log(data);
+                        // if (data.success) {
+                        //     console.log(data.success);
+                        // window.location.href = data.details;
+                         window.open(data.details, '_blank');
+                        // }
+                    });
+                }
+            })
+        }
 
     }
     render() {
-        const { visibleSelect, selected, country } = this.state;
+        const { visibleSelect, country, countries } = this.state;
         const { cart } = this.props;
 
         let totalPrice = 0;
@@ -131,11 +179,11 @@ class Checkout extends Component {
                                                         <input
                                                             type="text"
                                                             placeholder="Phone number"
-                                                            name="phone"
+                                                            name="mobile"
                                                             onChange={this.onChange}
                                                         />
                                                     </div>
-                                                    <div className="col-12 mb-20">
+                                                    {/* <div className="col-12 mb-20">
                                                         <label>Company Name</label>
                                                         <input
                                                             type="text"
@@ -143,30 +191,30 @@ class Checkout extends Component {
                                                             name="companyName"
                                                             onChange={this.onChange}
                                                         />
-                                                    </div>
+                                                    </div> */}
                                                     <div className="col-12 mb-20">
                                                         <label>Address*</label>
                                                         <input
                                                             type="text"
-                                                            placeholder="Address line 1"
-                                                            name="address1"
+                                                            placeholder="Address line"
+                                                            name="address"
                                                             onChange={this.onChange}
                                                         />
-                                                        <input
+                                                        {/* <input
                                                             type="text"
                                                             placeholder="Address line 2"
                                                             name="address2"
                                                             onChange={this.onChange}
-                                                        />
+                                                        /> */}
                                                     </div>
                                                     <div className="col-md-6 col-12 mb-20">
                                                         <label>Country*</label>
                                                         <div className={visibleSelect ? "nice-select open" : "nice-select"}>
-                                                            <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{selected}</span>
+                                                            <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{country}</span>
                                                             <ul className="list">
-                                                                {country.map((item, index) => {
+                                                                {countries.map((item, index) => {
                                                                     return (
-                                                                        <li onClick={() => this.setState({ selected: item, visibleSelect: false })} className={selected === item ? "option selected focus" : "option"}>{item}</li>
+                                                                        <li onClick={() => this.setState({ country: item, visibleSelect: false })} className={country === item ? "option selected focus" : "option"}>{item}</li>
                                                                     )
                                                                 })}
                                                             </ul>
@@ -196,7 +244,7 @@ class Checkout extends Component {
                                                         <input
                                                             type="text"
                                                             placeholder="Zip Code"
-                                                            name="code"
+                                                            name="zipCode"
                                                             onChange={this.onChange}
                                                         />
                                                     </div>
@@ -272,14 +320,32 @@ class Checkout extends Component {
                                                 <div className="col-12 mb-60">
                                                     <h4 className="checkout-title">Cart Total</h4>
                                                     <div className="checkout-cart-total">
-                                                        <h4>Product <span>Total</span></h4>
-                                                        <ul>
-                                                            {cart.map((item, index) => {
-                                                                return (
-                                                                    <li key={index}>{item.name}<span>${item.price}</span></li>
-                                                                )
-                                                            })}
-                                                        </ul>
+                                                        {/* <h4 style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                            <span>Product</span>
+                                                            <span style={{ paddingLeft: '30px' }}>Qty</span>
+                                                            <span>Total</span>
+                                                        </h4> */}
+                                                        <table className="table table-borderless">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Product</th>
+                                                                    <th scope="col">Qty</th>
+                                                                    <th scope="col">Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {cart.map((item, index) => {
+                                                                    return (
+                                                                        <tr key={index}>
+                                                                            <td>{item.name}</td>
+                                                                            <td>x{item.qty}</td>
+                                                                            <td>${(item.price * item.qty).toLocaleString()}</td>
+
+                                                                        </tr>
+                                                                    )
+                                                                })}
+                                                            </tbody>
+                                                        </table>
                                                         <p>Sub Total <span>${totalPrice.toLocaleString()}</span></p>
                                                         <h4>Grand Total <span>${totalPrice.toLocaleString()}</span></h4>
                                                     </div>
@@ -353,7 +419,7 @@ class Checkout extends Component {
                         </div>
                     </div>
                 </div>{/* Banner Section End */}
-            </div>
+            </div >
 
         )
     }
@@ -369,6 +435,9 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         payment: (body, callback) => {
             dispatch(paymentRequest(body, callback));
+        },
+        addOrder: (body, callback) => {
+            dispatch(addOrderRequest(body, callback));
         }
     }
 }

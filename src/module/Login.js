@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { loginRequest } from "../redux/actions";
+import { loginRequest, loginFacebookRequest } from "../redux/actions";
 import { connect } from 'react-redux';
 import { Link, Redirect, useHistory } from 'react-router-dom';
+import FacebookLogin from 'react-facebook-login';
 
 class Login extends Component {
 
@@ -11,6 +12,19 @@ class Login extends Component {
             email: '',
             password: '',
             remember: true
+        }
+    }
+    responseFacebook = (response) => {
+        console.log(response);
+        if (response && response.accessToken) {
+            const body = { accessToken: response.accessToken };
+            this.props.facebookLogin(body, (data) =>{
+                if (data) {
+                    this.setState({
+                        success: true
+                    })
+                }
+            })
         }
     }
 
@@ -164,7 +178,19 @@ class Login extends Component {
                             <div className="col-md-5 col-12 d-flex">
                                 <div className="ee-social-login">
                                     <h3>Also you can login with...</h3>
-                                    <a href="#" className="facebook-login">
+                                    <div style={{display: "none" }}>
+                                        {this.state.facebookLogin ?
+                                            <FacebookLogin
+                                                appId="1127027337764953"
+                                                autoLoad={true}
+                                                fields="name,email,picture"
+
+                                                // onClick={componentClicked}
+                                                callback={this.responseFacebook} />
+                                            : ''}
+                                    </div>
+
+                                    <a onClick={() => { this.setState({ facebookLogin: !this.state.facebookLogin }) }} className="facebook-login">
                                         Login with <i className="fa fa-facebook" />
                                     </a>
                                     <a href="#" className="twitter-login">
@@ -178,7 +204,6 @@ class Login extends Component {
                         </div>
                     </div>
                 </div>
-                {/* Login Section End */}
             </div>
         );
     }
@@ -194,6 +219,9 @@ const mapDispatchToProps = (dispatch, props) => {
         userLogin: (body, callback) => {
             dispatch(loginRequest(body, callback));
         },
+        facebookLogin: (body, callback) => {
+            dispatch(loginFacebookRequest(body, callback));
+        }
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

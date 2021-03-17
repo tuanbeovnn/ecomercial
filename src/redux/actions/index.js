@@ -106,6 +106,7 @@ export const login = (data) => {
         data
     }
 }
+ 
 
 export const loginRequest = (body, callback) => {
     return (dispatch) => {
@@ -113,6 +114,21 @@ export const loginRequest = (body, callback) => {
             dispatch(login(res.data.details));
             if (typeof callback === 'function') {
                 callback(res.data.details)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}
+
+export const loginFacebookRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/auth/facebook/login', 'POST', body).then(res => {
+            dispatch(login(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
             }
         }).catch(() => {
             if (typeof callback === 'function') {
@@ -370,6 +386,49 @@ export const paymentRequest = (body, callback) => {
             console.log(e.response);
             if (typeof callback === 'function') {
                 callback();
+            }
+        });
+    }
+}
+
+//FETCH_BRAND
+
+export const fetchBrand = (brands) => {
+    return {
+        type: Types.FETCH_BRAND,
+        brands
+    }
+}
+
+export const fetchBrandRequest = () => {
+    return (dispatch) => {
+        return callAPI('api/brand/list', 'GET', null).then(res => {
+            if (res.data && res.data.success) {
+                dispatch(fetchBrand(res.data.details));
+            }
+        })
+    }
+}
+
+// register 
+
+export const addOrder = (order) => {
+    return {
+        type: Types.ADD_ORDER,
+        order
+    }
+}
+
+export const addOrderRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/order/save', 'POST', body).then(res => {
+            dispatch(register(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                callback(e.response.data);
             }
         });
     }

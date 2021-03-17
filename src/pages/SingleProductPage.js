@@ -22,7 +22,7 @@ class SingleProductPage extends Component {
             if (data) {
                 const product = data;
                 const relatedProduct = data.relatedProduct;
-                
+
                 this.setState({
                     product,
                     relatedProduct
@@ -32,6 +32,13 @@ class SingleProductPage extends Component {
         this.props.fetchProductDetails(code, callback);
 
     }
+
+    componentDidUpdate(preProps,preState) {
+        console.log(preProps,preState);
+        console.log(this.props, this.state);
+    }
+
+    
     onHandleChange = (e) => {
         e.preventDefault();
         this.setState({
@@ -55,7 +62,7 @@ class SingleProductPage extends Component {
 
     render() {
         const { product, relatedProduct, qty } = this.state;
-       
+
         const { categories, cart, addCart, removeCart } = this.props;
         const existCart = cart.find(p => p.id === product.id);
 
@@ -178,7 +185,7 @@ class SingleProductPage extends Component {
                                     <div className="single-product-description">
                                         <div className="ratting">
                                             {new Array(5).fill(0).map((star, index) => {
-                                                return <i className={"fa fa-star" + (index < product.rating ? '' : '-o')} />
+                                                return <i key={index} className={"fa fa-star" + (index < product.rating ? '' : '-o')} />
                                             })}
                                         </div>
                                         <div className="desc">
@@ -188,26 +195,34 @@ class SingleProductPage extends Component {
                                         <div className="quantity-colors">
                                             <div className="quantity">
                                                 <h5>Quantity</h5>
-                                                <div class="pro-qty">
-                                                    <span onClick={() => { this.onMinus() }} class="dec qtybtn">-</span>
+                                                <div className="pro-qty">
+                                                    <span onClick={() => { this.onMinus() }} className="dec qtybtn">-</span>
                                                     <input
                                                         type="text"
                                                         name="qty"
                                                         onChange={this.onHandleChange}
                                                         value={qty}
                                                     />
-                                                    <span onClick={() => { this.onPlus() }} class="inc qtybtn">+</span>
+                                                    <span onClick={() => { this.onPlus() }} className="inc qtybtn">+</span>
                                                 </div>
                                             </div>
                                             <div className="colors">
                                                 <h5>Color</h5>
 
-                                                <div class="nice-select" tabindex="0"><span class="current">red</span><ul class="list"><li data-value="red" class="option selected">red</li><li data-value="black" class="option">black</li><li data-value="yellow" class="option">yellow</li><li data-value="grey" class="option">grey</li></ul></div>
+                                                <div className="nice-select">
+                                                    <span className="current">red</span>
+                                                    <ul className="list">
+                                                        <li data-value="red" className="option selected">red</li>
+                                                        <li data-value="black" className="option">black</li>
+                                                        <li data-value="yellow" className="option">yellow</li>
+                                                        <li data-value="grey" className="option">grey</li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="actions">
 
-                                            <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(product.id) : addCart({...product,qty}) }}>
+                                            <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(product.id) : addCart({ ...product, qty }) }}>
                                                 <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
                                                 <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                             </a>
@@ -418,14 +433,15 @@ class SingleProductPage extends Component {
                                         <Slider key="relatedProduct" className="product-slider product-slider-4" {...settings}>
                                             {relatedProduct.map((item) => {
                                                 const existCartRelated = cart.find(p => p.id === item.id);
+                                                const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                 return (
                                                     <div key={item.id} className="col pb-20 pt-10">
                                                         {/* Product Start */}
                                                         <div className="ee-product">
                                                             {/* Image */}
                                                             <div className="image">
-                                                                <Link to={"/details/" + item.code}>
-                                                                    <a className="img"><img src={item.image[0]} alt="Product Image" /></a>
+                                                                <Link className="img" to={"/details/" + item.code}>
+                                                                    <img src={item.image[0]} alt="Product Image" />
                                                                 </Link>
 
                                                                 <div className="wishlist-compare">
@@ -441,10 +457,10 @@ class SingleProductPage extends Component {
                                                             <div className="content">
                                                                 {/* Category & Title */}
                                                                 <div className="category-title">
-                                                                    <a className="cat">Laptop</a>
+                                                                    <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                                                     <h5 className="title">
                                                                         <Link to={"/details/" + item.code}>
-                                                                            <a>{item.name}</a>
+                                                                            {item.name}
                                                                         </Link>
                                                                     </h5>
                                                                 </div>
@@ -453,7 +469,7 @@ class SingleProductPage extends Component {
                                                                     <h5 className="price">${item.price}</h5>
                                                                     <div className="ratting">
                                                                         {new Array(5).fill(0).map((star, index) => {
-                                                                            return <i className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                            return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
                                                                         })}
                                                                     </div>
                                                                 </div>

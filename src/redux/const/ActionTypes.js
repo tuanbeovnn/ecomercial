@@ -21,6 +21,8 @@ export const FORGOT_PASSWORD = 'FORGOT_PASSWORD';
 export const UPDATE_USER = 'UPDATE_USER';
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const PAYMENT = 'PAYMENT';
+export const FETCH_BRAND = 'FETCH_BRAND';
+export const ADD_ORDER = 'ADD_ORDER';
 
 
 
