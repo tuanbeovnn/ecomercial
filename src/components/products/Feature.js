@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { fetchFeatureProductRequest } from '../../redux/actions/index';
+import { fetchFeatureProductRequest, addProductToWishList } from '../../redux/actions/index';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 class Feature extends Component {
 
@@ -35,6 +35,9 @@ class Feature extends Component {
         });
 
     }
+    addWishList = (product) => {
+        this.props.addWishList(product); 
+    }
     render() {
         const settings = {
             dots: true,
@@ -49,6 +52,7 @@ class Feature extends Component {
         };
         const { currentCategories, addToCart } = this.state;
         const { allProducts, categories } = this.props;
+
         return (
 
             <div className="product-section section mb-70">
@@ -100,7 +104,7 @@ class Feature extends Component {
 
                                                                 <div className="wishlist-compare">
                                                                     <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                    <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                    <a data-tooltip="Wishlist" onClick = {() => {this.addWishList(item)}}><i className="ti-heart" /></a>
                                                                 </div>
                                                                 <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
                                                                     <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
@@ -158,7 +162,7 @@ class Feature extends Component {
 
                                                                         <div className="wishlist-compare">
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                            <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                            <a data-tooltip="Wishlist" onClick = {() => {this.addWishList(item)}}><i className="ti-heart" /></a>
                                                                         </div>
                                                                         <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
                                                                             <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
@@ -215,6 +219,10 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchFeatureProducts: (code) => {
             dispatch(fetchFeatureProductRequest(code));
+        },
+        addWishList : (product) => {
+ 
+            dispatch(addProductToWishList(product))
         }
     }
 }

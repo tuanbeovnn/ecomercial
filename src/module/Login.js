@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { loginRequest } from "../redux/actions";
 import { connect } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
+import LoginFacebook from "./LoginFacebook";
 
 class Login extends Component {
 
@@ -164,9 +165,9 @@ class Login extends Component {
                             <div className="col-md-5 col-12 d-flex">
                                 <div className="ee-social-login">
                                     <h3>Also you can login with...</h3>
-                                    <a href="#" className="facebook-login">
-                                        Login with <i className="fa fa-facebook" />
-                                    </a>
+                                    <LoginFacebook/>
+                                  
+                                  
                                     <a href="#" className="twitter-login">
                                         Login with <i className="fa fa-twitter" />
                                     </a>

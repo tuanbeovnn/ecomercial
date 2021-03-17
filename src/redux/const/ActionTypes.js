@@ -14,4 +14,8 @@ export const CART_INIT = 'CART_INIT';
 export const CART_REMOVE = 'CART_REMOVE';
 export const CART_UPDATE = 'CART_UPDATE';
 export const CART_ADD = 'CART_ADD';
+export const LOG_IN_FACEBOOK = 'LOG_IN_FACEBOOK'; 
+export const ADD_WISH_LIST = 'ADD_WISH_LIST';
+export const REMOVE_WISH_LIST = 'REMOVE_WISH_LIST';
+
 

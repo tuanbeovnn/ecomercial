@@ -1,3 +1,4 @@
+import axios from 'axios';
 import callAPI from '../../utils/apiCaller';
 import * as Types from './../const/ActionTypes';
 //feature
@@ -120,6 +121,52 @@ export const loginRequest = (body, callback) => {
         });
     }
 }
+
+// login facebook
+export const loginFacebook = (data) => {
+    return {
+        type: Types.LOG_IN_FACEBOOK,
+        data
+    }
+}
+
+
+// export const loginFacebookRequest = (body, callback) => {
+   
+//     return async dispatch => {
+//         try {
+//             let { data, status, ...res } = await axios({
+//                 url: 'http://saunakovaasa.ml:8080/api/auth/facebook/login',
+//                 method: 'POST',
+//                 data: body
+//             });
+//             if (status === 200) {
+//                 console.log(status)
+//                 console.log("data", data)
+//             }
+//         } catch (err) {
+//             console.log(err.response.data)
+//         }
+//     }
+// }
+
+
+export const loginFacebookRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/auth/facebook/login', 'POST', body).then(res => {
+           console.log(res); 
+            dispatch(loginFacebook(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+} 
+
 // PRODUCT DETAILS
 export const fetchDetails = (data) => {
     return {
@@ -239,6 +286,23 @@ export const removeCartRequest = (id) => {
         dispatch(removeCart(id));
     }
 }
+//ADD PRODUCT TO WISHLIST
+export const addProductToWishList = (product) => {
+    
+    return {
+        type: Types.ADD_WISH_LIST,
+        product
+    }
+}
+
+export const removeProductWishList = (product) => {
+    
+    return {
+        type: Types.REMOVE_WISH_LIST,
+        product
+    }
+}
+
 
 
 

@@ -52,6 +52,9 @@ class SingleProductPage extends Component {
             qty: this.state.qty + 1
         })
     }
+    addWishList = (product) => {
+        console.log()
+    }
 
     render() {
         const { product, relatedProduct, qty } = this.state;
@@ -213,7 +216,7 @@ class SingleProductPage extends Component {
                                             </a>
                                             <div className="wishlist-compare">
                                                 <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                <a data-tooltip="Wishlist" onClick = {()=>{this.addWishList(product)}}><i className="ti-heart" /></a>
                                             </div>
                                         </div>
                                         <div className="tags">
@@ -430,7 +433,7 @@ class SingleProductPage extends Component {
 
                                                                 <div className="wishlist-compare">
                                                                     <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                    <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                    <a data-tooltip="Wishlist" onClick = {() => {this.addWishList(product)}}><i className="ti-heart" /></a>
                                                                 </div>
                                                                 <a className={existCartRelated ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCartRelated ? removeCart(item.id) : addCart(item) }}>
                                                                     <i className={existCartRelated ? "ti-check" : "ti-shopping-cart"} />
