@@ -208,13 +208,13 @@ export const fetchProductByCategories = (products) => {
     }
 }
 
-export const fetchProductByCategoriesRequest = (code, callback) => {
+export const fetchProductByCategoriesRequest = (code, page,callback) => {
     return (dispatch) => {
-        return callAPI('api/product/list?code=' + code, 'GET', null).then(res => {
+        return callAPI('api/product/list?code=' + code + '&size=8' + '&page=' + page, 'GET', null).then(res => {
 
             dispatch(fetchProductByCategories(res.data.list));
             if (typeof callback === 'function') {
-                callback(res.data.list)
+                callback(res.data)
             }
         }).catch(() => {
             if (typeof callback === 'function') {
@@ -249,7 +249,6 @@ export const addCart = (product) => {
     }
 }
 export const addCartRequest = (product) => {
-
     return (dispatch) => {
         console.log(product.qty);
         if (!product.qty) {
@@ -434,5 +433,52 @@ export const addOrderRequest = (body, callback) => {
     }
 }
 
+// cart init 
+export const getWishListFromLocal = (wishList) => {
+    return {
+        type: Types.WISHLIST_INIT,
+        wishList
+    }
+}
+export const getWishListFromLocalRequest = () => {
+    return (dispatch) => {
+        const wishListLocal = localStorage.getItem('wishList');
+        if (wishListLocal) {
+            dispatch(getWishListFromLocal(JSON.parse(wishListLocal)));
+        }
+    }
 
+}
+
+// cart wishList
+export const addWishList = (product) => {
+    return {
+        type: Types.ADD_WISHLIST,
+        product
+    }
+}
+export const addWishListRequest = (product) => {
+    return (dispatch) => {
+        // console.log(product.qty);
+        // if (!product.qty) {
+        //     product.qty = 1;
+        // }
+        dispatch(addWishList(product));
+    }
+}
+
+// remove cart
+
+export const wishListRemove = (id) => {
+    return {
+        type: Types.WISHLIST_REMOVE,
+        id
+    }
+}
+export const wishListRemoveRequest = (id) => {
+
+    return (dispatch) => {
+        dispatch(wishListRemove(id));
+    }
+}
 

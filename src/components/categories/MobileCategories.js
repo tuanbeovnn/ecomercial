@@ -12,20 +12,32 @@ class MobileCategories extends Component {
     }
     componentDidMount() {
         const code = this.props.match.params.code;
-        console.log(code);
+        const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
+        // const page = (Number(this.props.match.params.page - 1)||0);
         const callback = (data) => {
             if (data) {
-                const products = data;
-                console.log(products)
                 this.setState({
-                    products
+                    products: data.list,
+                    total: data.total,
+                    currentPage: data.currentPage,
+                    pageSize: data.pageSize
                 })
             }
         }
-        this.props.fetchProductListCategory(code, callback);
+
+        this.props.fetchProductListCategory(code, page, callback);
+    }
+    componentDidUpdate(preProps, preState) {
+        // console.log(preProps,preState);
+        // console.log(this.props,this.state);
+
     }
     render() {
-        const { products, addToCart } = this.state;
+        const { products, addToCart, total, pageSize } = this.state;
+        const currentPage = Number(this.props.match.params.page) || 1;
+        const totalPage = Math.ceil(total / pageSize) || '';
+        console.log(totalPage);
+
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -93,7 +105,7 @@ class MobileCategories extends Component {
                                             </div>
                                             {/* Product Pages */}
                                             <div className="product-pages">
-                                                <p>Pages 1 of 25</p>
+                                                <p>Pages {currentPage} of {totalPage}</p>
                                             </div>
                                         </div>{/* Shop Top Bar End */}
                                     </div>
@@ -197,15 +209,33 @@ class MobileCategories extends Component {
                                 <div className="row mt-30">
                                     <div className="col">
                                         <ul className="pagination">
-                                            <li><a href="#"><i className="fa fa-angle-left" />Back</a></li>
-                                            <li><a href="#">1</a></li>
-                                            <li className="active"><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
+                                            <li>
+                                                <Link to="">
+                                                    <i className="fa fa-angle-left" />Back
+                                                </Link>
+                                            </li>
+                                            <li><Link>
+                                            </Link>1
+                                            </li>
+                                            <li className="active"><Link>
+
+                                            </Link>2</li>
+                                            <li><Link>
+
+                                            </Link>3</li>
                                             <li> - - - - - </li>
-                                            <li><a href="#">18</a></li>
-                                            <li><a href="#">18</a></li>
-                                            <li><a href="#">20</a></li>
-                                            <li><a href="#">Next<i className="fa fa-angle-right" /></a></li>
+                                            <li><Link>
+
+                                            </Link>18</li>
+                                            <li><Link>
+
+                                            </Link>18</li>
+                                            <li><Link>
+
+                                            </Link>20</li>
+                                            <li><Link>
+
+                                            </Link>Next<i className="fa fa-angle-right" /></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -227,8 +257,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchProductListCategory: (code, callback) => {
-            dispatch(fetchProductByCategoriesRequest(code, callback));
+        fetchProductListCategory: (code, page, callback) => {
+            dispatch(fetchProductByCategoriesRequest(code, page, callback));
         }
     }
 }

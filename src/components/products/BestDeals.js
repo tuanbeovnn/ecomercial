@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, fetchBestDealProductsRequest, removeCartRequest } from '../../redux/actions/index';
+import { addCartRequest, addWishListRequest, fetchBestDealProductsRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions/index';
 import { Link } from 'react-router-dom';
+import CountDown from './CountDown';
+
 
 class BestDeals extends Component {
 
     state = {
         currentCategories: 0,
         addToCart: true,
+        
     }
     componentDidMount() {
         //call all categories [{id:1, name: 'Laptop'}];
         //  goi list product all ve: all ProductFeature;
         //=> kich laptop => sp cuua laptop  => luu vao cateogries [{id: 1, name: 'Laptop', prodcts: [...]}]
         this.props.fetchProducts();
+        
 
     }
 
@@ -22,7 +26,7 @@ class BestDeals extends Component {
         //goji sp categories nay ve.
         const { categories } = this.props;
 
-        // console.log(categories);
+      
         const index = categories.findIndex(c => c.code === currentCategories);
 
         if (index != -1 && !categories[index].products) {
@@ -36,8 +40,8 @@ class BestDeals extends Component {
     }
 
     render() {
-        const { allProducts, categories, cart, addCart, removeCart } = this.props;
-        console.log(cart);
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList } = this.props;
+        
         const { currentCategories, addToCart } = this.state;
         const settings = {
             dots: true,
@@ -86,23 +90,7 @@ class BestDeals extends Component {
                                         <h1><span>UP TO</span> 55%</h1>
                                         <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                         <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
-                                        <div className="countdown" data-countdown="2019/06/20">
-                                            <span className="cdown day">
-                                                <span className="time-count">0</span>
-                                                <p>Days</p></span>
-                                            <span className="cdown hour">
-                                                <span className="time-count">0</span>
-                                                <p>Hours</p>
-                                            </span>
-                                            <span className="cdown minutes">
-                                                <span className="time-count">00</span>
-                                                <p>Minute</p>
-                                            </span>
-                                            <span className="cdown second">
-                                                <span className="time-count">00</span>
-                                                <p>Second</p>
-                                            </span>
-                                        </div>
+                                        <CountDown/>
                                     </div>
                                 </div>{/* Offer Time Wrap End */}
                                 {/* Product Tab Content Start */}
@@ -117,6 +105,8 @@ class BestDeals extends Component {
                                                     {allProducts.map((item) => {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         const existCart = cart.find(p => p.id === item.id);
+                                                        const existWishList = wishList.find(p => p.id === item.id);
+                                                        
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -129,7 +119,9 @@ class BestDeals extends Component {
                                                                         </Link>
                                                                         <div className="wishlist-compare">
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                            <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                            <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                                <i className="ti-heart"/>
+                                                                            </a> 
                                                                         </div>
 
                                                                         <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
@@ -174,6 +166,7 @@ class BestDeals extends Component {
                                                                 {category.products.map((item) => {
                                                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                                     const existCart = cart.find(p => p.id === item.id);
+
                                                                     return (
                                                                         <div key={item.id} className="col pb-20 pt-10">
                                                                             {/* Product Start */}
@@ -186,7 +179,9 @@ class BestDeals extends Component {
 
                                                                                     <div className="wishlist-compare">
                                                                                         <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                                        <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                                        <a data-tooltip="Wishlist">
+                                                                                            <i className="ti-heart" />
+                                                                                        </a>
                                                                                     </div>
                                                                                     <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
                                                                                         <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
@@ -239,7 +234,8 @@ const mapStateToProps = (state) => {
     return {
         allProducts: state.Ecomercial.productsBestDealAll,
         categories: state.Ecomercial.bestdealCategories,
-        cart: state.Ecomercial.cart
+        cart: state.Ecomercial.cart,
+        wishList: state.Ecomercial.wishList
     }
 }
 
@@ -253,6 +249,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
         }
 
     }

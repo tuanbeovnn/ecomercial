@@ -33,12 +33,27 @@ class SingleProductPage extends Component {
 
     }
 
-    componentDidUpdate(preProps,preState) {
-        console.log(preProps,preState);
+    componentDidUpdate(preProps, preState) {
+        console.log(preProps, preState);
+        if (preProps.match.params.code !== this.props.match.params.code) {
+            const code = this.props.match.params.code;
+            const callback = (data) => {
+                if (data) {
+                    const product = data;
+                    const relatedProduct = data.relatedProduct;
+
+                    this.setState({
+                        product,
+                        relatedProduct
+                    })
+                }
+            }
+            this.props.fetchProductDetails(code, callback);
+        }
         console.log(this.props, this.state);
     }
 
-    
+
     onHandleChange = (e) => {
         e.preventDefault();
         this.setState({

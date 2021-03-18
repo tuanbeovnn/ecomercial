@@ -83,8 +83,22 @@ class Header extends Component {
     componentDidMount() {
         this.props.fetchAllCategories();
         this.props.getUserFromToken();
-
+        window.onscroll = ()=>{
+            if (window.scrollY > 200 && !this.state.scroll) {
+                this.setState({
+                    scroll : true,
+                    header : true
+                })
+            }else if (window.scrollY <=2 && this.state.scroll){
+                this.setState({
+                    scroll : false,
+                    header : false
+                })
+            }
+            
+        }
     }
+   
     handleSubmit = (e) => {
         e.preventDefault();
     }
@@ -95,7 +109,7 @@ class Header extends Component {
     }
     handleLogout = () => {
         localStorage.removeItem('token');
-        window.location.href="/";
+        window.location.href = "/";
     }
     renderSoLuong = () => {
         return this.props.cart.map((total, product, index) => {
@@ -103,8 +117,9 @@ class Header extends Component {
 
         }, 0).toLocaleString();
     }
+
     render() {
-        const { menus, visibleSelect, selected, openToggle } = this.state;
+        const { menus, visibleSelect, selected, openToggle, scroll, header } = this.state;
         const { categories, user, cart } = this.props;
         let totalQty = 0;
         cart.map((item) => {
@@ -180,7 +195,7 @@ class Header extends Component {
                     </div>
                 </div>
                 {/* Header Bottom Start */}
-                <div className="header-bottom header-bottom-one header-sticky">
+                <div className={"header-bottom header-bottom-one header-sticky"  + (header ? " is-sticky" : '')}>
                     <div className="container">
                         <div className="row align-items-center justify-content-between">
                             <div className="col mt-15 mb-15">
@@ -298,6 +313,9 @@ class Header extends Component {
                 </div>{/* Header Bottom End */}
                 {/* Header Category Start */}
                 <MiniCart openToggle={openToggle} handdleClose={this.handdleToggle} />
+                <a onClick={() => { window.scrollTo(0, 0) }} id="scrollUp" style={{ position: 'fixed', zIndex: 2147483647, display: scroll ? 'block' : 'none' }}>
+                    <i className="icofont icofont-swoosh-up" />
+                </a>
             </div >
         );
     }

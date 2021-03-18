@@ -1,4 +1,4 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND } from "../const/ActionTypes";
+import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
@@ -14,7 +14,8 @@ const initialState = {
     user:{},
     cart: [],
     register: {},
-    brands:[]
+    brands:[],
+    wishList:[]
 };
 
 export default (state = initialState, action) => {
@@ -99,6 +100,21 @@ export default (state = initialState, action) => {
         }
         case FETCH_BRAND : {
             copyState.brands = action.brands;
+            return copyState;
+        }
+
+        case WISHLIST_INIT :{
+            copyState.wishList = action.wishList;
+            return copyState;
+        }
+        case ADD_WISHLIST : {
+            copyState.wishList = [action.product,...copyState.wishList];// copy san pham vao phan tu dau tien
+            localStorage.setItem('wishList',JSON.stringify(copyState.wishList));
+            return copyState;
+        }
+        case WISHLIST_REMOVE : {
+            copyState.wishList = copyState.wishList.filter(product => product.id !== action.id);
+            localStorage.setItem('wishList',JSON.stringify(copyState.wishList));
             return copyState;
         }
         

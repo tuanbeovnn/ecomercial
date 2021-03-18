@@ -1,7 +1,45 @@
 import React, { Component } from 'react'
+import { getWishListFromLocalRequest, wishListRemoveRequest } from '../redux/actions';
+import { connect } from 'react-redux';
 
-export default class WishListPage extends Component {
+class WishListPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            qty: 1
+
+        }
+    }
+
+    componentDidMount() {
+        this.props.getWishList();
+    }
+
+
+    onHandleChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            qty: e.target.value
+        })
+
+    }
+    onMinus = () => {
+        if (this.state.qty - 1 > 0) {
+            this.setState({
+                qty: this.state.qty - 1
+            })
+        }
+    }
+
+    onPlus = () => {
+        this.setState({
+            qty: this.state.qty + 1
+        })
+    }
     render() {
+        const { qty } = this.state;
+        const {wishList} = this.props;
+        console.log(wishList)
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -14,20 +52,20 @@ export default class WishListPage extends Component {
                                 <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
                                 <div className="breadcrumb">
                                     <ul>
-                                        <li><a href="#">HOME</a></li>
-                                        <li><a href="#">Shop</a></li>
-                                        <li><a href="#">Wishlist</a></li>
+                                        <li><a >HOME</a></li>
+                                        <li><a >Shop</a></li>
+                                        <li><a >Wishlist</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            <div className="banner"><a ><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            <div className="banner"><a ><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -51,36 +89,23 @@ export default class WishListPage extends Component {
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td className="pro-thumbnail"><a href="#"><img src="/images/product/product-1.png" alt="Product" /></a></td>
-                                                    <td className="pro-title"><a href="#">Zeon Zen 4 Pro</a></td>
+                                                    <td className="pro-thumbnail"><a ><img src="/images/product/product-1.png" alt="Product" /></a></td>
+                                                    <td className="pro-title"><a >Zeon Zen 4 Pro</a></td>
                                                     <td className="pro-price"><span>$295.00</span></td>
-                                                    <td className="pro-quantity"><div className="pro-qty"><input type="text" defaultValue={1} /></div></td>
+                                                    <td className="pro-quantity">
+                                                        <div className="pro-qty">
+                                                            <span onClick={() => { this.onMinus() }} className="dec qtybtn">-</span>
+                                                            <input
+                                                                type="text"
+                                                                name="qty"
+                                                                onChange={this.onHandleChange}
+                                                                value={qty}
+                                                            />
+                                                            <span onClick={() => { this.onPlus() }} className="inc qtybtn">+</span>
+                                                        </div>
+                                                    </td>
                                                     <td className="pro-addtocart"><button>add to cart</button></td>
-                                                    <td className="pro-remove"><a href="#"><i className="fa fa-trash-o" /></a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="pro-thumbnail"><a href="#"><img src="/images/product/product-2.png" alt="Product" /></a></td>
-                                                    <td className="pro-title"><a href="#">Aquet Drone D 420</a></td>
-                                                    <td className="pro-price"><span>$275.00</span></td>
-                                                    <td className="pro-quantity"><div className="pro-qty"><input type="text" defaultValue={2} /></div></td>
-                                                    <td className="pro-addtocart"><button>add to cart</button></td>
-                                                    <td className="pro-remove"><a href="#"><i className="fa fa-trash-o" /></a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="pro-thumbnail"><a href="#"><img src="/images/product/product-3.png" alt="Product" /></a></td>
-                                                    <td className="pro-title"><a href="#">Game Station X 22</a></td>
-                                                    <td className="pro-price"><span>$295.00</span></td>
-                                                    <td className="pro-quantity"><div className="pro-qty"><input type="text" defaultValue={1} /></div></td>
-                                                    <td className="pro-addtocart"><button>add to cart</button></td>
-                                                    <td className="pro-remove"><a href="#"><i className="fa fa-trash-o" /></a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="pro-thumbnail"><a href="#"><img src="/images/product/product-4.png" alt="Product" /></a></td>
-                                                    <td className="pro-title"><a href="#">Roxxe Headphone Z 75 </a></td>
-                                                    <td className="pro-price"><span>$110.00</span></td>
-                                                    <td className="pro-quantity"><div className="pro-qty"><input type="text" defaultValue={1} /></div></td>
-                                                    <td className="pro-addtocart"><button>add to cart</button></td>
-                                                    <td className="pro-remove"><a href="#"><i className="fa fa-trash-o" /></a></td>
+                                                    <td className="pro-remove"><a ><i className="fa fa-trash-o" /></a></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -97,13 +122,30 @@ export default class WishListPage extends Component {
                         <div className="row">
                             {/* Banner */}
                             <div className="col-12">
-                                <div className="banner"><a href="#"><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div>
+                                <div className="banner"><a ><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div>
                             </div>
                         </div>
                     </div>
-                </div>{/* Banner Section End */}
+                </div>
             </div>
 
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        wishList: state.Ecomercial.wishList,
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        getWishList: () => {
+            dispatch(getWishListFromLocalRequest());
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(WishListPage);

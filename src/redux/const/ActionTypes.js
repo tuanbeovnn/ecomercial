@@ -23,6 +23,10 @@ export const CHANGE_PASSWORD = 'CHANGE_PASSWORD';
 export const PAYMENT = 'PAYMENT';
 export const FETCH_BRAND = 'FETCH_BRAND';
 export const ADD_ORDER = 'ADD_ORDER';
+export const WISHLIST_INIT = 'WISHLIST_INIT';
+export const ADD_WISHLIST = 'ADD_WISHLIST';
+export const WISHLIST_REMOVE = 'WISHLIST_REMOVE';
+
 
 
 
