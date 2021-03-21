@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchBestDealProductsRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions/index';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchBestDealProductsRequest, fetchTimeEndRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions/index';
 import { Link } from 'react-router-dom';
 import CountDown from './CountDown';
 
@@ -40,8 +40,7 @@ class BestDeals extends Component {
     }
 
     render() {
-        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList, addCompare, removeCompare, compare } = this.props;
-
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList, addCompare, removeCompare, compare, time } = this.props;
         const { currentCategories, addToCart } = this.state;
         const settings = {
             dots: true,
@@ -87,7 +86,7 @@ class BestDeals extends Component {
                                 {/* Offer Time Wrap Start */}
                                 <div className="col mb-30">
                                     <div className="offer-time-wrap" style={{ backgroundImage: 'url(/images/bg/offer-products.jpg)' }}>
-                                        <h1><span>UP TO</span> 55%</h1>
+                                        <h1><span>UP TO</span> {time.discount} %</h1>
                                         <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                         <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
                                         <CountDown />
@@ -106,7 +105,7 @@ class BestDeals extends Component {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         const existCart = cart.find(p => p.id === item.id);
                                                         const existWishList = wishList.find(p => p.id === item.id);
-                                                        const existCompare = compare.find(p => p.id === item.id)
+                                                        const existCompare = compare.find(p => p.id === item.id);
 
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
@@ -169,7 +168,8 @@ class BestDeals extends Component {
                                                                 {category.products.map((item) => {
                                                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                                     const existCart = cart.find(p => p.id === item.id);
-
+                                                                    const existCompare = compare.find(p => p.id === item.id);
+                                                                    const existWishList = wishList.find(p => p.id === item.id);
                                                                     return (
                                                                         <div key={item.id} className="col pb-20 pt-10">
                                                                             {/* Product Start */}
@@ -181,8 +181,10 @@ class BestDeals extends Component {
                                                                                     </Link>
 
                                                                                     <div className="wishlist-compare">
-                                                                                        <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                                        <a data-tooltip="Wishlist">
+                                                                                        <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                            <i className="ti-control-shuffle" />
+                                                                                        </a>
+                                                                                        <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
                                                                                             <i className="ti-heart" />
                                                                                         </a>
                                                                                     </div>
@@ -239,7 +241,8 @@ const mapStateToProps = (state) => {
         categories: state.Ecomercial.bestdealCategories,
         cart: state.Ecomercial.cart,
         wishList: state.Ecomercial.wishList,
-        compare: state.Ecomercial.compare
+        compare: state.Ecomercial.compare,
+        time: state.Ecomercial.timeEnd
     }
 }
 
@@ -253,7 +256,7 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeCart: (id) => {
             // dispatch(removeCartRequest(id));
-            dispatch((dispatch)=>{dispatch({type: 'CART_REMOVE',id: id})});
+            dispatch((dispatch) => { dispatch({ type: 'CART_REMOVE', id: id }) });
         },
         addWishList: (product) => {
             dispatch(addWishListRequest(product));

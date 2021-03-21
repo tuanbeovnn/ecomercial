@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, fetchFeatureProductRequest, removeCartRequest, addWishListRequest, wishListRemoveRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchFeatureProductRequest, removeCartRequest, addWishListRequest, wishListRemoveRequest, addCompareRequest, compareRemoveRequest } from '../../redux/actions/index';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 class Feature extends Component {
 
@@ -61,22 +61,22 @@ class Feature extends Component {
                 aria-disabled={currentSlide === slideCount - 1 ? true : false}
                 type="button"
             >
-               <i className="icofont icofont-long-arrow-right"></i>
+                <i className="icofont icofont-long-arrow-right"></i>
             </button>
         );
         const settings = {
             dots: true,
-          
+
             infinite: true,
             speed: 500,
             slidesToShow: 4,
             slidesToScroll: 1,
-            nextArrow: <SlickArrowLeft/>,
-            prevArrow: <SlickArrowRight/>
+            nextArrow: <SlickArrowLeft />,
+            prevArrow: <SlickArrowRight />
 
         };
         const { currentCategories, addToCart } = this.state;
-        const { allProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList } = this.props;
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList, compare, addCompare, removeCompare } = this.props;
         return (
 
             <div className="product-section section mb-70">
@@ -117,6 +117,7 @@ class Feature extends Component {
                                                 const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                 const existCart = cart.find(p => p.id === item.id);
                                                 const existWishList = wishList.find(p => p.id === item.id);
+                                                const existCompare = compare.find(p => p.id === item.id)
                                                 return (
                                                     <div key={item.id} className="col pb-20 pt-10">
                                                         {/* Product Start */}
@@ -128,7 +129,9 @@ class Feature extends Component {
                                                                 </Link>
 
                                                                 <div className="wishlist-compare">
-                                                                    <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                    <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                        <i className="ti-control-shuffle" />
+                                                                    </a>
 
                                                                     <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
                                                                         <i className="ti-heart" />
@@ -179,6 +182,7 @@ class Feature extends Component {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         const existCart = cart.find(p => p.id === item.id);
                                                         const existWishList = wishList.find(p => p.id === item.id);
+                                                        const existCompare = compare.find(p => p.id === item.id)
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -190,7 +194,9 @@ class Feature extends Component {
                                                                         </Link>
 
                                                                         <div className="wishlist-compare">
-                                                                            <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                            <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                <i className="ti-control-shuffle" />
+                                                                            </a>
                                                                             <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
                                                                                 <i className="ti-heart" />
                                                                             </a>
@@ -244,7 +250,8 @@ const mapStateToProps = (state) => {
         allProducts: state.Ecomercial.productFeatureAlll,
         categories: state.Ecomercial.featureCategories,
         cart: state.Ecomercial.cart,
-        wishList: state.Ecomercial.wishList
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare
     }
 }
 
@@ -264,6 +271,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeWishList: (id) => {
             dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
         }
     }
 }

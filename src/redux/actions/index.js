@@ -495,15 +495,34 @@ export const fetchTimeEnd = (timeEnd) => {
 export const fetchTimeEndRequest = (callback) => {
     return (dispatch) => {
         return callAPI('api/product/bigdeal', 'GET', null).then(res => {
-
             if (res.data) {
-                callback(res.data)
+                callback(res.data);
+                dispatch(fetchTimeEnd(res.data));
             }
         }).catch(()=>{
             callback({})
         })
     }
 }
+
+//FETCH_BRAND
+
+// export const fetchBrand = (brands) => {
+//     return {
+//         type: Types.FETCH_BRAND,
+//         brands
+//     }
+// }
+
+// export const fetchBrandRequest = () => {
+//     return (dispatch) => {
+//         return callAPI('api/brand/list', 'GET', null).then(res => {
+//             if (res.data && res.data.success) {
+//                 dispatch(fetchBrand(res.data.details));
+//             }
+//         })
+//     }
+// }
 
 
 

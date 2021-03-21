@@ -66,7 +66,6 @@ class CountDown extends Component {
 
 const mapStateToProps = (state) => {
     return {
-
         time: state.Ecomercial.timeEnd
     }
 }

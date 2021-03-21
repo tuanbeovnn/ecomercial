@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { fetchProductByCategoriesRequest } from '../../redux/actions';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
 import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 class MobileCategories extends Component {
@@ -9,6 +9,7 @@ class MobileCategories extends Component {
         this.state = {
             products: [],
             addToCart: true,
+            tab: 0
         }
     }
     componentDidMount() {
@@ -17,7 +18,6 @@ class MobileCategories extends Component {
         // const page = (Number(this.props.match.params.page - 1)||0);
         console.log(code, page);
         const callback = (data) => {
-
             if (data) {
                 this.setState({
                     products: data.list,
@@ -70,9 +70,11 @@ class MobileCategories extends Component {
     }
     render() {
         const { products, addToCart, total, pageSize, selected } = this.state;
+        const { addCompare, removeCompare, addWishList, removeWishList, categories, cart, compare, wishList, addCart, removeCart } = this.props;
         const currentPage = Number(this.props.match.params.page) || 1;
         const totalPage = Math.ceil(total / pageSize) || '';
         const code = this.props.match.params.code;
+        
 
         return (
 
@@ -118,8 +120,8 @@ class MobileCategories extends Component {
                                         <div className="shop-top-bar">
                                             {/* Product View Mode */}
                                             <div className="product-view-mode">
-                                                <a className="active" href="#" data-target="grid"><i className="fa fa-th" /></a>
-                                                <a href="#" data-target="list"><i className="fa fa-list" /></a>
+                                                <a onClick={(e) => { e.preventDefault(); this.setState({ tab: 0 }) }} className={this.state.tab === 0 ? "active" : ""} data-target="grid"><i className="fa fa-th" /></a>
+                                                <a onClick={(e) => { e.preventDefault(); this.setState({ tab: 1 }) }} className={this.state.tab === 1 ? "active" : ""} data-target="list"><i className="fa fa-list" /></a>
                                             </div>
                                             {/* Product Showing */}
                                             {/* <div className="product-showing">
@@ -153,11 +155,24 @@ class MobileCategories extends Component {
                                 </div>
                                 {/* Shop Product Wrap Start */}
                                 {/* Shop Product Wrap Start */}
-                                <div className="shop-product-wrap grid row">
+                                <div className={this.state.tab === 0 ? "shop-product-wrap row grid" : "shop-product-wrap row list"}>
+
                                     {products.map((item, index) => {
+                                        let technicalInfo;
+                                        try {
+                                            technicalInfo = JSON.parse(item.technicalInfo);
+                                        } catch {
+                                            technicalInfo = {};
+                                        }
+                                        console.log(technicalInfo);
+                                        const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                        const existCart = cart.find(p => p.id === item.id);
+                                        const existCompare = compare.find(p => p.id === item.id);
+                                        const existWishList = wishList.find(p => p.id === item.id);
                                         return (
                                             <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
                                                 {/* Product Start */}
+
                                                 <div className="ee-product">
                                                     {/* Image */}
                                                     <div className="image">
@@ -165,20 +180,23 @@ class MobileCategories extends Component {
                                                             <img src={item.image[0]} alt={item.image} />
                                                         </Link>
                                                         <div className="wishlist-compare">
-                                                            <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                            <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                            <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                <i className="ti-control-shuffle" />
+                                                            </a>
+                                                            <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                <i className="ti-heart" />
+                                                            </a>
                                                         </div>
-                                                        <a className={addToCart ? "add-to-cart" : "add-to-cart added"} onClick={() => this.setState({ addToCart: !addToCart })}>
-                                                            <i className={addToCart ? "ti-shopping-cart" : "ti-check"} />
-                                                            <span>{addToCart ? "ADD TO CART" : "ADDED"}</span>
+                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                            <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                            <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                                         </a>
                                                     </div>
                                                     {/* Content */}
                                                     <div className="content">
                                                         {/* Category & Title */}
                                                         <div className="category-title">
-                                                            <a href="#" className="cat">Laptop</a>
-
+                                                            <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                                             <h5 className="title">
                                                                 <Link to={"/details/" + item.code}>
                                                                     {item.name}
@@ -195,22 +213,24 @@ class MobileCategories extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>{/* Product End */}
-                                                {/* Product List Start */}
+                                                </div>
+
                                                 <div className="ee-product-list">
                                                     {/* Image */}
                                                     <div className="image">
-                                                        <a href="single-product.html" className="img"><img src="/images/product/product-1.png" alt="Product Image" /></a>
+                                                        <Link className="img" to={"/details/" + item.code}>
+                                                            <img src={item.image[0]} alt={item.image} />
+                                                        </Link>
                                                     </div>
                                                     {/* Content */}
                                                     <div className="content">
                                                         {/* Category & Title */}
                                                         <div className="head-content">
                                                             <div className="category-title">
-                                                                <a href="#" className="cat">Laptop</a>
-                                                                <h5 className="title"><a href="single-product.html">Zeon Zen 4 Pro</a></h5>
+                                                                <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                <h5 className="title"><a href="single-product.html">{item.name}</a></h5>
                                                             </div>
-                                                            <h5 className="price">$295.00</h5>
+                                                            <h5 className="price">{item.price}$</h5>
                                                         </div>
                                                         <div className="left-content">
                                                             <div className="ratting">
@@ -219,13 +239,20 @@ class MobileCategories extends Component {
                                                                 })}
                                                             </div>
                                                             <div className="desc">
-                                                                <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni res eos qui ratione voluptatem sequi nesciunt</p>
+                                                                <p>{item.description}</p>
                                                             </div>
                                                             <div className="actions">
-                                                                <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                                                <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                    <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                    <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
+                                                                </a>
                                                                 <div className="wishlist-compare">
-                                                                    <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                    <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                    <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                        <i className="ti-control-shuffle" />
+                                                                    </a>
+                                                                    <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                        <i className="ti-heart" />
+                                                                    </a>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -233,15 +260,18 @@ class MobileCategories extends Component {
                                                             <div className="specification">
                                                                 <h5>Specifications</h5>
                                                                 <ul>
-                                                                    <li>Intel Core i7 Processor</li>
-                                                                    <li>Zeon Z 170 Pro Motherboad</li>
-                                                                    <li>16 GB RAM</li>
+                                                                    {Object.values(technicalInfo).map((item, index) => {// lay mang cac fields cua object
+                                                                        return (
+                                                                            <li key={index}>{item}</li>
+                                                                        )
+                                                                    })}
                                                                 </ul>
                                                             </div>
-                                                            <span className="availability">Availability: <span>In Stock</span></span>
+                                                            <span className="availability">Availability: <span>{item.status}</span></span>
                                                         </div>
                                                     </div>
-                                                </div>{/* Product List End */}
+                                                </div>
+
                                             </div>
 
                                         )
@@ -330,6 +360,10 @@ class MobileCategories extends Component {
 const mapStateToProps = (state) => {
     return {
         categories: state.Ecomercial.categories,
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare,
+        categories: state.Ecomercial.categories,
+        cart: state.Ecomercial.cart
 
     }
 }
@@ -337,6 +371,25 @@ const mapDispatchToProps = (dispatch, props) => {
     return {
         fetchProductListCategory: (code, page, callback) => {
             dispatch(fetchProductByCategoriesRequest(code, page, callback));
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            dispatch(removeCartRequest(id));
+            //dispatch((dispatch) => { dispatch({ type: 'CART_REMOVE', id: id }) });
         }
     }
 }

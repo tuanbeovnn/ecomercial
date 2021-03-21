@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { addCartRequest, addWishListRequest, fetchProductBestSellRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductBestSellRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 class BestSeller extends Component {
@@ -11,7 +11,7 @@ class BestSeller extends Component {
     }
     render() {
         const { addToCart } = this.state;
-        const { bestSellProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList } = this.props;
+        const { bestSellProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList, compare, addCompare, removeCompare } = this.props;
         return (
             <div className="product-section section mb-60">
                 <div className="container">
@@ -25,6 +25,7 @@ class BestSeller extends Component {
                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                     const existCart = cart.find(p => p.id === item.id);
                                     const existWishList = wishList.find(p => p.id === item.id);
+                                    const existCompare = compare.find(p => p.id === item.id);
                                     return (
                                         <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10" key={item.id}>
                                             {/* Product Start */}
@@ -36,7 +37,9 @@ class BestSeller extends Component {
                                                     </Link>
 
                                                     <div className="wishlist-compare">
-                                                        <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                        <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                            <i className="ti-control-shuffle" />
+                                                        </a>
                                                         <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
                                                             <i className="ti-heart" />
                                                         </a>
@@ -86,7 +89,8 @@ const mapStateToProps = (state) => {
         bestSellProducts: state.Ecomercial.bestSellProducts,
         categories: state.Ecomercial.categories,
         cart: state.Ecomercial.cart,
-        wishList: state.Ecomercial.wishList
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare
     }
 }
 
@@ -106,6 +110,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeWishList: (id) => {
             dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
         }
     }
 }

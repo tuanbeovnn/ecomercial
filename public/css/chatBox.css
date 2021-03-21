@@ -92,7 +92,7 @@ label i.chatbox-close {
 }
 
 .chat-box .desc-text {
-    color: #515365;
+    color: black;
     text-align: center;
     line-height: 25px;
     font-size: 17px;

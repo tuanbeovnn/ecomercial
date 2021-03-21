@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest } from '../redux/actions/index';
+import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest, getWishListFromLocalRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
 
@@ -84,6 +84,7 @@ class Header extends Component {
         this.props.fetchAllCategories();
         this.props.getUserFromToken();
         this.props.getCompare();
+        this.props.getWishList();
         window.onscroll = ()=>{
             if (window.scrollY > 200 && !this.state.scroll) {
                 this.setState({
@@ -121,7 +122,7 @@ class Header extends Component {
 
     render() {
         const { menus, visibleSelect, selected, openToggle, scroll, header } = this.state;
-        const { categories, user, cart,wishList } = this.props;
+        const { categories, user, cart,wishList,compare } = this.props;
         let totalQty = 0;
         cart.map((item) => {
             totalQty += item.qty;
@@ -130,7 +131,11 @@ class Header extends Component {
         wishList.map((item) => {
             totalWishList += item.qty;
         })
-      
+        let totalCompare = 0;
+        compare.map((item)=>{
+            totalCompare += item.qty;
+        })
+        
 
         const category = categories.find(c => c.code === selected);
 
@@ -298,7 +303,7 @@ class Header extends Component {
                                 <div className="header-shop-links">
                                     {/* Compare */}
                                     <Link className="header-compare" to="/compare">
-                                        <i className="ti-control-shuffle" />
+                                        <i className="ti-control-shuffle" /><span className="number">{totalCompare}</span>
                                     </Link>
                                     <Link className="header-wishlist" to="/wishlist">
                                         <i className="ti-heart" /> <span className="number">{totalWishList}</span>
@@ -335,7 +340,8 @@ const mapStateToProps = state => {
         user: state.Ecomercial.user,
         cart: state.Ecomercial.cart,
 
-        wishList: state.Ecomercial.wishList
+        wishList: state.Ecomercial.wishList,
+        compare : state.Ecomercial.compare
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
@@ -348,6 +354,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         getCompare: () => {
             dispatch(getCompareFromLocalRequest());
+        },
+        getWishList: () => {
+            dispatch(getWishListFromLocalRequest());
         },
 
     }

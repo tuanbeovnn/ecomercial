@@ -12,11 +12,6 @@ class WishListPage extends Component {
         }
     }
 
-    componentDidMount() {
-        this.props.getWishList();
-    }
-
-
     onHandleChange = (e, id) => {
         const { wishListQty } = this.state;
         const index = wishListQty.findIndex(item => item.id === id);
@@ -176,9 +171,7 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        getWishList: () => {
-            dispatch(getWishListFromLocalRequest());
-        },
+        
         removeWishList: (id) => {
             dispatch(wishListRemoveRequest(id));
         },
