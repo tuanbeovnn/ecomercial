@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
-import { getWishListFromLocalRequest, wishListRemoveRequest } from '../redux/actions';
+import { addCartRequest, getWishListFromLocalRequest, removeCartRequest, wishListRemoveRequest } from '../redux/actions';
 import { connect } from 'react-redux';
 
 class WishListPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            qty: 1
+            qty: 1,
+            wishListQty: []
 
         }
     }
@@ -16,29 +17,51 @@ class WishListPage extends Component {
     }
 
 
-    onHandleChange = (e) => {
-        e.preventDefault();
+    onHandleChange = (e, id) => {
+        const { wishListQty } = this.state;
+        const index = wishListQty.findIndex(item => item.id === id);
+        if (index === -1) {
+            wishListQty.push({ id, qty: e.target.value })
+        }
+        else {
+            wishListQty[index].qty = e.target.value;
+        }
         this.setState({
-            qty: e.target.value
+            wishListQty: [...wishListQty]
         })
 
     }
-    onMinus = () => {
-        if (this.state.qty - 1 > 0) {
-            this.setState({
-                qty: this.state.qty - 1
-            })
+    onMinus = (id) => {
+        const { wishListQty } = this.state;
+        const index = wishListQty.findIndex(item => item.id === id);
+        if (index === -1) {
+            wishListQty.push({ id, qty: 1 })
         }
+        else if (wishListQty[index].qty > 1) {
+            wishListQty[index].qty -= 1;
+        }
+        this.setState({
+            wishListQty: [...wishListQty]
+        })
     }
 
-    onPlus = () => {
+    onPlus = (id) => {
+        const { wishListQty } = this.state;
+        const index = wishListQty.findIndex(item => item.id === id);
+        if (index === -1) {
+            wishListQty.push({ id, qty: 2 })
+        }
+        else {
+            wishListQty[index].qty += 1;
+        }
         this.setState({
-            qty: this.state.qty + 1
+            wishListQty: [...wishListQty]
         })
     }
     render() {
-        const { qty } = this.state;
-        const {wishList} = this.props;
+        const { wishListQty } = this.state;
+        const { wishList, removeWishList, addCart, removeCart, cart } = this.props;
+
         console.log(wishList)
         return (
             <div>
@@ -74,7 +97,7 @@ class WishListPage extends Component {
                     <div className="container">
                         <div className="row">
                             <div className="col-12">
-                                <form action="#">
+                                <form action="#" onSubmit={e => e.preventDefault()}>
                                     <div className="cart-table table-responsive">
                                         <table className="table">
                                             <thead>
@@ -88,25 +111,37 @@ class WishListPage extends Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td className="pro-thumbnail"><a ><img src="/images/product/product-1.png" alt="Product" /></a></td>
-                                                    <td className="pro-title"><a >Zeon Zen 4 Pro</a></td>
-                                                    <td className="pro-price"><span>$295.00</span></td>
-                                                    <td className="pro-quantity">
-                                                        <div className="pro-qty">
-                                                            <span onClick={() => { this.onMinus() }} className="dec qtybtn">-</span>
-                                                            <input
-                                                                type="text"
-                                                                name="qty"
-                                                                onChange={this.onHandleChange}
-                                                                value={qty}
-                                                            />
-                                                            <span onClick={() => { this.onPlus() }} className="inc qtybtn">+</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="pro-addtocart"><button>add to cart</button></td>
-                                                    <td className="pro-remove"><a ><i className="fa fa-trash-o" /></a></td>
-                                                </tr>
+                                                {wishList.map((item, index) => {
+                                                    const wishItem = wishListQty.find(p => item.id === p.id) || {};
+                                                    const existCart = cart.find(p => p.id === item.id);
+                                                    const qty = wishItem.qty || existCart && existCart.qty || 1;
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td className="pro-thumbnail"><a ><img src={item.image && item.image[0]} alt={item.image[0]} /></a></td>
+                                                            <td className="pro-title"><a>{item.name}</a></td>
+                                                            <td className="pro-price"><span>{item.price}$</span></td>
+                                                            <td className="pro-quantity">
+                                                                <div className="pro-qty">
+                                                                    <span onClick={() => { this.onMinus(item.id) }} className="dec qtybtn">-</span>
+                                                                    <input
+                                                                        type="text"
+                                                                        name="qty"
+                                                                        onChange={e => this.onHandleChange(e, item.id)}
+                                                                        value={qty}
+                                                                    />
+                                                                    <span onClick={() => { this.onPlus(item.id) }} className="inc qtybtn">+</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="pro-addtocart">
+                                                                <button className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart({ ...item, qty }) }}>{existCart ? "ADDED" : "ADD TO CART"}
+                                                                </button>
+                                                            </td>
+
+                                                            <td onClick={() => { removeWishList(item.id) }} className="pro-remove"><a ><i className="fa fa-trash-o" /></a></td>
+                                                        </tr>
+                                                    )
+                                                })}
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -136,6 +171,7 @@ class WishListPage extends Component {
 const mapStateToProps = (state) => {
     return {
         wishList: state.Ecomercial.wishList,
+        cart: state.Ecomercial.cart
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
@@ -145,6 +181,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeWishList: (id) => {
             dispatch(wishListRemoveRequest(id));
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            dispatch(removeCartRequest(id));
         }
     }
 }

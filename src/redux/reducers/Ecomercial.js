@@ -1,27 +1,29 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL,CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE } from "../const/ActionTypes";
+import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, REMOVE_COMPARE, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL, CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE, FETCH_TIME_END, COMPARE_INIT, ADD_COMPARE } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
 const initialState = {
     categories: [],
-    featureCategories:[],
+    featureCategories: [],
     productFeatureAlll: [],
     productNew: [],
     bestSellProducts: [],
     bestdealCategories: [],
     productsBestDealAll: [],
     banners: [],
-    user:{},
+    user: {},
     cart: [],
     register: {},
-    brands:[],
-    wishList:[]
+    brands: [],
+    wishList: [],
+    timeEnd: {},
+    compare: []
 };
 
 export default (state = initialState, action) => {
-   
-    const copyState = {...state}
-    
+
+    const copyState = { ...state }
+
     switch (action.type) {
         case FETCH_CATEGORIES: {
             copyState.featureCategories = JSON.parse(JSON.stringify(action.categories));
@@ -30,21 +32,21 @@ export default (state = initialState, action) => {
             return copyState;
         }
         case FETCH_PRODUCTS_FEATURE: {
-            const index = copyState.featureCategories.findIndex(c => c.code ===action.code);
+            const index = copyState.featureCategories.findIndex(c => c.code === action.code);
             if (index !== -1) {
                 copyState.featureCategories = [...copyState.featureCategories];
                 copyState.featureCategories[index].products = action.products;
-            }else {
+            } else {
                 copyState.productFeatureAlll = action.products;
             }
             return copyState;
         }
         case FETCH_PRODUCTS_BESTDEAL: {
-            const index = copyState.bestdealCategories.findIndex(c => c.code ===action.code);
+            const index = copyState.bestdealCategories.findIndex(c => c.code === action.code);
             if (index !== -1) {
                 copyState.bestdealCategories = [...copyState.bestdealCategories];
                 copyState.bestdealCategories[index].products = action.products;
-            }else {
+            } else {
                 copyState.productsBestDealAll = action.products;
             }
             return copyState;
@@ -55,7 +57,7 @@ export default (state = initialState, action) => {
             copyState.user = data;
             return copyState;
         }
-        case USER_INIT :{
+        case USER_INIT: {
             const data = jwt_decode(action.token);
             copyState.user = data;
             return copyState;
@@ -65,59 +67,81 @@ export default (state = initialState, action) => {
             return copyState;
         }
 
-        case FETCH_PRODUCT_BESTSELL : {
-            
+        case FETCH_PRODUCT_BESTSELL: {
+
             copyState.bestSellProducts = action.productsBestSell;
             return copyState;
         }
-        case FETCH_BANNER : {
-            
+        case FETCH_BANNER: {
+
             copyState.banners = action.banner;
             return copyState;
         }
-        case CART_INIT :{
+        case CART_INIT: {
             copyState.cart = action.cart;
             return copyState;
         }
-        case CART_ADD : {
-            copyState.cart = [action.product,...copyState.cart];// copy san pham vao phan tu dau tien
-            localStorage.setItem('cart',JSON.stringify(copyState.cart));
+        case CART_ADD: {
+            copyState.cart = [action.product, ...copyState.cart];// copy san pham vao phan tu dau tien
+            localStorage.setItem('cart', JSON.stringify(copyState.cart));
             return copyState;
         }
 
-        case CART_REMOVE : {
+        case CART_REMOVE: {
             copyState.cart = copyState.cart.filter(product => product.id !== action.id);
-            localStorage.setItem('cart',JSON.stringify(copyState.cart));
+            localStorage.setItem('cart', JSON.stringify(copyState.cart));
             return copyState;
         }
-        case REGISTER : {
+        case REGISTER: {
             copyState.register = action.user;
             return copyState;
         }
-        case UPDATE_USER : {
+        case UPDATE_USER: {
             copyState.user = action.data;
             return copyState;
         }
-        case FETCH_BRAND : {
+        case FETCH_BRAND: {
             copyState.brands = action.brands;
             return copyState;
         }
 
-        case WISHLIST_INIT :{
+        case WISHLIST_INIT: {
             copyState.wishList = action.wishList;
             return copyState;
         }
-        case ADD_WISHLIST : {
-            copyState.wishList = [action.product,...copyState.wishList];// copy san pham vao phan tu dau tien
-            localStorage.setItem('wishList',JSON.stringify(copyState.wishList));
+        case ADD_WISHLIST: {
+            copyState.wishList = [action.product, ...copyState.wishList];// copy san pham vao phan tu dau tien
+            localStorage.setItem('wishList', JSON.stringify(copyState.wishList));
             return copyState;
         }
-        case WISHLIST_REMOVE : {
+        case WISHLIST_REMOVE: {
             copyState.wishList = copyState.wishList.filter(product => product.id !== action.id);
-            localStorage.setItem('wishList',JSON.stringify(copyState.wishList));
+            localStorage.setItem('wishList', JSON.stringify(copyState.wishList));
             return copyState;
         }
-        
+
+        case FETCH_TIME_END: {
+            copyState.timeEnd = action.timeEnd;
+            return copyState;
+        }
+
+        case COMPARE_INIT: {
+            copyState.compare = action.compare;
+            return copyState;
+        }
+        case ADD_COMPARE: {
+            copyState.compare.splice(2);
+            console.log(copyState.compare);
+            copyState.compare = [action.product, ...copyState.compare];// copy san pham vao phan tu dau tien
+
+            localStorage.setItem('compare', JSON.stringify(copyState.compare));
+            return copyState;
+        }
+        case REMOVE_COMPARE: {
+            copyState.compare = copyState.compare.filter(product => product.id !== action.id);
+            localStorage.setItem('compare', JSON.stringify(copyState.wishList));
+            return copyState;
+        }
         default:
             return copyState
     }

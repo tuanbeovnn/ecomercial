@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+.chatbox * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.chatbox {
+    overflow: hidden;
+    background: #f2f2f2;
+}
+
+.chatbox #click {
+    display: none;
+}
+
+.chatbox label {
+    position: fixed;
+    left: 30px;
+    bottom: 52.5px;
+    height: 55px;
+    width: 55px;
+    background: #f1d030;
+    text-align: center;
+    line-height: 55px;
+    border-radius: 50px;
+    font-size: 30px;
+    color: black;
+    cursor: pointer;
+}
+
+.chatbox label i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.4s ease;
+}
+
+label i.chatbox-close {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.chatbox #click:checked~label i.chatbox-close {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.chatbox #click:checked~label i.chatbox-open {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.chatbox .wrapper {
+    z-index: 2000343434343;
+    position: fixed;
+    left: 30px;
+    bottom: 0px;
+    max-width: 400px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.chatbox #click:checked~.wrapper {
+    opacity: 1;
+    bottom: 118px;
+    pointer-events: auto;
+}
+
+.chatbox .wrapper .head-text {
+    line-height: 60px;
+    color: black;
+    border-radius: 15px 15px 0 0;
+    padding: 0 20px;
+    font-weight: 500;
+    font-size: 20px;
+    background: #f1d030;
+}
+
+.chatbox .wrapper .chat-box {
+    padding: 20px;
+    width: 100%;
+}
+
+.chat-box .desc-text {
+    color: #515365;
+    text-align: center;
+    line-height: 25px;
+    font-size: 17px;
+    font-weight: 500;
+}
+
+.chatbox .chat-box form {
+    padding: 10px 15px;
+    margin: 20px 0;
+    border-radius: 25px;
+    border: 1px solid lightgrey;
+}
+
+.chatbox .chat-box form .field {
+    height: 50px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.chatbox .chat-box form .field:last-child {
+    margin-bottom: 15px;
+}
+
+.chatbox form .field input,
+.chatbox form .field button,
+.chatbox form .textarea textarea {
+    width: 100%;
+    height: 100%;
+    padding-left: 20px;
+    border: 1px solid lightgrey;
+    outline: none;
+    border-radius: 25px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.chatbox form .field input:focus,
+.chatbox form .textarea textarea:focus {
+    border-color: #fc83bb;
+}
+
+.chatbox form .field input::placeholder,
+.chatbox form .textarea textarea::placeholder {
+    color: silver;
+    transition: all 0.3s ease;
+}
+
+.chatbox form .field input:focus::placeholder,
+.chatbox form .textarea textarea:focus::placeholder {
+    color: lightgrey;
+}
+
+.chatbox .chat-box form .textarea {
+    height: 70px;
+    width: 100%;
+}
+
+.chatbox .chat-box form .textarea textarea {
+    height: 100%;
+    border-radius: 50px;
+    resize: none;
+    padding: 15px 20px;
+    font-size: 16px;
+}
+
+.chatbox .chat-box form .field button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: black;
+    font-size: 18px;
+    font-weight: 500;
+    background: #f1d030;
+    transition: all 0.3s ease;
+}
+
+.chatbox .chat-box form .field button:active {
+    transform: scale(0.97);
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { fetchCategoriesRequest, getUserFromStorageRequest } from '../redux/actions/index';
+import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
 
@@ -83,6 +83,7 @@ class Header extends Component {
     componentDidMount() {
         this.props.fetchAllCategories();
         this.props.getUserFromToken();
+        this.props.getCompare();
         window.onscroll = ()=>{
             if (window.scrollY > 200 && !this.state.scroll) {
                 this.setState({
@@ -120,11 +121,17 @@ class Header extends Component {
 
     render() {
         const { menus, visibleSelect, selected, openToggle, scroll, header } = this.state;
-        const { categories, user, cart } = this.props;
+        const { categories, user, cart,wishList } = this.props;
         let totalQty = 0;
         cart.map((item) => {
             totalQty += item.qty;
         })
+        let totalWishList = 0;
+        wishList.map((item) => {
+            totalWishList += item.qty;
+        })
+      
+
         const category = categories.find(c => c.code === selected);
 
         return (
@@ -251,7 +258,7 @@ class Header extends Component {
                                                     <li><a href="#">Column One</a>
                                                         <ul>
                                                             <li><a href="about-us.html">About us</a></li>
-                                                            <li><a href="best-deals.html">Best Deals</a></li>
+                                                            <li><Link to="/bestdeal-page">Best Deals</Link></li>
                                                             <li><a>Cart</a></li>
                                                             <li><a href="checkout.html">Checkout</a></li>
                                                         </ul>
@@ -294,7 +301,7 @@ class Header extends Component {
                                         <i className="ti-control-shuffle" />
                                     </Link>
                                     <Link className="header-wishlist" to="/wishlist">
-                                        <i className="ti-heart" /> <span className="number">3</span>
+                                        <i className="ti-heart" /> <span className="number">{totalWishList}</span>
                                     </Link>
 
                                     {/* Wishlist */}
@@ -326,7 +333,9 @@ const mapStateToProps = state => {
     return {
         categories: state.Ecomercial.categories,
         user: state.Ecomercial.user,
-        cart: state.Ecomercial.cart
+        cart: state.Ecomercial.cart,
+
+        wishList: state.Ecomercial.wishList
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
@@ -336,6 +345,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         getUserFromToken: () => {
             dispatch(getUserFromStorageRequest());
+        },
+        getCompare: () => {
+            dispatch(getCompareFromLocalRequest());
         },
 
     }

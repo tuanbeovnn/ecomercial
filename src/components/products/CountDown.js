@@ -1,31 +1,45 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { fetchTimeEndRequest } from '../../redux/actions';
 
-export default class CountDown extends Component {
+class CountDown extends Component {
     state = {
-        d:0,
-        h:0,
-        m:0,
-        s:0
+        d: 0,
+        h: 0,
+        m: 0,
+        s: 0
     }
     componentDidMount() {
-        const tomorrowDate = new Date();
-        tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-        this.inter = setInterval(() => {
-            const currentDate = new Date();
-            const date = Math.abs(currentDate - tomorrowDate);
-            this.setState({
-                d: Math.floor(date/1000/3600/24),
-                h :Math.floor(date/1000/3600%24),
-                m :Math.floor(date/1000/60%60),
-                s :Math.floor(date/1000%60)
-            })
-        }, 1000);
+    
+        this.props.timeEnd((data) => {
+            let tomorrow = new Date(data && data.timeEnd*1000);
+            // if (data.timeEnd)  {
+            //     tomorrow = new Date(data.timeEnd*1000);
+            // } else {
+            //     tomorrow.setDate(tomorrow.getDate() + 1);
+            // }
+            this.inter = setInterval(() => {// vong lap vo han
+                const currentDate = new Date();
+                const date = Math.abs(currentDate - tomorrow);
+
+                // console.log(time);
+                this.setState({
+                    d: Math.floor(date / 1000 / 3600 / 24),
+                    h: Math.floor(date / 1000 / 3600 % 24),
+                    m: Math.floor(date / 1000 / 60 % 60),
+                    s: Math.floor(date / 1000 % 60)
+                })
+            }, 1000);
+        });
+
     }
     componentWillUnmount() {
         clearInterval(this.inter);
     }
     render() {
-        const {d,h,m,s}= this.state
+        const { d, h, m, s } = this.state
+
+
         return (
 
             <div className="countdown">
@@ -49,3 +63,18 @@ export default class CountDown extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+
+        time: state.Ecomercial.timeEnd
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        timeEnd: (callback) => {
+            dispatch(fetchTimeEndRequest(callback));
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(CountDown);

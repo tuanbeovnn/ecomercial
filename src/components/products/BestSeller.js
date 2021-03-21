@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { addCartRequest, fetchProductBestSellRequest, removeCartRequest } from '../../redux/actions';
+import { addCartRequest, addWishListRequest, fetchProductBestSellRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 class BestSeller extends Component {
@@ -11,7 +11,7 @@ class BestSeller extends Component {
     }
     render() {
         const { addToCart } = this.state;
-        const { bestSellProducts, categories, cart, addCart, removeCart } = this.props;
+        const { bestSellProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList } = this.props;
         return (
             <div className="product-section section mb-60">
                 <div className="container">
@@ -24,6 +24,7 @@ class BestSeller extends Component {
                                 {bestSellProducts.map((item) => {
                                     const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                     const existCart = cart.find(p => p.id === item.id);
+                                    const existWishList = wishList.find(p => p.id === item.id);
                                     return (
                                         <div className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10" key={item.id}>
                                             {/* Product Start */}
@@ -36,7 +37,9 @@ class BestSeller extends Component {
 
                                                     <div className="wishlist-compare">
                                                         <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                        <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                        <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                            <i className="ti-heart" />
+                                                        </a>
                                                     </div>
                                                     <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
                                                         <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
@@ -82,7 +85,8 @@ const mapStateToProps = (state) => {
     return {
         bestSellProducts: state.Ecomercial.bestSellProducts,
         categories: state.Ecomercial.categories,
-        cart: state.Ecomercial.cart
+        cart: state.Ecomercial.cart,
+        wishList: state.Ecomercial.wishList
     }
 }
 
@@ -96,6 +100,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
         }
     }
 }

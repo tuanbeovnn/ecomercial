@@ -13,10 +13,10 @@ import AdminPage from './../components/admin/AdminPage';
 import LoginPage from './../components/admin/LoginPage';
 import ProductPage from '../components/admin/ProductPage';
 import Categories from '../components/admin/Categories';
-import LaptopCategories from '../components/categories/LaptopCategories';
 import ForgetPassword from '../module/ForgetPassword';
 import ChangePassword from '../module/ChangePassword';
 import Checkout from '../components/products/Checkout';
+import BestDealsPage from '../pages/BestDealsPage';
 
 export const routes = [
     {
@@ -65,11 +65,6 @@ export const routes = [
         main: (props) => <MobileCategories {...props}/>
     },
     {
-        path:'/laptop',
-        exact : false,
-        main: () => <LaptopCategories/>
-    },
-    {
         path:'/details/:code',
         exact : false,
         main: (props) => <SingleProductPage {...props}/>
@@ -88,6 +83,11 @@ export const routes = [
         path:'/checkout',
         exact : false,
         main: ()=> <Checkout/>
+    },
+    {
+        path:'/bestdeal-page',
+        exact : false,
+        main: ()=> <BestDealsPage/>
     }
 ];
 export const routesAdmin = [

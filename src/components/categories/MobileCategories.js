@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { fetchProductByCategoriesRequest } from '../../redux/actions';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
 class MobileCategories extends Component {
     constructor(props) {
         super(props)
@@ -14,7 +15,9 @@ class MobileCategories extends Component {
         const code = this.props.match.params.code;
         const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
         // const page = (Number(this.props.match.params.page - 1)||0);
+        console.log(code, page);
         const callback = (data) => {
+
             if (data) {
                 this.setState({
                     products: data.list,
@@ -28,18 +31,56 @@ class MobileCategories extends Component {
         this.props.fetchProductListCategory(code, page, callback);
     }
     componentDidUpdate(preProps, preState) {
-        // console.log(preProps,preState);
-        // console.log(this.props,this.state);
+        const code = this.props.match.params.code;
+        const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
+        // const page = (Number(this.props.match.params.page - 1)||0);
+        console.log(code, page);
+        console.log(preProps, preState);
+        console.log(this.props, this.state);
+
+    }
+
+    handlePageClick = (e1) => {
+        // this.setState({
+        //     selected: e1.selected
+        // })
+
+        const code = this.props.match.params.code;
+        const currentPage = Number(this.props.match.params.page) || 1;
+
+        if (e1.selected + 1 !== currentPage) {
+            const callback = (data) => {
+                if (data) {
+
+                    this.setState({
+                        products: data.list,
+                        total: data.total,
+                        currentPage: data.currentPage,
+                        pageSize: data.pageSize
+                    }, () => {
+                        this.props.history.push(`/product/${code}/${e1.selected + 1}`);
+                    })
+                }
+            }
+            this.props.fetchProductListCategory(code, e1.selected, callback);
+
+
+        }
 
     }
     render() {
-        const { products, addToCart, total, pageSize } = this.state;
+        const { products, addToCart, total, pageSize, selected } = this.state;
         const currentPage = Number(this.props.match.params.page) || 1;
         const totalPage = Math.ceil(total / pageSize) || '';
-        console.log(totalPage);
+        const code = this.props.match.params.code;
 
         return (
+
             <div>
+                {/* {selected !== undefined && selected + 1 !== currentPage ? <Redirect to={`/product/${code}/${selected + 1}`}></Redirect> : ''
+                    
+
+                } */}
                 {/* Page Banner Section Start */}
                 <div className="page-banner-section section">
                     <div className="page-banner-wrap row row-0 d-flex align-items-center ">
@@ -81,7 +122,7 @@ class MobileCategories extends Component {
                                                 <a href="#" data-target="list"><i className="fa fa-list" /></a>
                                             </div>
                                             {/* Product Showing */}
-                                            <div className="product-showing">
+                                            {/* <div className="product-showing">
                                                 <p>Showing</p>
                                                 <select name="showing" className="nice-select">
                                                     <option value={1}>8</option>
@@ -90,7 +131,7 @@ class MobileCategories extends Component {
                                                     <option value={4}>20</option>
                                                     <option value={5}>24</option>
                                                 </select>
-                                            </div>
+                                            </div> */}
                                             {/* Product Short */}
                                             <div className="product-short">
                                                 <p>Short by</p>
@@ -208,35 +249,72 @@ class MobileCategories extends Component {
                                 </div>{/* Shop Product Wrap End */}
                                 <div className="row mt-30">
                                     <div className="col">
-                                        <ul className="pagination">
+                                        <ReactPaginate
+                                            previousLabel={<><i className="fa fa-angle-left" />Back</>}// bien 2 node thanh 1 node
+                                            nextLabel={<>Next<i className="fa fa-angle-right" /></>}
+                                            breakLabel={"..."}
+                                            breakClassName={"break-me"}
+                                            // pageCount={20}
+                                            pageCount={totalPage}
+                                            marginPagesDisplayed={2}
+                                            pageRangeDisplayed={2}
+                                            onPageChange={this.handlePageClick}
+                                            containerClassName={"pagination"}
+                                            subContainerClassName={"pages pagination"}
+                                            activeClassName={"active"}
+                                            initialPage={currentPage - 1}
+                                        />
+                                        {/* <ul className="pagination">
                                             <li>
-                                                <Link to="">
+                                                <Link
+                                                    to={`/product/${code}/${currentPage - 1}`}
+                                                    onClick={(e) => {
+                                                        if (currentPage === 1) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
                                                     <i className="fa fa-angle-left" />Back
                                                 </Link>
                                             </li>
-                                            <li><Link>
-                                            </Link>1
+                                            {new Array(3).fill(0).map((item, index) => {
+                                                const page = index + 1;
+                                                return (
+                                                    <li key={index}>
+                                                        <Link to={`/product/${code}/${page}`}>
+                                                            {page}
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            })}
+
+                                            {new Array(3).fill(0).map((item, index) => {
+                                                const page = index + 1;
+                                                return (
+                                                    <li key={index}>
+                                                        <Link to={`/product/${code}/${page}`}>
+                                                            {page}
+                                                        </Link>
+                                                    </li>
+                                                )
+                                            })}
+
+
+                                            <li>
+                                                <Link
+                                                    to={`/product/${code}/${currentPage + 1}`}
+                                                    onClick={(e) => {
+                                                        if (currentPage === totalPage) {
+                                                            e.preventDefault();
+                                                        }
+                                                    }}
+                                                >
+                                                    Next<i className="fa fa-angle-right" />
+                                                </Link>
                                             </li>
-                                            <li className="active"><Link>
-
-                                            </Link>2</li>
-                                            <li><Link>
-
-                                            </Link>3</li>
-                                            <li> - - - - - </li>
-                                            <li><Link>
-
-                                            </Link>18</li>
-                                            <li><Link>
-
-                                            </Link>18</li>
-                                            <li><Link>
-
-                                            </Link>20</li>
-                                            <li><Link>
-
-                                            </Link>Next<i className="fa fa-angle-right" /></li>
                                         </ul>
+                                     */}
+
                                     </div>
                                 </div>
                             </div>

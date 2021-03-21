@@ -26,6 +26,11 @@ export const ADD_ORDER = 'ADD_ORDER';
 export const WISHLIST_INIT = 'WISHLIST_INIT';
 export const ADD_WISHLIST = 'ADD_WISHLIST';
 export const WISHLIST_REMOVE = 'WISHLIST_REMOVE';
+export const FETCH_TIME_END ='FETCH_TIME_END';
+
+export const COMPARE_INIT = 'COMPARE_INIT';
+export const ADD_COMPARE = 'ADD_COMPARE';
+export const REMOVE_COMPARE = 'REMOVE_COMPARE';
 
 
 

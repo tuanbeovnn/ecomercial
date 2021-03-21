@@ -342,7 +342,7 @@ export const updateUserRequest = (id, body, callback) => {
     return (dispatch) => {
 
         return uploadAPI('api/user/update/' + id, 'PUT', body).then(res => {
-            console.log(res);
+            
             dispatch(updateUser(res.data.details));
             if (typeof callback === 'function') {
                 callback(res.data.details)
@@ -459,10 +459,10 @@ export const addWishList = (product) => {
 }
 export const addWishListRequest = (product) => {
     return (dispatch) => {
-        // console.log(product.qty);
-        // if (!product.qty) {
-        //     product.qty = 1;
-        // }
+        console.log(product.qty);
+        if (!product.qty) {
+            product.qty = 1;
+        }
         dispatch(addWishList(product));
     }
 }
@@ -482,3 +482,76 @@ export const wishListRemoveRequest = (id) => {
     }
 }
 
+
+// fetchTimeend 
+
+export const fetchTimeEnd = (timeEnd) => {
+    return {
+        type: Types.FETCH_TIME_END,
+        timeEnd
+    }
+}
+
+export const fetchTimeEndRequest = (callback) => {
+    return (dispatch) => {
+        return callAPI('api/product/bigdeal', 'GET', null).then(res => {
+
+            if (res.data) {
+                callback(res.data)
+            }
+        }).catch(()=>{
+            callback({})
+        })
+    }
+}
+
+
+
+// compare init 
+export const getCompareFromLocal = (compare) => {
+    return {
+        type: Types.COMPARE_INIT,
+        compare
+    }
+}
+export const getCompareFromLocalRequest = () => {
+    return (dispatch) => {
+        const compareLocal = localStorage.getItem('compare');
+        if (compareLocal) {
+            dispatch(getCompareFromLocal(JSON.parse(compareLocal)));
+        }
+    }
+
+}
+
+// COMPARE
+export const addCompare = (product) => {
+    return {
+        type: Types.ADD_COMPARE,
+        product
+    }
+}
+export const addCompareRequest = (product) => {
+    return (dispatch) => {
+        console.log(product.qty);
+        if (!product.qty) {
+            product.qty = 1;
+        }
+        dispatch(addCompare(product));
+    }
+}
+
+
+
+export const compareRemove = (id) => {
+    return {
+        type: Types.REMOVE_COMPARE,
+        id
+    }
+}
+export const compareRemoveRequest = (id) => {
+
+    return (dispatch) => {
+        dispatch(compareRemove(id));
+    }
+}

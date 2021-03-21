@@ -12,7 +12,8 @@ class SingleProductPage extends Component {
             product: {},
             relatedProduct: [],
             addToCart: true,
-            qty: 1
+            qty: 1,
+            tab: 0
 
         }
     }
@@ -34,7 +35,7 @@ class SingleProductPage extends Component {
     }
 
     componentDidUpdate(preProps, preState) {
-        console.log(preProps, preState);
+
         if (preProps.match.params.code !== this.props.match.params.code) {
             const code = this.props.match.params.code;
             const callback = (data) => {
@@ -50,7 +51,7 @@ class SingleProductPage extends Component {
             }
             this.props.fetchProductDetails(code, callback);
         }
-        console.log(this.props, this.state);
+
     }
 
 
@@ -79,6 +80,14 @@ class SingleProductPage extends Component {
         const { product, relatedProduct, qty } = this.state;
 
         const { categories, cart, addCart, removeCart } = this.props;
+        console.log(product);
+        let technicalInfo;
+        try {
+            technicalInfo = JSON.parse(product.technicalInfo);
+        } catch {
+            technicalInfo = {};
+        }
+        console.log(technicalInfo);
         const existCart = cart.find(p => p.id === product.id);
 
         const categoryProduct = categories && categories.find(cate => cate.code === product.categoryCode);
@@ -175,7 +184,7 @@ class SingleProductPage extends Component {
                                             <Slider ref={s => this.slider2 = s} key='imageThumb'{...settings2} >
                                                 {product.image.map((item, index) => {
                                                     return (
-                                                        <div className="thumb-image">
+                                                        <div key={index} className="thumb-image">
                                                             <img key={index} src={item} alt={item} />
                                                         </div>
                                                     )
@@ -268,12 +277,18 @@ class SingleProductPage extends Component {
                         <div className="row">
                             <div className="col-lg-10 col-12 ml-auto mr-auto">
                                 <ul className="single-product-tab-list nav">
-                                    <li><a href="#product-description" className="active" data-toggle="tab">description</a></li>
-                                    <li><a href="#product-specifications" data-toggle="tab">specifications</a></li>
-                                    <li><a href="#product-reviews" data-toggle="tab">reviews</a></li>
+                                    <li>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 0 }) }} className={this.state.tab === 0 ? "active" : ""} >description</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 1 }) }} className={this.state.tab === 1 ? "active" : ""}>specifications</a>
+                                    </li>
+                                    <li>
+                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 2 }) }} className={this.state.tab === 2 ? "active" : ""}>reviews</a>
+                                    </li>
                                 </ul>
                                 <div className="single-product-tab-content tab-content">
-                                    <div className="tab-pane fade show active" id="product-description">
+                                    <div className={this.state.tab === 0 ? "tab-pane fade show active" : "tab-pane fade"} id="product-description">
                                         <div className="row">
                                             <div className="single-product-description-content col-lg-8 col-12">
                                                 <h4>Introducing Flex 3310</h4>
@@ -288,19 +303,18 @@ class SingleProductPage extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="tab-pane fade" id="product-specifications">
+                                    <div className={this.state.tab === 1 ? "tab-pane fade show active" : "tab-pane fade"} id="product-specifications">
                                         <div className="single-product-specification">
                                             <ul>
-                                                <li>Full HD Camcorder</li>
-                                                <li>Dual Video Recording</li>
-                                                <li>X type battery operation</li>
-                                                <li>Full HD Camcorder</li>
-                                                <li>Dual Video Recording</li>
-                                                <li>X type battery operation</li>
+                                                {Object.values(technicalInfo).map((item, index) => {// lay mang cac fields cua object
+                                                    return (
+                                                        <li key={index}>{item}</li>
+                                                    )
+                                                })}
                                             </ul>
                                         </div>
                                     </div>
-                                    <div className="tab-pane fade" id="product-reviews">
+                                    <div className={this.state.tab === 2 ? "tab-pane fade show active" : "tab-pane fade"} id="product-reviews">
                                         <div className="product-ratting-wrap">
                                             <div className="pro-avg-ratting">
                                                 <h4>4.5 <span>(Overall)</span></h4>

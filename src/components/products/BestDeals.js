@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, addWishListRequest, fetchBestDealProductsRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions/index';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchBestDealProductsRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions/index';
 import { Link } from 'react-router-dom';
 import CountDown from './CountDown';
 
@@ -11,14 +11,14 @@ class BestDeals extends Component {
     state = {
         currentCategories: 0,
         addToCart: true,
-        
+
     }
     componentDidMount() {
         //call all categories [{id:1, name: 'Laptop'}];
         //  goi list product all ve: all ProductFeature;
         //=> kich laptop => sp cuua laptop  => luu vao cateogries [{id: 1, name: 'Laptop', prodcts: [...]}]
         this.props.fetchProducts();
-        
+
 
     }
 
@@ -26,7 +26,7 @@ class BestDeals extends Component {
         //goji sp categories nay ve.
         const { categories } = this.props;
 
-      
+
         const index = categories.findIndex(c => c.code === currentCategories);
 
         if (index != -1 && !categories[index].products) {
@@ -40,8 +40,8 @@ class BestDeals extends Component {
     }
 
     render() {
-        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList } = this.props;
-        
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList, addCompare, removeCompare, compare } = this.props;
+
         const { currentCategories, addToCart } = this.state;
         const settings = {
             dots: true,
@@ -90,7 +90,7 @@ class BestDeals extends Component {
                                         <h1><span>UP TO</span> 55%</h1>
                                         <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                         <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
-                                        <CountDown/>
+                                        <CountDown />
                                     </div>
                                 </div>{/* Offer Time Wrap End */}
                                 {/* Product Tab Content Start */}
@@ -106,7 +106,8 @@ class BestDeals extends Component {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         const existCart = cart.find(p => p.id === item.id);
                                                         const existWishList = wishList.find(p => p.id === item.id);
-                                                        
+                                                        const existCompare = compare.find(p => p.id === item.id)
+
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -118,10 +119,12 @@ class BestDeals extends Component {
                                                                             <img src={item.image && item.image[0]} alt={item.image && item.image[0]} />
                                                                         </Link>
                                                                         <div className="wishlist-compare">
-                                                                            <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
+                                                                            <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                <i className="ti-control-shuffle" />
+                                                                            </a>
                                                                             <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
-                                                                                <i className="ti-heart"/>
-                                                                            </a> 
+                                                                                <i className="ti-heart" />
+                                                                            </a>
                                                                         </div>
 
                                                                         <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
@@ -235,7 +238,8 @@ const mapStateToProps = (state) => {
         allProducts: state.Ecomercial.productsBestDealAll,
         categories: state.Ecomercial.bestdealCategories,
         cart: state.Ecomercial.cart,
-        wishList: state.Ecomercial.wishList
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare
     }
 }
 
@@ -248,13 +252,20 @@ const mapDispatchToProps = (dispatch, props) => {
             dispatch(addCartRequest(product));
         },
         removeCart: (id) => {
-            dispatch(removeCartRequest(id));
+            // dispatch(removeCartRequest(id));
+            dispatch((dispatch)=>{dispatch({type: 'CART_REMOVE',id: id})});
         },
         addWishList: (product) => {
             dispatch(addWishListRequest(product));
         },
         removeWishList: (id) => {
             dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
         }
 
     }

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Chat } from 'react-chat-popup';
+import ChatBoxPopup from '../components/chat/ChatBoxPopup';
 
 class Footer extends Component {
     render() {
@@ -153,7 +155,8 @@ class Footer extends Component {
                         </div>{/* Popup Subscribe Form Wrap End */}
                     </div>{/* Popup Subscribe Wrap End */}
                 </div>{/* Popup Subscribe Section End */}
-
+                {/* <Chat /> */}
+                <ChatBoxPopup/>
             </div>
         );
     }

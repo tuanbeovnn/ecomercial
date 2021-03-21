@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Slider from 'react-slick';
 import { connect } from 'react-redux';
-import { addCartRequest, fetchFeatureProductRequest, removeCartRequest } from '../../redux/actions/index';
+import { addCartRequest, fetchFeatureProductRequest, removeCartRequest, addWishListRequest, wishListRemoveRequest } from '../../redux/actions/index';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 class Feature extends Component {
 
@@ -36,19 +36,47 @@ class Feature extends Component {
 
     }
     render() {
+        const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-prev slick-arrow" +
+                    (currentSlide === 0 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === 0 ? true : false}
+                type="button"
+            >
+                <i className="icofont icofont-long-arrow-left" />
+            </button>
+        );
+        const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-next slick-arrow" +
+                    (currentSlide === slideCount - 1 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === slideCount - 1 ? true : false}
+                type="button"
+            >
+               <i className="icofont icofont-long-arrow-right"></i>
+            </button>
+        );
         const settings = {
             dots: true,
-            currentSlide: 0,
+          
             infinite: true,
             speed: 500,
             slidesToShow: 4,
             slidesToScroll: 1,
-            nextArrow: <button type="button" className="slick-next slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-right"></i></button>,
-            prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
+            nextArrow: <SlickArrowLeft/>,
+            prevArrow: <SlickArrowRight/>
 
         };
         const { currentCategories, addToCart } = this.state;
-        const { allProducts, categories, cart, addCart, removeCart } = this.props;
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, removeWishList, wishList } = this.props;
         return (
 
             <div className="product-section section mb-70">
@@ -88,6 +116,7 @@ class Feature extends Component {
                                             {allProducts.map((item) => {
                                                 const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                 const existCart = cart.find(p => p.id === item.id);
+                                                const existWishList = wishList.find(p => p.id === item.id);
                                                 return (
                                                     <div key={item.id} className="col pb-20 pt-10">
                                                         {/* Product Start */}
@@ -100,7 +129,10 @@ class Feature extends Component {
 
                                                                 <div className="wishlist-compare">
                                                                     <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                    <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+
+                                                                    <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                        <i className="ti-heart" />
+                                                                    </a>
                                                                 </div>
                                                                 <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
                                                                     <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
@@ -146,6 +178,7 @@ class Feature extends Component {
                                                     {categ.products && categ.products.map((item) => {
                                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                                         const existCart = cart.find(p => p.id === item.id);
+                                                        const existWishList = wishList.find(p => p.id === item.id);
                                                         return (
                                                             <div key={item.id} className="col pb-20 pt-10">
                                                                 {/* Product Start */}
@@ -158,7 +191,9 @@ class Feature extends Component {
 
                                                                         <div className="wishlist-compare">
                                                                             <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                            <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                                            <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                                <i className="ti-heart" />
+                                                                            </a>
                                                                         </div>
                                                                         <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
                                                                             <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
@@ -208,7 +243,8 @@ const mapStateToProps = (state) => {
     return {
         allProducts: state.Ecomercial.productFeatureAlll,
         categories: state.Ecomercial.featureCategories,
-        cart: state.Ecomercial.cart
+        cart: state.Ecomercial.cart,
+        wishList: state.Ecomercial.wishList
     }
 }
 
@@ -222,6 +258,12 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
         }
     }
 }
