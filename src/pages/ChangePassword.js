@@ -81,11 +81,9 @@ const ChangePassword = (props) => {
     console.log(user)
     console.log(typeof user)
 if(user && user !== "" && user !== null && user !== undefined) {
-    return (
-  
-        <div>
-          
-                    <div className="container">
+    return ( 
+    <div>
+           <div className="container">
                         <div className="row">
                             {/* Register */}
                             <div className="col-md-6 col-12 d-flex">

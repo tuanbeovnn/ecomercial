@@ -15,6 +15,7 @@ import ProductPage from '../components/admin/ProductPage';
 import Categories from '../components/admin/Categories';
 import LaptopCategories from '../components/categories/LaptopCategories';
 import ChangePassword from '../pages/ChangePassword';
+import MyForm from '../module/MyForm';
 
 export const routes = [
     {
@@ -31,6 +32,11 @@ export const routes = [
         path: '/changepassword',
         exact: true,
         main: () => <ChangePassword/>
+    },
+    {
+        path: '/formDemo',
+        exact: true,
+        main: () => <MyForm/>
     },
     {
         path:'/myaccount',

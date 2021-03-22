@@ -32,6 +32,24 @@ class SingleProductPage extends Component {
         this.props.fetchProductDetails(code, callback);
 
     }
+
+    componentDidUpdate() {
+        const code = this.props.match.params.code;
+        const callback = (data) => {
+            if (data) {
+                const product = data;
+                const relatedProduct = data.relatedProduct;
+                
+                this.setState({
+                    product,
+                    relatedProduct
+                })
+            }
+        }
+        this.props.fetchProductDetails(code, callback);
+
+    }
+
     onHandleChange = (e) => {
         e.preventDefault();
         this.setState({

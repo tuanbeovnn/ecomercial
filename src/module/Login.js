@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { loginRequest } from "../redux/actions";
 import { connect } from 'react-redux';
 import { Redirect, useHistory } from 'react-router-dom';
+import LoginFacebook from "./LoginFacebook";
+import LoginGoogle from "./LoginGoogle";
 
 class Login extends Component {
 
@@ -52,8 +54,17 @@ class Login extends Component {
             )
         }
     }
+
     render() {
+       
         const {error,success} = this.state;
+        // const {userData}  = this.props; 
+        // console.log(userData)
+        let loginFBData =  JSON.parse(localStorage.getItem("loginFB")); 
+   
+        if(loginFBData && loginFBData.accessToken){
+            
+        }
         return (
             <div>
                 {success ? <Redirect to="/"/> : ''}
@@ -164,15 +175,11 @@ class Login extends Component {
                             <div className="col-md-5 col-12 d-flex">
                                 <div className="ee-social-login">
                                     <h3>Also you can login with...</h3>
-                                    <a href="#" className="facebook-login">
-                                        Login with <i className="fa fa-facebook" />
-                                    </a>
+                                   <LoginFacebook/>
                                     <a href="#" className="twitter-login">
                                         Login with <i className="fa fa-twitter" />
                                     </a>
-                                    <a href="#" className="google-plus-login">
-                                        Login with <i className="fa fa-google-plus" />
-                                    </a>
+                                   <LoginGoogle/>
                                 </div>
                             </div>
                         </div>

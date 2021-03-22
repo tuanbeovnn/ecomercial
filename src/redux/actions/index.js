@@ -1,5 +1,6 @@
 import axios from 'axios';
 import callAPI from '../../utils/apiCaller';
+import { openNotification } from '../../utils/Notification/Notification';
 import * as Types from './../const/ActionTypes';
 //feature
 export const fetchFeatureProduct = (products, code) => {
@@ -124,6 +125,7 @@ export const loginRequest = (body, callback) => {
 }
 
 
+
 // change password - 
 export const changePassword = () => {
     return {
@@ -132,7 +134,7 @@ export const changePassword = () => {
     }
 }
 export const changePasswordRequest = (body, callback) => {
-    console.log(body, "body")
+   
     return async dispatch => {
         try {
             let { data, status, ...res } = await axios({
@@ -163,6 +165,35 @@ export const changePasswordRequest = (body, callback) => {
     //      });
     // }
 }
+
+// change password - 
+export const userRegister = () => {
+    return {
+        type: Types.USER_REGISTER,
+        
+    }
+}
+export const userRegisterRequest = (body, callback) => {
+   
+    return async dispatch => {
+        try {
+            let { data, status, ...res } = await axios({
+                url: 'http://saunakovaasa.ml:8080/api/auth/register',
+                method: 'POST',
+                data: body
+            });
+            if (status === 200) {
+                  dispatch(userRegister())
+                  openNotification("success", "Register Successfully", "Your account has been register successfully !! ")
+            }
+        } catch (err) {
+            console.log(err.response.data);
+            openNotification("error", "Register Failed", "Register failed, please try again !! ")
+        }
+    }
+}
+
+
 // PRODUCT DETAILS
 export const fetchDetails = (data) => {
     return {
@@ -214,7 +245,6 @@ export const fetchProductByCategories = (products) => {
         products
     }
 }
-
 export const fetchProductByCategoriesRequest = (code, callback) => {
     return (dispatch) => {
         return callAPI('api/product/list?code=' + code, 'GET', null).then(res => {
@@ -282,6 +312,30 @@ export const removeCartRequest = (id) => {
         dispatch(removeCart(id));
     }
 }
+//get stores
+
+export const fetchStoreLocation = (data) => {
+    return {
+        type: Types.FETCH_STORE_LOCATION,
+        data
+    }
+}
+export const fetchStoreLocationRequest = (callback) => {
+    return (dispatch) => {
+        return callAPI('api/store/list', 'GET', null).then(res => {
+            console.log(res); 
+            dispatch(fetchStoreLocation(res.data.details));
+            if (typeof callback === 'function') {
+                callback(res.data.details)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}
+
 
 
 

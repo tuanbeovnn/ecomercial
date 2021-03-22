@@ -167,6 +167,9 @@ class Header extends Component {
                                         <Link to="/login">
                                             <i className="icofont icofont-login d-none" style={{width: "100%", position: "relative"}} /> <span>Login</span>
                                         </Link>
+                                        <Link to="/register">
+                                            <i className="icofont icofont-login d-none" style={{width: "100%", position: "relative"}} /> <span>Register</span>
+                                        </Link>
                                     </div>
                                 }
                             </div>
