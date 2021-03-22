@@ -574,3 +574,31 @@ export const compareRemoveRequest = (id) => {
         dispatch(compareRemove(id));
     }
 }
+
+// GET ROOM INFO
+
+export const createRoomRequest = (body,callback) => {
+    return (dispatch) => {
+        return callAPI('api/room/add', 'POST', body).then(res => {
+            if (res.data) {
+                callback(res.data);
+            }
+        }).catch(()=>{
+            callback()
+        })
+    }
+}
+
+
+// GET ROOM INFO
+
+export const sendMessageRequest = (body,callback) => {
+    return (dispatch) => {
+        return callAPI('api/message', 'POST', body).then(res => {
+            if (res.data) {
+            }
+        }).catch(()=>{
+         
+        })
+    }
+}

@@ -32,6 +32,9 @@ export const COMPARE_INIT = 'COMPARE_INIT';
 export const ADD_COMPARE = 'ADD_COMPARE';
 export const REMOVE_COMPARE = 'REMOVE_COMPARE';
 
+export const CREATE_ROOM = 'CREATE_ROOM';
+export const FETCH_MESSAGE = 'FETCH_MESSAGE';
+
 
 
 

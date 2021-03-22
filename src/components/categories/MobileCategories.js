@@ -16,7 +16,7 @@ class MobileCategories extends Component {
         const code = this.props.match.params.code;
         const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
         // const page = (Number(this.props.match.params.page - 1)||0);
-        console.log(code, page);
+      
         const callback = (data) => {
             if (data) {
                 this.setState({
@@ -30,15 +30,14 @@ class MobileCategories extends Component {
 
         this.props.fetchProductListCategory(code, page, callback);
     }
-    componentDidUpdate(preProps, preState) {
-        const code = this.props.match.params.code;
-        const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
-        // const page = (Number(this.props.match.params.page - 1)||0);
-        console.log(code, page);
-        console.log(preProps, preState);
-        console.log(this.props, this.state);
+    // componentDidUpdate(preProps, preState) {
+    //     const code = this.props.match.params.code;
+    //     const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
+    //     // const page = (Number(this.props.match.params.page - 1)||0);
+    //     console.log(preProps, preState);
+    //     console.log(this.props, this.state);
 
-    }
+    // }
 
     handlePageClick = (e1) => {
         // this.setState({
@@ -164,7 +163,6 @@ class MobileCategories extends Component {
                                         } catch {
                                             technicalInfo = {};
                                         }
-                                        console.log(technicalInfo);
                                         const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
                                         const existCart = cart.find(p => p.id === item.id);
                                         const existCompare = compare.find(p => p.id === item.id);

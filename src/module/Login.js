@@ -158,7 +158,7 @@ class Login extends Component {
                                                     onChange={this.onChange}
                                                 />
                                                 <label htmlFor="remember_me">Remember me</label>
-                                                <Link to="/forgot">Forgotten password</Link>
+                                                <Link to="/forgot">Forgot Your Password ?</Link>
                                             </div>
                                             <div className="col-12">
                                                 <input type="submit" defaultValue="LOGIN" />
