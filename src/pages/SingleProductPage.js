@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchProductDetailsRequest, removeCartRequest, addCartRequest } from "../redux/actions";
+import { fetchProductDetailsRequest, removeCartRequest, addCartRequest, addWishListRequest, wishListRemoveRequest, addCompareRequest, compareRemoveRequest } from "../redux/actions";
 import Slider from 'react-slick';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { Skeleton, Space, Divider, Form, Radio } from 'antd';
@@ -79,7 +79,7 @@ class SingleProductPage extends Component {
     render() {
         const { product, relatedProduct, qty } = this.state;
 
-        const { categories, cart, addCart, removeCart } = this.props;
+        const { categories, cart, addCart, removeCart, compare, wishList, addWishList,removeWishList, addCompare,removeCompare } = this.props;
         console.log(product);
         let technicalInfo;
         try {
@@ -124,7 +124,8 @@ class SingleProductPage extends Component {
             focusOnSelect: true
 
         };
-
+        const existCompare = compare.find(p => p.id === product.id);
+        const existWishList = wishList.find(p => p.id === product.id);
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -251,8 +252,14 @@ class SingleProductPage extends Component {
                                                 <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
                                             </a>
                                             <div className="wishlist-compare">
-                                                <a data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                <a data-tooltip="Wishlist"><i className="ti-heart" /></a>
+                                                <div className="wishlist-compare">
+                                                    <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(product.id) : addCompare(product) }}>
+                                                        <i className="ti-control-shuffle" />
+                                                    </a>
+                                                    <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(product.id) : addWishList(product) }}>
+                                                        <i className="ti-heart" />
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="tags">
@@ -525,7 +532,9 @@ class SingleProductPage extends Component {
 const mapStateToProps = (state) => {
     return {
         categories: state.Ecomercial.categories,
-        cart: state.Ecomercial.cart
+        cart: state.Ecomercial.cart,
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare,
 
     }
 }
@@ -539,7 +548,19 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
-        }
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
+        },
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SingleProductPage);

@@ -1,55 +1,52 @@
 import React, { Component } from 'react';
 import Footer from './module/Footer';
 import Header from './module/Header';
-import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { routes, routesAdmin } from './routers/routes';
 import AdminPage from './components/admin/AdminPage';
 
 class App extends Component {
     render() {
         return (
-            <div>
-                <Router>
-                    <Switch>
-                        <Route path="/admin">
-                            <AdminPage>
-                                <Switch>
-                                    {routesAdmin.map((route, index) => {
-                                        return (
-                                            <Route
-                                                key={index}
-                                                path={"/admin" + route.path}
-                                                exact={route.exact}
-                                                component={route.main}
-                                            />
-                                        )
-                                    })}
-                                </Switch>
-                            </AdminPage>
 
-                        </Route>
-
-                        <Route path="/">
-                            <Header />
+            <Router>
+                <Switch>
+                    <Route path="/admin">
+                        <AdminPage>
                             <Switch>
-                                {routes.map((route, index) => {
+                                {routesAdmin.map((route, index) => {
                                     return (
                                         <Route
                                             key={index}
-                                            path={route.path}
+                                            path={"/admin" + route.path}
                                             exact={route.exact}
                                             component={route.main}
                                         />
                                     )
                                 })}
                             </Switch>
-                            <Footer />
-                        </Route>
-                    </Switch>
-                </Router>
+                        </AdminPage>
 
+                    </Route>
 
-            </div>
+                    <Route path="/">
+                        <Header />
+                        <Switch>
+                            {routes.map((route, index) => {
+                                return (
+                                    <Route
+                                        key={index}
+                                        path={route.path}
+                                        exact={route.exact}
+                                        component={route.main}
+                                    />
+                                )
+                            })}
+                        </Switch>
+                        <Footer />
+                    </Route>
+                </Switch>
+            </Router>
         );
     }
 }

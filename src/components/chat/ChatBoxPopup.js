@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { createRoomRequest, sendMessageRequest } from '../../redux/actions';
+import { createRoomRequest, getMessageRequest, sendMessageRequest } from '../../redux/actions';
 import SocketManager from '../../utils/SocketManager';
 import { connect } from 'react-redux';
 
@@ -11,6 +11,29 @@ class ChatBoxPopup extends Component {
 
     componentDidMount() {
         SocketManager.instance.connectSocket();
+        const roomId = localStorage.getItem("roomChat");
+        if (roomId) {
+            this.setState({
+                roomId: roomId,
+            })
+            SocketManager.instance.onChannel(roomId, (e => {
+               
+                this.state.messages.push(e.data);
+                this.setState({
+                    messages: [...this.state.messages]
+                })
+                this.scrollToBottom();
+            }));
+            this.props.getMessage(roomId, (data)=>{
+
+                if (data && data.length) {
+                    this.setState({
+                        messages : data
+                    })
+                }
+                this.scrollToBottom();
+            })
+        }
     }
     handleSubmit = (e) => {
         e.preventDefault();
@@ -21,13 +44,15 @@ class ChatBoxPopup extends Component {
                 this.setState({
                     roomId: data.details.roomId,
                 })
-                SocketManager.instance.onChannel(data.details.roomId, (e => {
-                    console.log(e);
+                SocketManager.instance.onChannel(data.details.roomId, (e => {// listening va save storage
+                    
                     this.state.messages.push(e.data);
                     this.setState({
                         messages: [...this.state.messages]
                     })
+                    this.scrollToBottom();
                 }));
+                localStorage.setItem("roomChat", data.details.roomId);
             }
         })
 
@@ -48,6 +73,17 @@ class ChatBoxPopup extends Component {
             [e.target.name]: e.target.value
         })
     }
+
+    scrollToBottom = ()=>{
+        this.setTimeOut = setTimeout(() => {
+            document.getElementById('bottomMessage').scrollIntoView();
+        }, 200);
+        
+    }
+    componentWillUnmount() {
+        clearTimeout(this.setTimeOut);
+    }
+
 
     render() {
         console.log(this.state.messages);
@@ -93,34 +129,37 @@ class ChatBoxPopup extends Component {
                                     {this.state.messages.map((item, index) => {
                                         return (
                                             item.idUser ?
-                                                <div key={index} className="chat-message-right pb-4" style={{width:'100%', overflowX:'hidden'}}>
+                                                <div key={index} className="chat-message-right pb-4" style={{ width: '100%', overflowX: 'hidden', display:'flex', flexDirection:'row-reverse' }}>
                                                     <div>
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar1.png" className="rounded-circle mr-1" alt="Chris Wood" width={40} height={40} />
                                                         <div className="text-muted small text-nowrap mt-2">2:33 am</div>
                                                     </div>
-                                                    <div className="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" style={{overflow:'hidden', wordWrap:'break-word'}}>
+                                                    <div className="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" style={{ overflow: 'hidden', wordWrap: 'break-word' }}>
                                                         <div className="font-weight-bold mb-1">You</div>
                                                         {item.content}
                                                     </div>
 
                                                 </div>
                                                 :
-                                                <div key={index} className="chat-message-left pb-4" style={{width:'100%', overflowX:'hidden'}}>
+                                                <div key={index} className="chat-message-left pb-4" style={{ width: '100%', overflowX: 'hidden',display:'flex' }}>
                                                     <div>
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" className="rounded-circle mr-1" alt="Sharon Lessman" width={40} height={40} />
                                                         <div className="text-muted small text-nowrap mt-2">2:34 am</div>
                                                     </div>
-                                                    <div className="flex-shrink-1 bg-light rounded py-2 px-3 ml-3" style={{overflow:'hidden',wordWrap:'break-word'}}>
+                                                    <div className="flex-shrink-1 bg-light rounded py-2 px-3 ml-3" style={{ overflow: 'hidden', wordWrap: 'break-word' }}>
 
                                                         <div className="font-weight-bold mb-1">Sharon Lessman</div>
-                                                        
-                                                            {item.content}
-                                                    
+
+                                                        {item.content}
+
 
                                                     </div>
                                                 </div>
                                         )
                                     })}
+                                    <div id = "bottomMessage">
+
+                                    </div>
                                 </div>
                             </div>
                             <form onSubmit={this.sendMessage} style={{ padding: 0, border: 0 }}>
@@ -161,6 +200,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         sendMessage: (body, callback) => {
             dispatch(sendMessageRequest(body, callback));
+        },
+        getMessage : (roomId, callback) =>{
+            dispatch(getMessageRequest(roomId, callback));
         }
     }
 }

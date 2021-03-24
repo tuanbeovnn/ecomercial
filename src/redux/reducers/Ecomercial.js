@@ -1,4 +1,4 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, REMOVE_COMPARE, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL, CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE, FETCH_TIME_END, COMPARE_INIT, ADD_COMPARE } from "../const/ActionTypes";
+import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, REMOVE_COMPARE, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL, CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE, FETCH_TIME_END, COMPARE_INIT, ADD_COMPARE, FETCH_STORE } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
@@ -17,7 +17,8 @@ const initialState = {
     brands: [],
     wishList: [],
     timeEnd: {},
-    compare: []
+    compare: [],
+    stores : []
 };
 
 export default (state = initialState, action) => {
@@ -141,6 +142,11 @@ export default (state = initialState, action) => {
             copyState.compare = copyState.compare.filter(product => product.id !== action.id);
             localStorage.setItem('compare', JSON.stringify(copyState.wishList));
             return copyState;
+        }
+        case FETCH_STORE : {
+          
+           copyState.stores = action.stores;
+           return copyState;
         }
         default:
             return copyState

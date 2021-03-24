@@ -56,17 +56,17 @@ class Footer extends Component {
                                         <h4 className="widget-title">CONTACT INFO</h4>
                                         <p className="contact-info">
                                             <span>Address</span>
-                You address will be here <br />
-                Lorem Ipsum text                      </p>
+                Palosaarentie 62 <br />
+                Vaasa, Finland                      </p>
                                         <p className="contact-info">
                                             <span>Phone</span>
-                                            <a href="tel:01234567890">01234 567 890</a>
-                                            <a href="tel:01234567891">01234 567 891</a>
+                                            <a>046 546 4028</a>
+                                           
                                         </p>
                                         <p className="contact-info">
                                             <span>Web</span>
-                                            <a href="mailto:info@example.com">info@example.com</a>
-                                            <a href="#">www.example.com</a>
+                                            <a href="mailto:info@example.com">info@saunakovaasa.ml</a>
+                                            <a href="http://saunakovaasa.ml/">http://saunakovaasa.ml</a>
                                         </p>
                                     </div>
                                 </div>{/* Footer Widget End */}
@@ -118,7 +118,7 @@ class Footer extends Component {
                             <div className="row">
                                 {/* Footer Copyright */}
                                 <div className="col-lg-6 col-12">
-                                    <div className="footer-copyright"><p>© Copyright, 2018 All Rights Reserved by <a href="https://freethemescloud.com/">Free themes Cloud</a></p></div>
+                                    <div className="footer-copyright"><p>© Copyright, 2021 All Rights Reserved by <a href="http://saunakovaasa.ml/">Tuan Nguyen</a></p></div>
                                 </div>
                                 {/* Footer Payment Support */}
                                 <div className="col-lg-6 col-12">

@@ -17,6 +17,7 @@ import ForgetPassword from '../module/ForgetPassword';
 import ChangePassword from '../module/ChangePassword';
 import Checkout from '../components/products/Checkout';
 import BestDealsPage from '../pages/BestDealsPage';
+import TemplateAdmin from '../components/chat/TemplateAdmin';
 
 export const routes = [
     {
@@ -89,6 +90,7 @@ export const routes = [
         exact : false,
         main: ()=> <BestDealsPage/>
     }
+    
 ];
 export const routesAdmin = [
     {
@@ -111,4 +113,9 @@ export const routesAdmin = [
         exact: false,
         main: () => <Categories/>
     },
+    {
+        path:'/chat-box',
+        exact : false,
+        main: ()=> <TemplateAdmin/>
+    }
 ];

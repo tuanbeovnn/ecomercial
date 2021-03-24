@@ -1,10 +1,12 @@
 import { FETCH_PRODUCT, FETCH_PRODUCT_FEATURE_ALL } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
+import { FETCH_ROOM } from "../const/AdminActionTypes";
 
 
 const initialState = {
     categories: [],
-    productFeatureAlll: []
+    productFeatureAlll: [],
+    getRoomMessage: []
 };
 
 export default (state = initialState, action) => {
@@ -14,6 +16,10 @@ export default (state = initialState, action) => {
         //     copyState.productFeatureAlll = action.products;
         //     return copyState;
         // }
+        case FETCH_ROOM :{
+            copyState.getRoomMessage = action.rooms;
+            return copyState;
+        }
         default:
             return copyState
     }

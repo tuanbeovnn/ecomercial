@@ -3,3 +3,5 @@ export const FETCH_PRODUCT = 'FETCH_PRODUCT';
 // export const FETCH_PRODUCTS_CATEGORY_FEATURE = 'FETCH_PRODUCTS_CATEGORY_FEATURE';
 // export const LOG_IN = 'LOG_IN';
 // export const DETAILS = 'DETAILS';
+
+export const FETCH_ROOM = 'FETCH_ROOM';

@@ -188,7 +188,7 @@ class Header extends Component {
                                         <Link to="/myaccount">
                                             <i className="icofont icofont-user-alt-7" /> <span>{user.name}</span>
                                         </Link>
-                                        <a href="#" onClick={this.handleLogout}>
+                                        <a onClick={this.handleLogout}>
                                             <i className="icofont icofont-logout" /> <span>Logout</span>
                                         </a>
                                     </div>

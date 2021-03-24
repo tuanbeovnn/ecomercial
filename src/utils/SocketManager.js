@@ -53,7 +53,7 @@ class SocketManager {
     const socket = new WebSocket(subsribeUrl); //create wrapper
     const client = Stomp.over(socket); //connect using your client
     this.setConnectionStatus(WAITING_CONNECTION);
-    
+
     client.connect(
       {
       },

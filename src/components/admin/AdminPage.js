@@ -15,8 +15,8 @@ export default class extends Component {
         const { toggleMenu,collapse } = this.state;
         const {children} = this.props;
         return (
-            <div on className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
-                <div className = "admin">
+            <div style={{height:'100vh', overflow:'hidden'}} className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
+                <div className = "admin" style={{height:'100vh', overflow:'hidden'}}>
                     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
                         <a className="navbar-brand" href="index.html">Start Bootstrap</a><button className="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" onClick={() => this.setState({ toggleMenu: !toggleMenu })}><i className="fas fa-bars" /></button>{/* Navbar Search*/}
                         <form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
@@ -39,7 +39,7 @@ export default class extends Component {
                             </li>
                         </ul>
                     </nav>
-                    <div id="layoutSidenav">
+                    <div id="layoutSidenav" style={{height: 'calc(100% - 56px)'}}>
                         <div id="layoutSidenav_nav">
                             <nav className="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                                 <div className="sb-sidenav-menu">

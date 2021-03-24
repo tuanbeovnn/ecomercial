@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
-
-export default class StorePage extends Component {
+import { fetchStoreRequest } from '../redux/actions'
+import { connect } from 'react-redux';
+class StorePage extends Component {
+    componentDidMount() {
+        this.props.fetchStore();
+    }
     render() {
+        const { stores } = this.props;
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -36,57 +41,17 @@ export default class StorePage extends Component {
                         <div className="row">
                             {/* Single Store */}
                             <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E Australia</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
-                            </div>
-                            {/* Single Store */}
-                            <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E England</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
-                            </div>
-                            {/* Single Store */}
-                            <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E Germany</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
-                            </div>
-                            {/* Single Store */}
-                            <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E France</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
-                            </div>
-                            {/* Single Store */}
-                            <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E Canada</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
-                            </div>
-                            {/* Single Store */}
-                            <div className="col-lg-4 col-md-6 col-12 mb-70">
-                                <div className="single-store">
-                                    <h3>E&amp;E Denmark</h3>
-                                    <p>You address will be here Lorem Ipsum is simply dummy text.</p>
-                                    <p><a href="tel:01234567890">01234 567 890</a> / <a href="tel:01234567891">01234 567 891</a></p>
-                                    <p><a href="mailto:info@example.com">info@example.com</a> / <a href="#">www.example.com</a></p>
-                                </div>
+                                {stores.map((item, index) => {
+                                    return (
+                                        <div key={index} className="single-store">
+                                            <h3>{item.name}</h3>
+                                            <p>{item.address}</p>
+                                            <p><a>{item.phone}</a> / <a href="tel:01234567891">{item.phone}</a></p>
+                                            <p><a>{item.email}</a> / <a href="#">{item.website}</a></p>
+                                        </div>
+                                    )
+                                })}
+
                             </div>
                         </div>
                     </div>
@@ -95,3 +60,17 @@ export default class StorePage extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        stores: state.Ecomercial.stores,
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchStore: () => {
+            dispatch(fetchStoreRequest());
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(StorePage);

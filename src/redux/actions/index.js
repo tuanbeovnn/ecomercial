@@ -602,3 +602,34 @@ export const sendMessageRequest = (body,callback) => {
         })
     }
 }
+
+//get store
+export const fetchStore = (stores) => {
+    return {
+        type : Types.FETCH_STORE,
+        stores
+    }
+}
+export const fetchStoreRequest =() => {
+    return(dispatch) =>{
+        return callAPI('api/store/list', 'GET', null).then(res => {
+            if (res.data && res.data.success) {
+                dispatch(fetchStore(res.data.details));
+            }else {
+                dispatch(fetchStore([]));
+            }
+        })
+    }
+}
+// get message
+export const getMessageRequest = (roomId,callback) => {
+    return (dispatch) => {
+        return callAPI('api/message/list?room='+ roomId, 'GET').then(res => {
+            if (res.data) {
+                callback(res.data);
+            }
+        }).catch(()=>{
+            callback();
+        })
+    }
+}
