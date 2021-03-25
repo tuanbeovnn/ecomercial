@@ -10,6 +10,7 @@ class Checkout extends Component {
         country: 'China',
         checkTerm: false,
         currency: 'USD',
+        description:"mua",
         intent: 'sale',
         method: '',
 
@@ -34,7 +35,7 @@ class Checkout extends Component {
         const { cart } = this.props;
         console.log(cart);
 
-        const { currency, intent, method, firstName, lastName, mobile, zipCode, email, state, city, address, country } = this.state;
+        const { currency, intent, method, firstName, lastName, mobile, zipCode, email, state, city, address, country,description } = this.state;
         if (!firstName || !lastName || !mobile || !zipCode || !email || !state || !city || !address || !country) {
             let message = 'firstName is required';
             if (!lastName) message = 'New is required';
@@ -82,13 +83,13 @@ class Checkout extends Component {
                     cart.map((item) => {
                         price += item.price * item.qty;
                     })
-                    const body = { currency, intent, method, price }
+                    const body = { currency, intent, method, price,description }
                     this.props.payment(body, (data) => {
                         console.log(data);
                         // if (data.success) {
                         //     console.log(data.success);
-                        // window.location.href = data.details;
-                         window.open(data.details, '_blank');
+                        window.location.href = data.details;
+                        //  window.open(data.details, '_blank');
                         // }
                     });
                 }
@@ -214,7 +215,7 @@ class Checkout extends Component {
                                                             <ul className="list">
                                                                 {countries.map((item, index) => {
                                                                     return (
-                                                                        <li onClick={() => this.setState({ country: item, visibleSelect: false })} className={country === item ? "option selected focus" : "option"}>{item}</li>
+                                                                        <li key={index} onClick={() => this.setState({ country: item, visibleSelect: false })} className={country === item ? "option selected focus" : "option"}>{item}</li>
                                                                     )
                                                                 })}
                                                             </ul>

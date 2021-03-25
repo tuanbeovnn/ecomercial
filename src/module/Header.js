@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest, getWishListFromLocalRequest } from '../redux/actions/index';
+import { Link, withRouter } from 'react-router-dom';
+import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest, getWishListFromLocalRequest, searchProductRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
-
+import qs from 'qs';
 class Header extends Component {
 
     state = {
@@ -85,24 +85,49 @@ class Header extends Component {
         this.props.getUserFromToken();
         this.props.getCompare();
         this.props.getWishList();
-        window.onscroll = ()=>{
+        window.onscroll = () => {
             if (window.scrollY > 200 && !this.state.scroll) {
                 this.setState({
-                    scroll : true,
-                    header : true
+                    scroll: true,
+                    header: true
                 })
-            }else if (window.scrollY <=2 && this.state.scroll){
+            } else if (window.scrollY <= 2 && this.state.scroll) {
                 this.setState({
-                    scroll : false,
-                    header : false
+                    scroll: false,
+                    header: false
                 })
             }
-            
+
+        }
+        console.log(this.props);
+        const queryString = this.props.location.search;
+        const query = queryString && qs.parse(queryString.slice(1)) || {};
+        const { code, name } = query;
+        if (name) {
+
+            this.setState({
+                search: name// save params
+            })
+        }
+        if (code) {
+            this.setState({
+                selected: code// save params
+            })
         }
     }
-   
+
     handleSubmit = (e) => {
         e.preventDefault();
+        const name = this.state.search;
+        const code = this.state.selected;
+        const query = { code, name }
+        const url = '/search?' + qs.stringify(query);
+        this.props.history.push(url);
+    }
+    onHandleChange = (e) => {
+        this.setState({
+            search: e.target.value
+        })
     }
     handdleToggle = () => {
         this.setState({
@@ -122,7 +147,7 @@ class Header extends Component {
 
     render() {
         const { menus, visibleSelect, selected, openToggle, scroll, header } = this.state;
-        const { categories, user, cart,wishList,compare } = this.props;
+        const { categories, user, cart, wishList, compare } = this.props;
         let totalQty = 0;
         cart.map((item) => {
             totalQty += item.qty;
@@ -132,10 +157,10 @@ class Header extends Component {
             totalWishList += item.qty;
         })
         let totalCompare = 0;
-        compare.map((item)=>{
+        compare.map((item) => {
             totalCompare += item.qty;
         })
-        
+
 
         const category = categories.find(c => c.code === selected);
 
@@ -160,7 +185,14 @@ class Header extends Component {
                                 {/* Header Advance Search Start */}
                                 <div className="header-advance-search">
                                     <form action="#" onSubmit={this.handleSubmit}>
-                                        <div className="input"><input type="text" placeholder="Search your product" /></div>
+                                        <div className="input">
+                                            <input type="text"
+                                                placeholder="Search your product"
+                                                onChange={this.onHandleChange}
+                                                value={this.state.search}
+
+                                            />
+                                        </div>
                                         <div className="select">
                                             <div className={visibleSelect ? "nice-select open" : "nice-select"}>
                                                 <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{category && category.name || "All Categories"}</span>
@@ -207,7 +239,7 @@ class Header extends Component {
                     </div>
                 </div>
                 {/* Header Bottom Start */}
-                <div className={"header-bottom header-bottom-one header-sticky"  + (header ? " is-sticky" : '')}>
+                <div className={"header-bottom header-bottom-one header-sticky" + (header ? " is-sticky" : '')}>
                     <div className="container">
                         <div className="row align-items-center justify-content-between">
                             <div className="col mt-15 mb-15">
@@ -339,9 +371,9 @@ const mapStateToProps = state => {
         categories: state.Ecomercial.categories,
         user: state.Ecomercial.user,
         cart: state.Ecomercial.cart,
-
         wishList: state.Ecomercial.wishList,
-        compare : state.Ecomercial.compare
+        compare: state.Ecomercial.compare,
+        searchProduct: state.Ecomercial.searchProduct
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
@@ -358,9 +390,13 @@ const mapDispatchToProps = (dispatch, props) => {
         getWishList: () => {
             dispatch(getWishListFromLocalRequest());
         },
+        searchProduct: (params, callback) => {
+            dispatch(searchProductRequest(params, callback));
+        }
+
 
     }
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Header));

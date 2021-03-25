@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
+import { clearInterval } from 'stompjs';
 import { fetchTimeEndRequest } from '../../redux/actions';
 
 class CountDown extends Component {
@@ -23,12 +24,18 @@ class CountDown extends Component {
                 const date = Math.abs(currentDate - tomorrow);
 
                 // console.log(time);
-                this.setState({
-                    d: Math.floor(date / 1000 / 3600 / 24),
-                    h: Math.floor(date / 1000 / 3600 % 24),
-                    m: Math.floor(date / 1000 / 60 % 60),
-                    s: Math.floor(date / 1000 % 60)
-                })
+               
+                if (date>=0) {
+                    this.setState({
+                        d: Math.floor(date / 1000 / 3600 / 24),
+                        h: Math.floor(date / 1000 / 3600 % 24),
+                        m: Math.floor(date / 1000 / 60 % 60),
+                        s: Math.floor(date / 1000 % 60)
+                    })
+                }else {
+                    clearInterval(this.inter);
+                }
+                
             }, 1000);
         });
 

@@ -1,6 +1,6 @@
 import callAPI, { uploadAPI } from '../../utils/apiCaller';
 import * as Types from './../const/ActionTypes';
-
+import qs from 'qs';
 //feature
 export const fetchFeatureProduct = (products, code) => {
     return {
@@ -106,7 +106,7 @@ export const login = (data) => {
         data
     }
 }
- 
+
 
 export const loginRequest = (body, callback) => {
     return (dispatch) => {
@@ -208,7 +208,7 @@ export const fetchProductByCategories = (products) => {
     }
 }
 
-export const fetchProductByCategoriesRequest = (code, page,callback) => {
+export const fetchProductByCategoriesRequest = (code, page, callback) => {
     return (dispatch) => {
         return callAPI('api/product/list?code=' + code + '&size=8' + '&page=' + page, 'GET', null).then(res => {
 
@@ -342,7 +342,7 @@ export const updateUserRequest = (id, body, callback) => {
     return (dispatch) => {
 
         return uploadAPI('api/user/update/' + id, 'PUT', body).then(res => {
-            
+
             dispatch(updateUser(res.data.details));
             if (typeof callback === 'function') {
                 callback(res.data.details)
@@ -499,7 +499,7 @@ export const fetchTimeEndRequest = (callback) => {
                 callback(res.data);
                 dispatch(fetchTimeEnd(res.data));
             }
-        }).catch(()=>{
+        }).catch(() => {
             callback({})
         })
     }
@@ -577,13 +577,13 @@ export const compareRemoveRequest = (id) => {
 
 // GET ROOM INFO
 
-export const createRoomRequest = (body,callback) => {
+export const createRoomRequest = (body, callback) => {
     return (dispatch) => {
         return callAPI('api/room/add', 'POST', body).then(res => {
             if (res.data) {
                 callback(res.data);
             }
-        }).catch(()=>{
+        }).catch(() => {
             callback()
         })
     }
@@ -592,13 +592,13 @@ export const createRoomRequest = (body,callback) => {
 
 // GET ROOM INFO
 
-export const sendMessageRequest = (body,callback) => {
+export const sendMessageRequest = (body, callback) => {
     return (dispatch) => {
         return callAPI('api/message', 'POST', body).then(res => {
             if (res.data) {
             }
-        }).catch(()=>{
-         
+        }).catch(() => {
+
         })
     }
 }
@@ -606,30 +606,53 @@ export const sendMessageRequest = (body,callback) => {
 //get store
 export const fetchStore = (stores) => {
     return {
-        type : Types.FETCH_STORE,
+        type: Types.FETCH_STORE,
         stores
     }
 }
-export const fetchStoreRequest =() => {
-    return(dispatch) =>{
+export const fetchStoreRequest = () => {
+    return (dispatch) => {
         return callAPI('api/store/list', 'GET', null).then(res => {
             if (res.data && res.data.success) {
                 dispatch(fetchStore(res.data.details));
-            }else {
+            } else {
                 dispatch(fetchStore([]));
             }
         })
     }
 }
 // get message
-export const getMessageRequest = (roomId,callback) => {
+export const getMessageRequest = (roomId, callback) => {
     return (dispatch) => {
-        return callAPI('api/message/list?room='+ roomId, 'GET').then(res => {
+        return callAPI('api/message/list?room=' + roomId, 'GET').then(res => {
             if (res.data) {
                 callback(res.data);
             }
-        }).catch(()=>{
+        }).catch(() => {
             callback();
+        })
+    }
+}
+
+//get store
+export const searchProduct = (product, total, currentPage) => {
+    return {
+        type: Types.SEARCH_PRODUCT,
+        product,
+        total,
+        currentPage
+    }
+}
+export const searchProductRequest = (params, callback) => {
+    return (dispatch) => {
+        return callAPI('api/product/search?'+qs.stringify(params), 'GET').then(res => {
+            if (res.data && res.data.success) {
+                dispatch(searchProduct(res.data.list, res.data.total, res.data.currentPage));
+                callback(res.data);
+            } else {
+                dispatch(searchProduct([]));
+                callback();
+            }
         })
     }
 }

@@ -86,7 +86,6 @@ class ChatBoxPopup extends Component {
 
 
     render() {
-        console.log(this.state.messages);
         return (
             <div className="chatbox">
                 <input type="checkbox" id="click" />

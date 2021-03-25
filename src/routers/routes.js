@@ -18,6 +18,8 @@ import ChangePassword from '../module/ChangePassword';
 import Checkout from '../components/products/Checkout';
 import BestDealsPage from '../pages/BestDealsPage';
 import TemplateAdmin from '../components/chat/TemplateAdmin';
+import SearchProduct from '../components/search/SearchProduct';
+import Admin from '../components/admin/Admin';
 
 export const routes = [
     {
@@ -89,7 +91,13 @@ export const routes = [
         path:'/bestdeal-page',
         exact : false,
         main: ()=> <BestDealsPage/>
-    }
+    },
+    {
+        path:'/search',
+        exact : false,
+        main: (props) => <SearchProduct {...props}/>
+    },
+
     
 ];
 export const routesAdmin = [

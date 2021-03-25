@@ -8,23 +8,23 @@ class TemplateAdmin extends Component {
     state = {
         messages: [],
     }
-    componentDidMount() {
+    // componentDidMount() {
 
-        const roomId = localStorage.getItem("roomChat");
-        if (roomId) {
-            this.setState({
-                roomId: roomId,
-            })
+    //     const roomId = localStorage.getItem("roomChat");
+    //     if (roomId) {
+    //         this.setState({
+    //             roomId: roomId,
+    //         })
 
-            this.props.getMessage(roomId, (data) => {
-                if (data && data.length) {
-                    this.setState({
-                        messages: data
-                    })
-                }
-            })
-        }
-    }
+    //         this.props.getMessage(roomId, (data) => {
+    //             if (data && data.length) {
+    //                 this.setState({
+    //                     messages: data
+    //                 })
+    //             }
+    //         })
+    //     }
+    // }
 
     componentDidMount() {
         SocketManager.instance.connectSocket();
@@ -146,13 +146,13 @@ class TemplateAdmin extends Component {
 
 
         return (
-            <div className="admin-box" style={{ height: '100%' }}>
+            <div className="admin-box" style={{ height: '100%', overflow:'hidden', marginTop:20 }}>
                 <main className="content" style={{ height: '100%' }}>
                     <div className="container p-0" style={{ height: '100%' }}>
                         <h1 className="h3 mb-3">Messages</h1>
-                        <div className="card" style={{ height: 'calc(100% - 33px)' }}>
+                        <div className="card" style={{ height: 'calc(100% - 70px)' }}>
                             <div className="row g-0" style={{ height: '100%' }}>
-                                <div className="col-12 col-lg-5 col-xl-3 border-right" style={{ height: '100%', overflow: 'scroll', position: 'relative' }}>
+                                <div className="col-12 col-lg-5 col-xl-3 border-right" style={{ height: '100%', overflowX: 'hidden', position: 'relative', overflowY:'auto' }}>
                                     <div className="px-4 d-none d-md-block" style={{ position: 'sticky', zIndex: 1000, backgroundColor: 'white', borderBottom: '.5px solid #eee', top: 0 }}>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1">
@@ -202,8 +202,8 @@ class TemplateAdmin extends Component {
                                             </div>
                                         </div>
                                     </div> */}
-                                    <div className="position-relative" style={{ height: '100%' }}>
-                                        <div className="chat-messages p-4" style={{ height: 'calc(100% - 90px)' }}>
+                                    <div className="position-relative" style={{ height: 'calc(100% - 90px)' }}>
+                                        <div className="chat-messages p-4" style={{ height: '100%', overflowY:'auto', overflowX:'hidden' }}>
                                             {currentMessage.map((item, index) => {
 
 

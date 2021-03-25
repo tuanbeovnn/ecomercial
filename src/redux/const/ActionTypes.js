@@ -35,7 +35,7 @@ export const REMOVE_COMPARE = 'REMOVE_COMPARE';
 export const CREATE_ROOM = 'CREATE_ROOM';
 export const FETCH_MESSAGE = 'FETCH_MESSAGE';
 export const FETCH_STORE = 'FETCH_STORE';
-
+export const SEARCH_PRODUCT = 'SEARCH_PRODUCT';
 
 
 

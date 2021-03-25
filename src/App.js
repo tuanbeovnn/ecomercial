@@ -21,6 +21,7 @@ class App extends Component {
                                             path={"/admin" + route.path}
                                             exact={route.exact}
                                             component={route.main}
+                                            
                                         />
                                     )
                                 })}
