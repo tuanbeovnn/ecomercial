@@ -4,6 +4,7 @@ import Header from './module/Header';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { routes, routesAdmin } from './routers/routes';
 import AdminPage from './components/admin/AdminPage';
+import LoginPage from './components/admin/LoginPage';
 
 class App extends Component {
     render() {
@@ -12,22 +13,20 @@ class App extends Component {
             <Router>
                 <Switch>
                     <Route path="/admin">
-                        <AdminPage>
-                            <Switch>
-                                {routesAdmin.map((route, index) => {
-                                    return (
-                                        <Route
-                                            key={index}
-                                            path={"/admin" + route.path}
-                                            exact={route.exact}
-                                            component={route.main}
-                                            
-                                        />
-                                    )
-                                })}
-                            </Switch>
-                        </AdminPage>
-
+                                <AdminPage> 
+                                    <Switch>
+                                        {routesAdmin.map((route, index) => {
+                                            return (
+                                                <Route
+                                                    key={index}
+                                                    path={"/admin" + route.path}
+                                                    exact={route.exact}
+                                                    component={route.main}
+                                                />
+                                            )
+                                        })}
+                                    </Switch>
+                                </AdminPage>
                     </Route>
 
                     <Route path="/">

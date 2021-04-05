@@ -33,6 +33,7 @@ class Login extends Component {
         const { email, password, remember } = this.state;
         const body = { email, password, remember };
         this.props.userLogin(body, (data) => {
+            console.log(data);
             if (!data) {
                 this.setState(
                     {

@@ -6,20 +6,20 @@ class BannerHome extends Component {
         banners: [
             {
                 id: 1,
-                content:["HURRY UP!","uPhone XIT’S","29%"],
+                content:["HURRY UP!","One Plus 9 Series","29%"],
                 url: "#",
                 image: "/images/hero/hero-1.png"
             },
             {
                 id: 2,
-                content:["HURRY UP!","uPhone XIT’S","20%"],
+                content:["Osta ChromeBook","Flip C434","20%"],
                 url: "#",
                 image: "/images/hero/hero-2.png"
 
             },
             {
                 id: 3,
-                content:["HURRY UP!","uPhone XIT’S","29%"],
+                content:["Koronto ja kuluton","Desktop Asus","59%"],
                 url: "#",
                 image: "/images/hero/hero-3.png"
             }

@@ -15,18 +15,18 @@ class SearchProduct extends Component {
     }
     componentDidMount() {
 
-
-
-
     }
     componentDidUpdate(prevProps) {
         const queryStringOld = prevProps.location.search;
         const queryOld = queryStringOld && qs.parse(queryStringOld.slice(1)) || {};
         const pageOld = queryOld.page;
+        const oldName = queryOld.name;
         const queryString = this.props.location.search;
         const query = queryString && qs.parse(queryString.slice(1)) || {};
         const { code, name, page } = query;
-        if (page !== pageOld) {
+        console.log(page, pageOld);
+
+        if (page !== pageOld || name !== oldName) {
             const pageNumber = Math.max(Number(page - 1) || 0, 0);
             const params = { code, name, page: pageNumber, size: pageSize };
             const callback = (data) => { }
@@ -49,7 +49,6 @@ class SearchProduct extends Component {
 
         const { total, currentPage, products, categories, cart  } = this.props;
         const { addCompare, removeCompare, addWishList, removeWishList, compare, wishList, addCart, removeCart} = this.props;
-
         const totalPage = Math.ceil(total / pageSize) || 1;
         return (
 

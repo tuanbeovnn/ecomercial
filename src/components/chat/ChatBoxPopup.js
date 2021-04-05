@@ -4,6 +4,8 @@ import SocketManager from '../../utils/SocketManager';
 import { connect } from 'react-redux';
 
 class ChatBoxPopup extends Component {
+
+    
     state = {
         //    roomId: "c14a89cd-d807-456e-a261-eeab902f70b3",
         messages: []
@@ -17,7 +19,7 @@ class ChatBoxPopup extends Component {
                 roomId: roomId,
             })
             SocketManager.instance.onChannel(roomId, (e => {
-               
+                console.log(e.data);
                 this.state.messages.push(e.data);
                 this.setState({
                     messages: [...this.state.messages]
@@ -25,7 +27,7 @@ class ChatBoxPopup extends Component {
                 this.scrollToBottom();
             }));
             this.props.getMessage(roomId, (data)=>{
-
+                console.log(data);
                 if (data && data.length) {
                     this.setState({
                         messages : data
@@ -45,7 +47,7 @@ class ChatBoxPopup extends Component {
                     roomId: data.details.roomId,
                 })
                 SocketManager.instance.onChannel(data.details.roomId, (e => {// listening va save storage
-                    
+                    console.log(e.data);
                     this.state.messages.push(e.data);
                     this.setState({
                         messages: [...this.state.messages]
@@ -84,8 +86,8 @@ class ChatBoxPopup extends Component {
         clearTimeout(this.setTimeOut);
     }
 
-
     render() {
+        
         return (
             <div className="chatbox">
                 <input type="checkbox" id="click" />
@@ -126,12 +128,18 @@ class ChatBoxPopup extends Component {
                             <div className="position-relative" style={{ flex: 1, overflow: 'hidden' }}>
                                 <div className="chat-messages p-4" style={{ height: '100%', overflowY: 'auto' }}>
                                     {this.state.messages.map((item, index) => {
+                                        const time = new Date(item.createdDate);
+                                        var h = time.getHours();
+                                        var m = time.getMinutes();
+                                        const h3 = (h<10 ? "0" : "") +h;
+                                        const m3 = (m<10 ? "0" : "") +m;
+                                        
                                         return (
                                             item.idUser ?
                                                 <div key={index} className="chat-message-right pb-4" style={{ width: '100%', overflowX: 'hidden', display:'flex', flexDirection:'row-reverse' }}>
                                                     <div>
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar1.png" className="rounded-circle mr-1" alt="Chris Wood" width={40} height={40} />
-                                                        <div className="text-muted small text-nowrap mt-2">2:33 am</div>
+                                                        <div className="text-muted small text-nowrap mt-2">{h3}:{m3}</div>
                                                     </div>
                                                     <div className="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" style={{ overflow: 'hidden', wordWrap: 'break-word' }}>
                                                         <div className="font-weight-bold mb-1">You</div>
@@ -143,11 +151,11 @@ class ChatBoxPopup extends Component {
                                                 <div key={index} className="chat-message-left pb-4" style={{ width: '100%', overflowX: 'hidden',display:'flex' }}>
                                                     <div>
                                                         <img src="https://bootdey.com/img/Content/avatar/avatar3.png" className="rounded-circle mr-1" alt="Sharon Lessman" width={40} height={40} />
-                                                        <div className="text-muted small text-nowrap mt-2">2:34 am</div>
+                                                        <div className="text-muted small text-nowrap mt-2">{h3}:{m3}</div>
                                                     </div>
                                                     <div className="flex-shrink-1 bg-light rounded py-2 px-3 ml-3" style={{ overflow: 'hidden', wordWrap: 'break-word' }}>
 
-                                                        <div className="font-weight-bold mb-1">Sharon Lessman</div>
+                                                        <div className="font-weight-bold mb-1">Admin</div>
 
                                                         {item.content}
 

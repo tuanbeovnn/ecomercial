@@ -19,7 +19,6 @@ import Checkout from '../components/products/Checkout';
 import BestDealsPage from '../pages/BestDealsPage';
 import TemplateAdmin from '../components/chat/TemplateAdmin';
 import SearchProduct from '../components/search/SearchProduct';
-import Admin from '../components/admin/Admin';
 
 export const routes = [
     {
@@ -112,9 +111,9 @@ export const routesAdmin = [
         main: () => <LoginPage />
     },
     {
-        path: '/products',
+        path: '/products/:page?',
         exact: true,
-        main: () => <ProductPage/>
+        main: (props) => <ProductPage {...props}/>
     },
     {
         path: '/categories',

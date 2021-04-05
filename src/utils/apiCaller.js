@@ -3,14 +3,14 @@ import * as config from './../redux/const/Configs';
 
 export function uploadAPI(endpoint, method = 'GET', body) {
     const token =  localStorage.getItem('token');
-   
+    const tokenAdmin = localStorage.getItem('tokenAdmin');
     const headers = {
         "Content-Type": "multipart/form-data",
         "Accept": "application/json",
         "type": "formData"
     }
-    if (token) {
-        headers.Authorization = 'Bearer ' + token
+    if (token || tokenAdmin) {
+        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer' + token 
     }
     return axios({
         method: method,
@@ -22,13 +22,13 @@ export function uploadAPI(endpoint, method = 'GET', body) {
 
 export default function callAPI(endpoint, method = 'GET', body) {
     const token =  localStorage.getItem('token');
-   
+    const tokenAdmin = localStorage.getItem('tokenAdmin');
     const headers = {
         'Content-Type':'application/json',
         "Accept": "application/json" 
     }
-    if (token) {
-        headers.Authorization = 'Bearer ' + token
+    if (token || tokenAdmin) {
+        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer' + token
     }
     return axios({
         method: method,

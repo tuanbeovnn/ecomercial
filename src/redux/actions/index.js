@@ -590,7 +590,7 @@ export const createRoomRequest = (body, callback) => {
 }
 
 
-// GET ROOM INFO
+// send message
 
 export const sendMessageRequest = (body, callback) => {
     return (dispatch) => {
@@ -634,7 +634,7 @@ export const getMessageRequest = (roomId, callback) => {
     }
 }
 
-//get store
+//search product
 export const searchProduct = (product, total, currentPage) => {
     return {
         type: Types.SEARCH_PRODUCT,

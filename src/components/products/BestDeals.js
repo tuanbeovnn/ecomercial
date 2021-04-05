@@ -40,6 +40,37 @@ class BestDeals extends Component {
     }
 
     render() {
+
+        const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-prev slick-arrow" +
+                    (currentSlide === 0 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === 0 ? true : false}
+                type="button"
+            >
+                <i className="icofont icofont-long-arrow-left" />
+            </button>
+        );
+        const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-next slick-arrow" +
+                    (currentSlide === slideCount - 1 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === slideCount - 1 ? true : false}
+                type="button"
+            >
+                <i className="icofont icofont-long-arrow-right"></i>
+            </button>
+        );
+
+
         const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList, addCompare, removeCompare, compare, time } = this.props;
         const { currentCategories, addToCart } = this.state;
         const settings = {
@@ -48,8 +79,8 @@ class BestDeals extends Component {
             speed: 500,
             slidesToShow: 3,
             slidesToScroll: 1,
-            nextArrow: <button type="button" className="slick-next slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-right"></i></button>,
-            prevArrow: <button type="button" className="slick-prev slick-arrow" style="display: block;"><i className="icofont icofont-long-arrow-left"></i></button>
+            nextArrow: <SlickArrowLeft />,
+            prevArrow: <SlickArrowRight />
 
 
         };

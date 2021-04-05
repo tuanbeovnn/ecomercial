@@ -23,7 +23,7 @@ class Regiter extends Component {
             var data = new FormData();
             data.append("files", files);
             this.props.uploadImage(data, (avatar) => {
-
+                console.log(avatar)
                 if (avatar && avatar[0]) {
                     this.setState({
                         url: avatar[0]
@@ -97,26 +97,23 @@ class Regiter extends Component {
     onChangeFile = (e) => {
         let target = e.target;
         let name = target.name;
-        let value = target.value;
-        let files = target.files[0];
+        let file = target.files[0];
         this.setState({
-            [name]: files,
+            [name]: file,
         });
-        if (FileReader && files) {
+        if (file) {// show image
             const fr = new FileReader();
-            const thisRegister = this;
-            fr.onload = function () {
-                thisRegister.setState({// this trong la this belongs 
+            fr.onload = () => {// khai bao nay de load anh va luu lai cai anh sau khi load ah xong thuc thi ham onLoad
+                this.setState({// this trong la this belongs 
                     image: fr.result
                 })
             }
-            fr.readAsDataURL(files);
+            fr.readAsDataURL(file);
         }
     }
 
     render() {
         const { error, success, image } = this.state;
-        console.log(this.state);
         return (
             <div>
                 {success ? <Redirect to="/" /> : ''}

@@ -88,7 +88,7 @@ class Checkout extends Component {
                         console.log(data);
                         // if (data.success) {
                         //     console.log(data.success);
-                        window.location.href = data.details;
+                        // window.location.href = data.details;
                         //  window.open(data.details, '_blank');
                         // }
                     });
@@ -397,8 +397,8 @@ class Checkout extends Component {
                                                             <label htmlFor="accept_terms">I’ve read and accept the terms &amp; conditions</label>
                                                         </div>
                                                     </div>
-
-                                                    <button className="place-order" disabled={!this.state.checkTerm}>Place order</button>
+                                                    
+                                                    <button className="place-order" disabled={!this.state.checkTerm}><a></a>Place order</button>
                                                 </div>
                                             </div>
                                         </div>

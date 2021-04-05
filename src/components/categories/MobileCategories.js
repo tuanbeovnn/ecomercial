@@ -50,7 +50,6 @@ class MobileCategories extends Component {
         if (e1.selected + 1 !== currentPage) {
             const callback = (data) => {
                 if (data) {
-
                     this.setState({
                         products: data.list,
                         total: data.total,
@@ -62,8 +61,6 @@ class MobileCategories extends Component {
                 }
             }
             this.props.fetchProductListCategory(code, e1.selected, callback);
-
-
         }
 
     }

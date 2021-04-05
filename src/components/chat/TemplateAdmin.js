@@ -1,63 +1,49 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { getMessageRequest, sendMessageRequest } from '../../redux/actions';
-import { fetchRoomRequest } from '../../redux/actions/AdminActions';
+import { addNewRoomRequest, fetchRoomRequest, getUserFromStorageRequest } from '../../redux/actions/AdminActions';
 import SocketManager from '../../utils/SocketManager';
 
 class TemplateAdmin extends Component {
     state = {
         messages: [],
     }
-    // componentDidMount() {
-
-    //     const roomId = localStorage.getItem("roomChat");
-    //     if (roomId) {
-    //         this.setState({
-    //             roomId: roomId,
-    //         })
-
-    //         this.props.getMessage(roomId, (data) => {
-    //             if (data && data.length) {
-    //                 this.setState({
-    //                     messages: data
-    //                 })
-    //             }
-    //         })
-    //     }
-    // }
-
+    
     componentDidMount() {
+        this.props.getUserFromToken();
         SocketManager.instance.connectSocket();
+        
 
         this.props.fetchRoomMessage((rooms) => {
-
+            console.log(rooms);
             if (rooms && rooms.length) {
                 // console.log(rooms.find(room=>room.roomId = ))
                 rooms.map((item, index) => {
                     console.log(item.roomId);
                     // const socket = new SocketManager();
                     // socket.instance
-                    SocketManager.instance.onChannel(item.roomId, (e => {
+                    SocketManager.instance.onChannel(item.roomId, (message => {
 
                         const messages = this.state.messages;
-                        const currentIndex = this.state.messages.findIndex(room => room.roomId === item.roomId);
+                        const currentIndex = this.state.messages.findIndex(room => room.roomId === item.roomId);// search message is exist or not
 
                         if (currentIndex !== -1) {
-                            messages[currentIndex].data.push(e.data);
-                            messages[currentIndex].data = [...messages[currentIndex].data];
+                            messages[currentIndex].data.push(message.data);
+                            // messages[currentIndex].data = [...messages[currentIndex].data];// copy shallow for changing address
 
                             if (item.roomId !== this.state.selected) {
                                 messages[currentIndex].newMessage += 1;
                             }
-                            messages[currentIndex] = { ...messages[currentIndex] };
+                            // messages[currentIndex] = { ...messages[currentIndex] };
                             this.setState({
                                 messages: [...messages]
                             })
                         } else {
-                            messages.push({ item, data: [e], newMessage: item.roomId === (this.state.selected || rooms[0].roomId) ? 0 : 1 });
+                            messages.push({ ...item, data: [message.data], newMessage: item.roomId === (this.state.selected || rooms[0].roomId) ? 0 : 1 });
+                            // push room is item, create data and push message.data
 
                             this.setState({
-                                messages: [...messages]
+                                messages: [...messages]// copy shallow
                             })
                         }
                         this.scrollToBottom();
@@ -65,8 +51,9 @@ class TemplateAdmin extends Component {
                 })
                 // console.log(rooms[0]);
                 this.props.getMessage(rooms[0].roomId, (data) => {
-                    console.log(data);
+
                     if (data) {
+
                         this.state.messages.push({ ...rooms[0], data, newMessage: 0 });// message la data  
                         // console.log(messages);
                         this.setState({
@@ -77,8 +64,41 @@ class TemplateAdmin extends Component {
                     }
                     this.scrollToBottom();
                 })
-
             }
+            SocketManager.instance.onChannel("0000", e => {
+                if (e && e.data) {
+                    this.props.getNewRoom(e.data);
+                }
+                SocketManager.instance.onChannel(e.data.roomId, (message => {
+
+                    const messages = this.state.messages;
+                    const currentIndex = this.state.messages.findIndex(room => room.roomId === e.data.roomId);// search message is exist or not
+                    
+                    if (currentIndex !== -1) {
+                        
+                        messages[currentIndex].data.push(message.data);
+                        // messages[currentIndex].data = [...messages[currentIndex].data];// copy shallow for changing address
+
+                        if (e.data.roomId !== this.state.selected) {
+                            messages[currentIndex].newMessage += 1;
+                        }
+                        // messages[currentIndex] = { ...messages[currentIndex] };
+                        this.setState({
+                            messages: [...messages]
+                        })
+                    } else {
+                        
+                        messages.push({ ...e.data, data: [message.data], newMessage: e.data.roomId === (this.state.selected || rooms[0].roomId) ? 0 : 1 });
+                        // push room is item, create data and push message.data
+
+                        this.setState({
+                            messages: [...messages]// copy shallow
+                        })
+                    }
+                    this.scrollToBottom();
+                }));
+                
+            })
         });
 
 
@@ -138,6 +158,7 @@ class TemplateAdmin extends Component {
 
     render() {
         const { rooms } = this.props;
+        
         const { messages, selected } = this.state;
 
 
@@ -146,13 +167,13 @@ class TemplateAdmin extends Component {
 
 
         return (
-            <div className="admin-box" style={{ height: '100%', overflow:'hidden', marginTop:20 }}>
+            <div className="admin-box" style={{ height: '100%', overflow: 'hidden', marginTop: 20 }}>
                 <main className="content" style={{ height: '100%' }}>
                     <div className="container p-0" style={{ height: '100%' }}>
                         <h1 className="h3 mb-3">Messages</h1>
                         <div className="card" style={{ height: 'calc(100% - 70px)' }}>
                             <div className="row g-0" style={{ height: '100%' }}>
-                                <div className="col-12 col-lg-5 col-xl-3 border-right" style={{ height: '100%', overflowX: 'hidden', position: 'relative', overflowY:'auto' }}>
+                                <div className="col-12 col-lg-5 col-xl-3 border-right" style={{ height: '100%', overflowX: 'hidden', position: 'relative', overflowY: 'auto' }}>
                                     <div className="px-4 d-none d-md-block" style={{ position: 'sticky', zIndex: 1000, backgroundColor: 'white', borderBottom: '.5px solid #eee', top: 0 }}>
                                         <div className="d-flex align-items-center">
                                             <div className="flex-grow-1">
@@ -167,10 +188,10 @@ class TemplateAdmin extends Component {
                                         } catch { }
 
                                         const currentMessages = messages.find(r => r.roomId === item.roomId);
-                                        console.log(item, messages);
+
                                         const newMessages = currentMessages && currentMessages.newMessage;
                                         return (
-                                            <a style={{backgroundColor:item.roomId===this.state.selected ? 'rgb(216 231 247)' : '#fff'}} onClick={(e) => this.handleSelect(e, item)} href="#" className="list-group-item list-group-item-action border-0">
+                                            <a style={{ backgroundColor: item.roomId === this.state.selected ? 'rgb(216 231 247)' : '#fff' }} onClick={(e) => this.handleSelect(e, item)} href="#" className="list-group-item list-group-item-action border-0">
                                                 {newMessages ? <div className="badge bg-success float-right">{newMessages}</div> : ""}
                                                 <div className="d-flex align-items-start">
                                                     <img src={`https://bootdey.com/img/Content/avatar/avatar${index % 8 + 1}.png`} className="rounded-circle mr-1" alt="Vanessa Tucker" width={40} height={40} />
@@ -203,16 +224,20 @@ class TemplateAdmin extends Component {
                                         </div>
                                     </div> */}
                                     <div className="position-relative" style={{ height: 'calc(100% - 90px)' }}>
-                                        <div className="chat-messages p-4" style={{ height: '100%', overflowY:'auto', overflowX:'hidden' }}>
+                                        <div className="chat-messages p-4" style={{ height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
                                             {currentMessage.map((item, index) => {
-
+                                                const time = new Date(item.createdDate);
+                                                var h = time.getHours();
+                                                var m = time.getMinutes();
+                                                const h3 = (h < 10 ? "0" : "") + h;
+                                                const m3 = (m < 10 ? "0" : "") + m;
 
                                                 return (
                                                     !item.idUser ?
                                                         <div key={index} className="chat-message-right pb-4">
                                                             <div>
                                                                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png" className="rounded-circle mr-1" alt="Chris Wood" width={40} height={40} />
-                                                                <div className="text-muted small text-nowrap mt-2">2:33 am</div>
+                                                                <div className="text-muted small text-nowrap mt-2">{h3}:{m3}</div>
                                                             </div>
                                                             <div className="flex-shrink-1 bg-light rounded py-2 px-3 mr-3" >
                                                                 <div className="font-weight-bold mb-1">You</div>
@@ -224,7 +249,7 @@ class TemplateAdmin extends Component {
                                                         <div key={index} className="chat-message-left pb-4" >
                                                             <div>
                                                                 <img src="https://bootdey.com/img/Content/avatar/avatar3.png" className="rounded-circle mr-1" alt="Sharon Lessman" width={40} height={40} />
-                                                                <div className="text-muted small text-nowrap mt-2">2:34 am</div>
+                                                                <div className="text-muted small text-nowrap mt-2">{h3}:{m3}</div>
                                                             </div>
                                                             <div className="flex-shrink-1 bg-light rounded py-2 px-3 ml-3">
                                                                 <div className="font-weight-bold mb-1">Sharon Lessman</div>
@@ -285,6 +310,12 @@ const mapDispatchToProps = (dispatch, props) => {
         sendMessage: (body, callback) => {
             dispatch(sendMessageRequest(body, callback));
         },
+        getUserFromToken: () => {
+            dispatch(getUserFromStorageRequest());
+        },
+        getNewRoom : (room)=>{
+            dispatch(addNewRoomRequest(room));
+        }
 
     }
 }

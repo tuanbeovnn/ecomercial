@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import LoginPage from './LoginPage';
+import { connect } from 'react-redux';
+import {getUserFromStorageRequest} from '../../redux/actions/AdminActions';
 
-export default class extends Component {
+class AdminPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -11,9 +14,18 @@ export default class extends Component {
 
         }
     }
+    componentDidMount() {
+        this.props.getUserFromToken();
+    }
+    
     render() {
+        const { children, userInfo } = this.props;
+        if (!userInfo || !userInfo.id) {
+            return (
+                <LoginPage/>
+            )
+        }
         const { toggleMenu, collapse } = this.state;
-        const { children } = this.props;
         return (
             <div style={{ height: '100vh' }} className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
                 <div className="admin" style={{ height: '100vh' }}>
@@ -62,7 +74,7 @@ export default class extends Component {
                                                 {/* <Router className="nav-link" href="tables.html">Product </Router> */}
                                                 <Link className="nav-link" to="/admin/products">Products </Link>
                                                 <Link className="nav-link" to="/admin/categories">Categories </Link>
-                                                <a className="nav-link" href="tables.html">Cart </a>
+                                                <Link className="nav-link" to="/admin/chat-box">Chat Box </Link>
                                                 <a className="nav-link" href="tables.html">Supplier </a>
                                             </nav>
                                         </div>
@@ -102,3 +114,19 @@ export default class extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        userInfo: state.AdminReducer.userAdmin
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+
+    return {
+        getUserFromToken: () => {
+            dispatch(getUserFromStorageRequest());
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(AdminPage);
