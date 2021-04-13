@@ -181,7 +181,7 @@ class SearchProduct extends Component {
                                                             <h5 className="price">${item.price}</h5>
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
-                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                 })}
                                                             </div>
                                                         </div>
@@ -208,7 +208,7 @@ class SearchProduct extends Component {
                                                         <div className="left-content">
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
-                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                 })}
                                                             </div>
                                                             <div className="desc">

@@ -128,7 +128,7 @@ class ComparePage extends Component {
                                                         return (
                                                             <td key ={index}className="pro-ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
-                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                 })}
                                                             </td>
                                                         )

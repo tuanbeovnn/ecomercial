@@ -1,7 +1,116 @@
 import React, { Component } from 'react'
+import Slider from 'react-slick';
+import { connect } from 'react-redux';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchBestDealProductsRequest, fetchTimeEndRequest, removeCartRequest, wishListRemoveRequest } from '../redux/actions';
+import { Link } from 'react-router-dom';
+import CountDown from './../components/products/CountDown';
+import ReactLoading from 'react-loading';
 
-export default class BestDealsPage extends Component {
+class BestDealsPage extends Component {
+    state = {
+        currentCategories: 0,
+        addToCart: true,
+        loading: true
+
+    }
+    componentDidMount() {
+        //call all categories [{id:1, name: 'Laptop'}];
+        //  goi list product all ve: all ProductFeature;
+        //=> kich laptop => sp cuua laptop  => luu vao cateogries [{id: 1, name: 'Laptop', prodcts: [...]}]
+
+        this.props.fetchProducts();
+        this.timeOut = setTimeout(() => {
+            this.setState({
+                loading: false
+            })
+        }, 800)
+        console.log(this.timeOut);
+
+
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timeOut);
+    }
+    activeCategory = (currentCategories) => {
+        //goji sp categories nay ve.
+        const { categories } = this.props;
+
+
+        const index = categories.findIndex(c => c.code === currentCategories);
+
+        if (index != -1 && !categories[index].products) {
+            //goi api
+            this.props.fetchProducts(currentCategories);
+        }
+        this.setState({
+            currentCategories
+        });
+
+    }
     render() {
+        const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-prev slick-arrow" +
+                    (currentSlide === 0 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === 0 ? true : false}
+                type="button"
+            >
+                <i className="icofont icofont-long-arrow-left" />
+            </button>
+        );
+        const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
+            <button
+                {...props}
+                className={
+                    "slick-next slick-arrow" +
+                    (currentSlide === slideCount - 1 ? " slick-disabled" : "")
+                }
+                aria-hidden="true"
+                aria-disabled={currentSlide === slideCount - 1 ? true : false}
+                type="button"
+            >
+                <i className="icofont icofont-long-arrow-right"></i>
+            </button>
+        );
+        const settings = {
+            dots: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 3,
+            slidesToScroll: 1,
+            nextArrow: <SlickArrowLeft />,
+            prevArrow: <SlickArrowRight />
+
+
+        };
+        const settings2 = {
+            dots: true,
+
+            infinite: true,
+            speed: 500,
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            nextArrow: <SlickArrowLeft />,
+            prevArrow: <SlickArrowRight />
+
+        };
+        const { allProducts, categories, cart, addCart, removeCart, addWishList, wishList, removeWishList, addCompare, removeCompare, compare, time } = this.props;
+        const { currentCategories, addToCart } = this.state;
+        console.log(allProducts);
+
+        if (this.state.loading) {
+            return (
+                <div style={{display:'flex', width:'100%', justifyContent:'center'}}>
+                    <ReactLoading type={"spinningBubbles"} color={'#F5D730'} height={'10%'} width={'10%'} />
+                </div>
+
+            )
+        }
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -44,13 +153,14 @@ export default class BestDealsPage extends Component {
                                             {/* Tab Filter Toggle */}
                                             <button className="product-tab-filter-toggle">showing: <span /><i className="icofont icofont-simple-down" /></button>
                                             {/* Product Tab List */}
-                                            <ul className="nav product-tab-list">
-                                                <li><a className="active" data-toggle="tab" href="#tab-three">all</a></li>
-                                                <li><a data-toggle="tab" href="#tab-four">LAPTOP</a></li>
-                                                <li><a data-toggle="tab" href="#tab-three">DRONE</a></li>
-                                                <li><a data-toggle="tab" href="#tab-four">TV &amp; AUDIO</a></li>
-                                                <li><a data-toggle="tab" href="#tab-three">PHONE &amp; TABLET</a></li>
-                                                <li><a data-toggle="tab" href="#tab-four">CAMERA &amp; PRINTER</a></li>
+                                            <ul id="featureItem" className="nav product-tab-list">
+                                                <li onClick={() => { this.activeCategory(0) }}>
+                                                    <a className={currentCategories === 0 ? "active" : ""} data-toggle="tab" >all</a></li>
+                                                {categories.map((item) => {
+                                                    return (
+                                                        <li onClick={() => { this.activeCategory(item.code) }} key={item.id}><a className={currentCategories === item.code ? "active" : ""} data-toggle="tab">{item.name}</a></li>
+                                                    )
+                                                })}
                                             </ul>
                                         </div>
                                     </div>{/* Product Tab Filter End */}
@@ -60,368 +170,145 @@ export default class BestDealsPage extends Component {
                                             <h1><span>UP TO</span> 55%</h1>
                                             <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                             <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
-                                            <div className="countdown" data-countdown="2019/06/20" />
+                                            <CountDown />
                                         </div>
                                     </div>{/* Offer Time Wrap End */}
                                     {/* Product Tab Content Start */}
                                     <div className="col-12 mb-30">
                                         <div className="tab-content">
                                             {/* Tab Pane Start */}
-                                            <div className="tab-pane fade show active" id="tab-three">
+                                            <div className={"tab-pane fade " + (currentCategories === 0 ? "active show" : "")}>
                                                 {/* Product Slider Wrap Start */}
                                                 <div className="product-slider-wrap product-slider-arrow-two">
                                                     {/* Product Slider Start */}
-                                                    <div className="product-slider product-slider-3">
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label sale">sale</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-13.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Games</a>
-                                                                        <h5 className="title"><a href="single-product.html">Game Stations PW 25</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$285</span>$135.35</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
+                                                    <Slider key='bestDeal' className="product-slider product-slider-3" {...settings}>
+                                                        {allProducts.map((item) => {
+                                                            const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                                            const existCart = cart.find(p => p.id === item.id);
+                                                            const existWishList = wishList.find(p => p.id === item.id);
+                                                            const existCompare = compare.find(p => p.id === item.id);
+
+                                                            return (
+                                                                <div key={item.id} className="col pb-20 pt-10">
+                                                                    {/* Product Start */}
+                                                                    <div className="ee-product">
+                                                                        {/* Image */}
+                                                                        <div className="image">
+                                                                            <span className="label sale">sale</span>
+                                                                            <Link className="img" to={"/details/" + item.code}>
+                                                                                <img src={item.image && item.image[0]} alt={item.image && item.image[0]} />
+                                                                            </Link>
+                                                                            <div className="wishlist-compare">
+                                                                                <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                    <i className="ti-control-shuffle" />
+                                                                                </a>
+                                                                                <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                                    <i className="ti-heart" />
+                                                                                </a>
+                                                                            </div>
+
+                                                                            <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                                <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                                <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
+                                                                            </a>
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-14.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Kitchen Appliances</a>
-                                                                        <h5 className="title"><a href="single-product.html">Zorex Coffe Maker</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price">$125.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
+                                                                        {/* Content */}
+                                                                        <div className="content">
+                                                                            {/* Category & Title */}
+                                                                            <div className="category-title">
+                                                                                <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                                <h5 className="title"><a >{item.name}</a></h5>
+                                                                            </div>
+                                                                            {/* Price & Ratting */}
+                                                                            <div className="price-ratting">
+                                                                                <h5 className="price"><span className="old">{item.originalPrice}</span>{item.price}</h5>
+                                                                                <div className="ratting">
+                                                                                    {new Array(5).fill(0).map((star, index) => {
+                                                                                        return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                                    })}
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
+                                                                    </div>{/* Product End */}
                                                                 </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label sale">sale</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-15.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Home Appliances</a>
-                                                                        <h5 className="title"><a href="single-product.html">jeilips Steam Iron K 2</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$365</span>$295.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label sale">sale</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-16.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Tv &amp; Audio</a>
-                                                                        <h5 className="title"><a href="single-product.html">Nexo Andriod TV Box</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$360 </span>$250.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star-half-o" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label new">new</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-17.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Smartphone</a>
-                                                                        <h5 className="title"><a href="single-product.html">Ornet Note 9</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$285</span>$230.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                    </div>{/* Product Slider End */}
+
+                                                            )
+                                                        })}
+                                                    </Slider>{/* Product Slider End */}
                                                 </div>{/* Product Slider Wrap End */}
                                             </div>{/* Tab Pane End */}
                                             {/* Tab Pane Start */}
-                                            <div className="tab-pane fade" id="tab-four">
-                                                {/* Product Slider Wrap Start */}
-                                                <div className="product-slider-wrap product-slider-arrow-two">
-                                                    {/* Product Slider Start */}
-                                                    <div className="product-slider product-slider-3">
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-18.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Tv &amp; Audio</a>
-                                                                        <h5 className="title"><a href="single-product.html">Xonet Speaker P 9</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price">$185.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star-half-o" />
-                                                                            <i className="fa fa-star-o" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-24.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Smartphone</a>
-                                                                        <h5 className="title"><a href="single-product.html">Sany Experia Z5</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price">$360.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star-half-o" />
-                                                                            <i className="fa fa-star-o" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label sale">sale</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-20.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Kitchen Appliances</a>
-                                                                        <h5 className="title"><a href="single-product.html">Jackson Toster V 27</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$185</span>$135.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-21.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Kitchen Appliances</a>
-                                                                        <h5 className="title"><a href="single-product.html">mega Juice Maker</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price">$125.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star-half-o" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                        <div className="col pb-20 pt-10">
-                                                            {/* Product Start */}
-                                                            <div className="ee-product">
-                                                                {/* Image */}
-                                                                <div className="image">
-                                                                    <span className="label new">new</span>
-                                                                    <a href="single-product.html" className="img"><img src="/images/product/product-22.png" alt="Product Image" /></a>
-                                                                    <div className="wishlist-compare">
-                                                                        <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                        <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                                    </div>
-                                                                    <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                                </div>
-                                                                {/* Content */}
-                                                                <div className="content">
-                                                                    {/* Category & Title */}
-                                                                    <div className="category-title">
-                                                                        <a href="#" className="cat">Kitchen Appliances</a>
-                                                                        <h5 className="title"><a href="single-product.html">shine Microwave Oven</a></h5>
-                                                                    </div>
-                                                                    {/* Price & Ratting */}
-                                                                    <div className="price-ratting">
-                                                                        <h5 className="price"><span className="old">$389</span>$245.00</h5>
-                                                                        <div className="ratting">
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star" />
-                                                                            <i className="fa fa-star-o" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>{/* Product End */}
-                                                        </div>
-                                                    </div>{/* Product Slider End */}
-                                                </div>{/* Product Slider Wrap End */}
-                                            </div>{/* Tab Pane End */}
+                                            {categories.map((category) => {
+                                                return (
+                                                    <div key={category.id} className={"tab-pane fade " + (currentCategories === category.code ? "active show" : "")}>
+                                                        {/* Product Slider Wrap Start */}
+                                                        <div className="product-slider-wrap product-slider-arrow-two">
+                                                            {/* Product Slider Start */}
+                                                            {category.products ?
+                                                                <Slider key={category.id} className="product-slider product-slider-3" {...settings}>
+                                                                    {category.products.map((item) => {
+                                                                        const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                                                        const existCart = cart.find(p => p.id === item.id);
+                                                                        const existCompare = compare.find(p => p.id === item.id);
+                                                                        const existWishList = wishList.find(p => p.id === item.id);
+                                                                        return (
+                                                                            <div key={item.id} className="col pb-20 pt-10">
+                                                                                {/* Product Start */}
+                                                                                <div className="ee-product">
+                                                                                    {/* Image */}
+                                                                                    <div className="image">
+                                                                                        <Link className="img" to={"/details/" + item.code}>
+                                                                                            <img src={item.image && item.image[0]} alt={item.image[0]} />
+                                                                                        </Link>
+
+                                                                                        <div className="wishlist-compare">
+                                                                                            <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                                <i className="ti-control-shuffle" />
+                                                                                            </a>
+                                                                                            <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                                                <i className="ti-heart" />
+                                                                                            </a>
+                                                                                        </div>
+                                                                                        <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                                            <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                                            <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    {/* Content */}
+                                                                                    <div className="content">
+                                                                                        {/* Category & Title */}
+                                                                                        <div className="category-title">
+                                                                                            <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                                            <h5 className="title">
+                                                                                                <Link to={"/details/" + item.code}>
+                                                                                                    {item.name}
+                                                                                                </Link>
+
+                                                                                            </h5>
+                                                                                        </div>
+                                                                                        {/* Price & Ratting */}
+                                                                                        <div className="price-ratting">
+                                                                                            <h5 className="price"><span className="old">{item.originalPrice}</span>{item.price}</h5>
+                                                                                            <div className="ratting">
+                                                                                                {new Array(5).fill(0).map((star, index) => {
+                                                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                                                })}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>{/* Product End */}
+                                                                            </div>
+                                                                        )
+                                                                    })}
+                                                                </Slider>
+                                                                : ''}</div>
+                                                    </div>
+
+                                                )
+                                            })}
                                         </div>
                                     </div>{/* Product Tab Content End */}
+
                                 </div>
                             </div>{/* Product Tab Filter End*/}
                         </div>
@@ -447,7 +334,7 @@ export default class BestDealsPage extends Component {
                 </div>{/* Banner Section End */}
                 {/* Best Deals Product Section Start */}
                 <div className="product-section section mb-70">
-                    <div className="container-fluid">
+                    <div className="container">
                         <div className="row">
                             {/* Product Tab Filter Start */}
                             <div className="col-12 mb-30">
@@ -455,13 +342,15 @@ export default class BestDealsPage extends Component {
                                     {/* Tab Filter Toggle */}
                                     <button className="product-tab-filter-toggle">showing: <span /><i className="icofont icofont-simple-down" /></button>
                                     {/* Product Tab List */}
-                                    <ul className="nav product-tab-list">
-                                        <li><a className="active" data-toggle="tab" href="#tab-five">all</a></li>
-                                        <li><a data-toggle="tab" href="#tab-six">LAPTOP</a></li>
-                                        <li><a data-toggle="tab" href="#tab-five">DRONE</a></li>
-                                        <li><a data-toggle="tab" href="#tab-six">TV &amp; AUDIO</a></li>
-                                        <li><a data-toggle="tab" href="#tab-five">PHONE &amp; TABLET</a></li>
-                                        <li><a data-toggle="tab" href="#tab-six">CAMERA &amp; PRINTER</a></li>
+                                    <ul id="featureItem" className="nav product-tab-list">
+                                        <li onClick={() => { this.activeCategory(0) }}>
+                                            <a className={currentCategories === 0 ? "active" : ""} data-toggle="tab">all</a></li>
+                                        {categories.map((item) => {
+                                            return (
+                                                <li onClick={() => { this.activeCategory(item.code) }} key={item.id}><a className={currentCategories === item.code ? "active" : ""} data-toggle="tab">{item.name}</a></li>
+                                            )
+                                        })}
+
                                     </ul>
                                 </div>
                             </div>{/* Product Tab Filter End */}
@@ -469,304 +358,140 @@ export default class BestDealsPage extends Component {
                             <div className="col-12">
                                 <div className="tab-content">
                                     {/* Tab Pane Start */}
-                                    <div className="tab-pane fade show active" id="tab-five">
+                                    <div className={"tab-pane fade " + (currentCategories === 0 ? "active show" : "")}>
                                         {/* Product Slider Wrap Start */}
                                         <div className="product-slider-wrap product-slider-arrow-one">
                                             {/* Product Slider Start */}
-                                            <div className="product-slider  product-slider-4">
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product-three">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label sold">Already Sold: 50</span>
-                                                            <span className="label stock">Stock: 120</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-three-1.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
+                                            <Slider className="product-slider product-slider-4" {...settings}>
+                                                {allProducts.map((item) => {
+                                                    const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                                    const existCart = cart.find(p => p.id === item.id);
+                                                    const existWishList = wishList.find(p => p.id === item.id);
+                                                    const existCompare = compare.find(p => p.id === item.id)
+                                                    return (
+                                                        <div key={item.id} className="col pb-20 pt-10">
+                                                            {/* Product Start */}
+                                                            <div className="ee-product">
+                                                                {/* Image */}
+                                                                <div className="image">
+                                                                    <Link className="img" to={"/details/" + item.code}>
+                                                                        <img src={item.image[0]} alt="Product Image" />
+                                                                    </Link>
+
+                                                                    <div className="wishlist-compare">
+                                                                        <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                            <i className="ti-control-shuffle" />
+                                                                        </a>
+
+                                                                        <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                            <i className="ti-heart" />
+                                                                        </a>
+                                                                    </div>
+                                                                    <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                        <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                        <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
+                                                                    </a>
+                                                                </div>
+                                                                {/* Content */}
+                                                                <div className="content">
+                                                                    {/* Category & Title */}
+                                                                    <div className="category-title">
+                                                                        <a className="cat">{categoryProduct && categoryProduct.name}</a>
+                                                                        <h5 className="title">
+                                                                            <Link to={"/details/" + item.code}>
+                                                                                {item.name}
+                                                                            </Link>
+                                                                        </h5>
+                                                                    </div>
+                                                                    {/* Price & Ratting */}
+                                                                    <div className="price-ratting">
+                                                                        <h5 className="price">${item.price}</h5>
+                                                                        <div className="ratting">
+                                                                            {new Array(5).fill(0).map((star, index) => {
+                                                                                return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>{/* Product End */}
                                                         </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">TV &amp; Audio</a>
-                                                                <h5 className="title"><a href="single-product.html">LG 4K Andriod TV</a></h5>
-                                                            </div>
-                                                            {/* Price */}
-                                                            <h5 className="price"><span className="old">$285</span>$135.35</h5>
-                                                        </div>
-                                                        {/* Countdown */}
-                                                        <div className="product-countdown" data-countdown="2019/06/10" />
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product-three">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label sold">Already Sold: 120</span>
-                                                            <span className="label stock">Stock: 320</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-three-2.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Games</a>
-                                                                <h5 className="title"><a href="single-product.html">Game Station PW 25</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <h5 className="price"><span className="old">$285</span>$135.00</h5>
-                                                        </div>
-                                                        {/* Countdown */}
-                                                        <div className="product-countdown" data-countdown="2019/06/19" />
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product-three">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label sold">Already Sold: 75</span>
-                                                            <span className="label stock">Stock: 110</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-three-3.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Kitchen Appliances</a>
-                                                                <h5 className="title"><a href="single-product.html">Zorex Coffe Maker</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <h5 className="price"><span className="old">$375</span>$289.00</h5>
-                                                        </div>
-                                                        {/* Countdown */}
-                                                        <div className="product-countdown" data-countdown="2019/06/20" />
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product-three">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label sold">Already Sold: 130</span>
-                                                            <span className="label stock">Stock: 320</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-three-4.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Home Appliances</a>
-                                                                <h5 className="title"><a href="single-product.html">jeilips Steam Iron K 2</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <h5 className="price"><span className="old">$320</span>$210.00</h5>
-                                                        </div>
-                                                        {/* Countdown */}
-                                                        <div className="product-countdown" data-countdown="2019/06/21" />
-                                                    </div>{/* Product End */}
-                                                </div>
-                                            </div>{/* Product Slider End */}
+                                                    )
+                                                })}
+                                            </Slider>{/* Product Slider End */}
                                         </div>{/* Product Slider Wrap End */}
                                     </div>{/* Tab Pane End */}
                                     {/* Tab Pane Start */}
-                                    <div className="tab-pane fade" id="tab-six">
-                                        {/* Product Slider Wrap Start */}
-                                        <div className="product-slider-wrap product-slider-arrow-two">
-                                            {/* Product Slider Start */}
-                                            <div className="product-slider  product-slider-4-full">
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-18.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Tv &amp; Audio</a>
-                                                                <h5 className="title"><a href="single-product.html">Xonet Speaker P 9</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price">$185.00</h5>
-                                                                <div className="ratting">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-half-o" />
-                                                                    <i className="fa fa-star-o" />
+                                    {categories.map((categ, index) => {
+                                        console.log(categ.products);
+                                        return (
+                                            <div key={index} className={"tab-pane fade " + (currentCategories === categ.code ? "active show" : "")}>
+                                                {/* Product Slider Wrap Start */}
+                                                <div className="product-slider-wrap product-slider-arrow-one">
+                                                    {/* Product Slider Start */}
+                                                    <Slider key={categ.id} className="product-slider product-slider-4" {...settings2}>
+
+                                                        {categ.products && categ.products.map((item) => {
+                                                            const categoryProduct = categories && categories.find(cate => cate.code === item.categoryCode);
+                                                            const existCart = cart.find(p => p.id === item.id);
+                                                            const existWishList = wishList.find(p => p.id === item.id);
+                                                            const existCompare = compare.find(p => p.id === item.id)
+                                                            return (
+                                                                <div key={item.id} className="col pb-20 pt-10">
+                                                                    {/* Product Start */}
+                                                                    <div className="ee-product">
+                                                                        {/* Image */}
+                                                                        <div className="image">
+                                                                            <Link className="img" to={"/details/" + item.code}>
+                                                                                <img src={item.image[0]} alt="Product Image" />
+                                                                            </Link>
+
+                                                                            <div className="wishlist-compare">
+                                                                                <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
+                                                                                    <i className="ti-control-shuffle" />
+                                                                                </a>
+                                                                                <a className={existWishList ? "added" : ""} data-tooltip="Wishlist" onClick={() => { existWishList ? removeWishList(item.id) : addWishList(item) }}>
+                                                                                    <i className="ti-heart" />
+                                                                                </a>
+                                                                            </div>
+                                                                            <a className={existCart ? "add-to-cart added" : "add-to-cart"} onClick={() => { existCart ? removeCart(item.id) : addCart(item) }}>
+                                                                                <i className={existCart ? "ti-check" : "ti-shopping-cart"} />
+                                                                                <span>{existCart ? "ADDED" : "ADD TO CART"}</span>
+                                                                            </a>
+                                                                        </div>
+                                                                        {/* Content */}
+                                                                        <div className="content">
+                                                                            {/* Category & Title */}
+                                                                            <div className="category-title">
+                                                                                <a className="cat">{categoryProduct && categoryProduct.name}</a>
+
+                                                                                <h5 className="title">
+                                                                                    <Link to={"/details/" + item.code}>
+                                                                                        {item.name}
+                                                                                    </Link>
+                                                                                </h5>
+                                                                            </div>
+                                                                            {/* Price & Ratting */}
+                                                                            <div className="price-ratting">
+                                                                                <h5 className="price">${item.price}</h5>
+                                                                                <div className="ratting">
+                                                                                    {new Array(5).fill(0).map((star, index) => {
+                                                                                        return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                                    })}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>{/* Product End */}
                                                                 </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
+                                                            )
+                                                        })}
+                                                    </Slider>{/* Product Slider End */}
                                                 </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-24.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Smartphone</a>
-                                                                <h5 className="title"><a href="single-product.html">Sany Experia Z5</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price">$360.00</h5>
-                                                                <div className="ratting">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-half-o" />
-                                                                    <i className="fa fa-star-o" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label sale">sale</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-20.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Kitchen Appliances</a>
-                                                                <h5 className="title"><a href="single-product.html">Jackson Toster V 27</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price"><span className="old">$185</span>$135.00</h5>
-                                                                <div className="ratting">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-21.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Kitchen Appliances</a>
-                                                                <h5 className="title"><a href="single-product.html">mega Juice Maker</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price">$125.00</h5>
-                                                                <div className="ratting">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-half-o" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
-                                                </div>
-                                                <div className="col pb-20 pt-10">
-                                                    {/* Product Start */}
-                                                    <div className="ee-product">
-                                                        {/* Image */}
-                                                        <div className="image">
-                                                            <span className="label new">new</span>
-                                                            <a href="single-product.html" className="img"><img src="/images/product/product-22.png" alt="Product Image" /></a>
-                                                            <div className="wishlist-compare">
-                                                                <a href="#" data-tooltip="Compare"><i className="ti-control-shuffle" /></a>
-                                                                <a href="#" data-tooltip="Wishlist"><i className="ti-heart" /></a>
-                                                            </div>
-                                                            <a href="#" className="add-to-cart"><i className="ti-shopping-cart" /><span>ADD TO CART</span></a>
-                                                        </div>
-                                                        {/* Content */}
-                                                        <div className="content">
-                                                            {/* Category & Title */}
-                                                            <div className="category-title">
-                                                                <a href="#" className="cat">Kitchen Appliances</a>
-                                                                <h5 className="title"><a href="single-product.html">shine Microwave Oven</a></h5>
-                                                            </div>
-                                                            {/* Price & Ratting */}
-                                                            <div className="price-ratting">
-                                                                <h5 className="price"><span className="old">$389</span>$245.00</h5>
-                                                                <div className="ratting">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-o" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>{/* Product End */}
-                                                </div>
-                                            </div>{/* Product Slider End */}
-                                        </div>{/* Product Slider Wrap End */}
-                                    </div>{/* Tab Pane End */}
-                                </div>{/* Product Tab Content End */}
-                            </div>{/* Product Tab Filter End*/}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>{/* Product Tab Content End */}
+
                         </div>
                     </div>
                 </div>{/* Best Deals Product Section End */}
@@ -785,3 +510,42 @@ export default class BestDealsPage extends Component {
         )
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        allProducts: state.Ecomercial.productsBestDealAll,
+        categories: state.Ecomercial.bestdealCategories,
+        cart: state.Ecomercial.cart,
+        wishList: state.Ecomercial.wishList,
+        compare: state.Ecomercial.compare,
+        time: state.Ecomercial.timeEnd
+    }
+}
+const mapDispatchToProps = (dispatch, props) => {
+    return {
+        fetchProducts: (code) => {
+            dispatch(fetchBestDealProductsRequest(code));
+        },
+        addCart: (product) => {
+            dispatch(addCartRequest(product));
+        },
+        removeCart: (id) => {
+            // dispatch(removeCartRequest(id));
+            dispatch((dispatch) => { dispatch({ type: 'CART_REMOVE', id: id }) });
+        },
+        addWishList: (product) => {
+            dispatch(addWishListRequest(product));
+        },
+        removeWishList: (id) => {
+            dispatch(wishListRemoveRequest(id));
+        },
+        addCompare: (product) => {
+            dispatch(addCompareRequest(product));
+        },
+        removeCompare: (id) => {
+            dispatch(compareRemoveRequest(id));
+        }
+
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(BestDealsPage);

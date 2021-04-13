@@ -214,3 +214,27 @@ export const uploadRequest = (body, callback) => {
         });
     }
 }
+
+//UPDATE product
+
+export const updateProduct = (data) => {
+    return {
+        type: Types.UPDATE_PRODUCT_ADMIN,
+        data
+    }
+}
+
+export const updateProductRequest = (id, body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/product/update/' + id, 'PUT', body).then(res => {
+            dispatch(updateProduct(res.data.details));
+            if (typeof callback === 'function') {
+                callback(res.data.details)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}

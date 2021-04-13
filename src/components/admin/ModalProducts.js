@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { Modal, Button, Row, Col, Container, Form } from 'react-bootstrap';
 import { addProductRequest, fetchBrandProductRequest, fetchCategoriesRequest, uploadRequest } from '../../redux/actions/AdminActions';
+import swal from 'sweetalert';
 class ModalProducts extends Component {
 
     componentDidMount() {
@@ -39,10 +40,15 @@ class ModalProducts extends Component {
                         url: imageUp
                     })
                     this.handleAddProduct(imageUp);
+                    swal({
+                        title: "Good job!",
+                        text: "Add product Successfully!",
+                        icon: "success",
+                        button: " Ok!",
+                    });
+                    this.onClose();
                 }
             })
-        } else {
-            this.handleAddProduct(url);
         }
 
     }
@@ -126,6 +132,15 @@ class ModalProducts extends Component {
         })
 
     }
+    onClose = () => {
+        this.setState({
+            lgShow: false
+        })
+    }
+    onClear=(e)=>{
+        e.preventDefault()
+        this.form.reset() // resets uncontrolled fields ("username")
+    }
 
 
     render() {
@@ -140,7 +155,7 @@ class ModalProducts extends Component {
                     onHide={() => this.setState({ lgShow: false })}
                     aria-labelledby="example-modal-sizes-title-lg"
                 >
-                    <Form onSubmit={this.handleSubmit}>
+                    <Form onSubmit={this.handleSubmit} ref={form => this.form = form}>
                         <Modal.Header closeButton>
                             <Modal.Title id="example-modal-sizes-title-lg">
                                 Add Product
@@ -150,7 +165,7 @@ class ModalProducts extends Component {
                             <Container>
                                 <Row>
                                     {error ?
-                                        <div className="col-12 mb-30">
+                                        <div className="col-12 mb-30" style={{color:'red'}}>
                                             <span>{this.state.message}</span>
                                         </div>
                                         : ''}
@@ -317,7 +332,6 @@ class ModalProducts extends Component {
                                                         </Col>
 
                                                         {/* <button onClick={() => this.removeColumn(index)} type="button">Remove</button> */}
-
 
                                                     </Row>
 

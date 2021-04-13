@@ -1,6 +1,6 @@
 import { FETCH_PRODUCT, FETCH_PRODUCT_FEATURE_ALL, LOG_IN } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
-import { ADD_NEW_ROOM, ADD_PRODUCT_ADMIN, DELETE_PRODUCT_ADMIN, FETCH_BRAND_ADMIN, FETCH_CATEGORY_ADMIN, FETCH_PRODUCT_ADMIN, FETCH_ROOM, LOG_IN_ADMIN, USER_INIT_ADMIN } from "../const/AdminActionTypes";
+import { ADD_NEW_ROOM, ADD_PRODUCT_ADMIN, DELETE_PRODUCT_ADMIN, FETCH_BRAND_ADMIN, FETCH_CATEGORY_ADMIN, FETCH_PRODUCT_ADMIN, FETCH_ROOM, LOG_IN_ADMIN, UPDATE_PRODUCT_ADMIN, USER_INIT_ADMIN } from "../const/AdminActionTypes";
 
 
 const initialState = {
@@ -10,7 +10,8 @@ const initialState = {
     userAdmin: {},
     page: 0,
     total: 0,
-    brands : []
+    brands : [],
+    productUpdate:{}
 };
 
 export default (state = initialState, action) => {
@@ -57,6 +58,14 @@ export default (state = initialState, action) => {
         case DELETE_PRODUCT_ADMIN: {
             copyState.productAll = copyState.productAll.filter(product => product.id !== action.productId);
 
+            return copyState;
+        }
+        case UPDATE_PRODUCT_ADMIN : {
+            const index = copyState.productAll.findIndex(e=>e.id === action.data.id);
+            if(index!==-1) {
+                copyState.productAll[index] = action.data;
+            }
+            copyState.productAll = [...copyState.productAll];
             return copyState;
         }
         default:

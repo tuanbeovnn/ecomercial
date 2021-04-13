@@ -36,6 +36,8 @@ export const CREATE_ROOM = 'CREATE_ROOM';
 export const FETCH_MESSAGE = 'FETCH_MESSAGE';
 export const FETCH_STORE = 'FETCH_STORE';
 export const SEARCH_PRODUCT = 'SEARCH_PRODUCT';
+export const FETCH_REVIEW = 'FETCH_REVIEW';
+export const ADD_REVIEW = 'ADD_REVIEW';
 
 
 

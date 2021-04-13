@@ -3,6 +3,7 @@ import BrandLogo from '../components/ads/BrandLogo';
 import { connect } from 'react-redux';
 import { registerRequest, uploadRequest } from '../redux/actions';
 import { Redirect } from 'react-router';
+import swal from 'sweetalert';
 class Regiter extends Component {
     constructor(props) {
         super(props);
@@ -30,11 +31,22 @@ class Regiter extends Component {
                     })
 
                     this.handleRegister(avatar[0]);
-
+                    swal({
+                        title: "Good job!",
+                        text: "Confirm your account by Email !",
+                        icon: "success",
+                        button: " Ok!",
+                    });
                 }
             })
         } else {
             this.handleRegister(url);
+            swal({
+                title: "Good job!",
+                text: "Confirm your account by Email !",
+                icon: "success",
+                button: " Ok!",
+            });
         }
     }
 

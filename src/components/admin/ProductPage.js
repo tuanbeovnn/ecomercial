@@ -10,7 +10,6 @@ const size = 8;
 class ProductPage extends Component {
 
     componentDidMount() {
-
         const { allProducts } = this.props;
         if (allProducts.length === 0) {
             const callback = (data) => {
@@ -33,6 +32,8 @@ class ProductPage extends Component {
         }
         this.props.fetchAllProducts({ page: e1.selected, size }, callback);
     }
+
+    
     render() {
         const { allProducts, page, total } = this.props;
         const { visible, product,visibleUpdate } = this.state;

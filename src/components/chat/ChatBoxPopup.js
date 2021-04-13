@@ -27,7 +27,7 @@ class ChatBoxPopup extends Component {
                 this.scrollToBottom();
             }));
             this.props.getMessage(roomId, (data)=>{
-                console.log(data);
+               
                 if (data && data.length) {
                     this.setState({
                         messages : data

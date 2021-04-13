@@ -21,7 +21,9 @@ const initialState = {
     stores : [],
     searchProduct : [],
     total:0,
-    currentPage: 0
+    currentPage: 0,
+    page: 0,
+    total: 0,
 };
 
 export default (state = initialState, action) => {

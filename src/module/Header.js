@@ -99,7 +99,6 @@ class Header extends Component {
             }
 
         }
-        console.log(this.props);
         const queryString = this.props.location.search;
         const query = queryString && qs.parse(queryString.slice(1)) || {};
         const { code, name } = query;

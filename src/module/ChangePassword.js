@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { changePasswordRequest, updateUserRequest } from '../redux/actions';
+import swal from 'sweetalert';
 
 class ChangePassword extends Component {
 
@@ -13,7 +14,6 @@ class ChangePassword extends Component {
             confirmPassword: ''
         }
     }
-
 
     onChange = (e) => {
         let target = e.target;
@@ -59,14 +59,22 @@ class ChangePassword extends Component {
                     )
                 } else {
                     this.setState({
-                        success: true
+                        success: true,
+                        oldPassword: '',
+                        newPassword: '',
+                        confirmPassword: ''
                     })
+                    swal({
+                        title: "Good job!",
+                        text: "You password has been changed !",
+                        icon: "success",
+                        button: " Ok!",
+                    });
                 }
             });
         }
 
     }
-
     render() {
 
         const { success, error } = this.state;
@@ -109,16 +117,11 @@ class ChangePassword extends Component {
                                     <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain born an will give you a complete account of the system, and expound</p>
                                     {/* Register Form */}
 
-                                    <form onSubmit={this.handleSubmit}>
+                                    <form onSubmit={this.handleSubmit} ref={form => this.form = form}>
                                         <div className="row">
                                             {error ?
-                                                <div className="col-12 mb-30">
+                                                <div className="col-12 mb-30" style={{ color: 'red' }}>
                                                     <span>{this.state.message}</span>
-                                                </div>
-                                                : ''}
-                                            {success ?
-                                                <div className="col-12 mb-30" style={{ color: 'blue' }}>
-                                                    <span>Your password has been changed</span>
                                                 </div>
                                                 : ''}
                                             <div className="col-12 mb-30">
@@ -127,6 +130,7 @@ class ChangePassword extends Component {
                                                     placeholder="Type your old password"
                                                     name="oldPassword"
                                                     onChange={this.onChange}
+                                                    value={this.state.oldPassword}
                                                 />
                                             </div>
                                             <div className="col-12 mb-30">
@@ -135,10 +139,16 @@ class ChangePassword extends Component {
                                                     placeholder="Type your new password"
                                                     name="newPassword"
                                                     onChange={this.onChange}
+                                                    value={this.state.newPassword}
                                                 />
                                             </div>
                                             <div className="col-12 mb-30">
-                                                <input type="password" placeholder="Confirm password" name="confirmPassword" onChange={this.onChange} />
+                                                <input type="password" 
+                                                placeholder="Confirm password" 
+                                                name="confirmPassword" 
+                                                onChange={this.onChange}
+                                                value={this.state.confirmPassword}
+                                                />
                                             </div>
 
                                             <div className="col-12 mb-15">

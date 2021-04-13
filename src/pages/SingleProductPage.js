@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchProductDetailsRequest, removeCartRequest, addCartRequest, addWishListRequest, wishListRemoveRequest, addCompareRequest, compareRemoveRequest } from "../redux/actions";
+import { fetchProductDetailsRequest, removeCartRequest, addCartRequest, addWishListRequest, wishListRemoveRequest, addCompareRequest, compareRemoveRequest, fetchReviewRequest, addReviewRequest } from "../redux/actions";
 import Slider from 'react-slick';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import { Skeleton, Space, Divider, Form, Radio } from 'antd';
+import ReviewPage from './ReviewPage';
+
 
 class SingleProductPage extends Component {
     constructor(props) {
@@ -13,7 +15,8 @@ class SingleProductPage extends Component {
             relatedProduct: [],
             addToCart: true,
             qty: 1,
-            tab: 0
+            tab: 0,
+            reviews: []
 
         }
     }
@@ -23,7 +26,6 @@ class SingleProductPage extends Component {
             if (data) {
                 const product = data;
                 const relatedProduct = data.relatedProduct;
-
                 this.setState({
                     product,
                     relatedProduct
@@ -31,11 +33,9 @@ class SingleProductPage extends Component {
             }
         }
         this.props.fetchProductDetails(code, callback);
-
     }
 
     componentDidUpdate(preProps, preState) {
-
         if (preProps.match.params.code !== this.props.match.params.code) {
             const code = this.props.match.params.code;
             const callback = (data) => {
@@ -76,18 +76,18 @@ class SingleProductPage extends Component {
         })
     }
 
-    render() {
-        const { product, relatedProduct, qty } = this.state;
 
-        const { categories, cart, addCart, removeCart, compare, wishList, addWishList,removeWishList, addCompare,removeCompare } = this.props;
-        console.log(product);
+    render() {
+        const { product, relatedProduct, qty, reviews } = this.state;
+
+        const { categories, cart, addCart, removeCart, compare, wishList, addWishList, removeWishList, addCompare, removeCompare } = this.props;
+
         let technicalInfo;
         try {
             technicalInfo = JSON.parse(product.technicalInfo);
         } catch {
             technicalInfo = {};
         }
-        console.log(technicalInfo);
         const existCart = cart.find(p => p.id === product.id);
 
         const categoryProduct = categories && categories.find(cate => cate.code === product.categoryCode);
@@ -126,6 +126,7 @@ class SingleProductPage extends Component {
         };
         const existCompare = compare.find(p => p.id === product.id);
         const existWishList = wishList.find(p => p.id === product.id);
+
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -210,7 +211,7 @@ class SingleProductPage extends Component {
                                     <div className="single-product-description">
                                         <div className="ratting">
                                             {new Array(5).fill(0).map((star, index) => {
-                                                return <i key={index} className={"fa fa-star" + (index < product.rating ? '' : '-o')} />
+                                                return <i key={index} className={"fat fa-star" + (index < product.rating ? '' : '-o')} />
                                             })}
                                         </div>
                                         <div className="desc">
@@ -323,129 +324,9 @@ class SingleProductPage extends Component {
                                     </div>
                                     <div className={this.state.tab === 2 ? "tab-pane fade show active" : "tab-pane fade"} id="product-reviews">
                                         <div className="product-ratting-wrap">
-                                            <div className="pro-avg-ratting">
-                                                <h4>4.5 <span>(Overall)</span></h4>
-                                                <span>Based on 9 Comments</span>
+                                            {product.id ? <ReviewPage productId={product.id} /> : ""}
+
                                             </div>
-                                            <div className="ratting-list">
-                                                <div className="sin-list float-left">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <span>(5)</span>
-                                                </div>
-                                                <div className="sin-list float-left">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o" />
-                                                    <span>(3)</span>
-                                                </div>
-                                                <div className="sin-list float-left">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <span>(1)</span>
-                                                </div>
-                                                <div className="sin-list float-left">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <span>(0)</span>
-                                                </div>
-                                                <div className="sin-list float-left">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <i className="fa fa-star-o" />
-                                                    <span>(0)</span>
-                                                </div>
-                                            </div>
-                                            <div className="rattings-wrapper">
-                                                <div className="sin-rattings">
-                                                    <div className="ratting-author">
-                                                        <h3>Cristopher Lee</h3>
-                                                        <div className="ratting-star">
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <span>(5)</span>
-                                                        </div>
-                                                    </div>
-                                                    <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci veli</p>
-                                                </div>
-                                                <div className="sin-rattings">
-                                                    <div className="ratting-author">
-                                                        <h3>Nirob Khan</h3>
-                                                        <div className="ratting-star">
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <span>(5)</span>
-                                                        </div>
-                                                    </div>
-                                                    <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci veli</p>
-                                                </div>
-                                                <div className="sin-rattings">
-                                                    <div className="ratting-author">
-                                                        <h3>MD.ZENAUL ISLAM</h3>
-                                                        <div className="ratting-star">
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <i className="fa fa-star" />
-                                                            <span>(5)</span>
-                                                        </div>
-                                                    </div>
-                                                    <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci veli</p>
-                                                </div>
-                                            </div>
-                                            <div className="ratting-form-wrapper fix">
-                                                <h3>Add your Comments</h3>
-                                                <form action="#">
-                                                    <div className="ratting-form row">
-                                                        <div className="col-12 mb-15">
-                                                            <h5>Rating:</h5>
-                                                            <div className="ratting-star fix">
-                                                                <i className="fa fa-star-o" />
-                                                                <i className="fa fa-star-o" />
-                                                                <i className="fa fa-star-o" />
-                                                                <i className="fa fa-star-o" />
-                                                                <i className="fa fa-star-o" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-md-6 col-12 mb-15">
-                                                            <label htmlFor="name">Name:</label>
-                                                            <input id="name" placeholder="Name" type="text" />
-                                                        </div>
-                                                        <div className="col-md-6 col-12 mb-15">
-                                                            <label htmlFor="email">Email:</label>
-                                                            <input id="email" placeholder="Email" type="text" />
-                                                        </div>
-                                                        <div className="col-12 mb-15">
-                                                            <label htmlFor="your-review">Your Review:</label>
-                                                            <textarea name="review" id="your-review" placeholder="Write a review" defaultValue={""} />
-                                                        </div>
-                                                        <div className="col-12">
-                                                            <input defaultValue="add review" type="submit" />
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -505,7 +386,7 @@ class SingleProductPage extends Component {
                                                                     <h5 className="price">${item.price}</h5>
                                                                     <div className="ratting">
                                                                         {new Array(5).fill(0).map((star, index) => {
-                                                                            return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                            return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                         })}
                                                                     </div>
                                                                 </div>
@@ -561,6 +442,10 @@ const mapDispatchToProps = (dispatch, props) => {
         removeCompare: (id) => {
             dispatch(compareRemoveRequest(id));
         },
+        fetchReviews: (productId, callback) => {
+            dispatch(fetchReviewRequest(productId, callback));
+        }
+        
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SingleProductPage);

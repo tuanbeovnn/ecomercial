@@ -1,22 +1,30 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+const size = 8;
 class MobileCategories extends Component {
     constructor(props) {
         super(props)
         this.state = {
             products: [],
             addToCart: true,
-            tab: 0
+            tab: 0,
+            visibleSelect: false,
+            sorts: [
+                {value: 'rating,desc', label: 'Best rated'},
+                {value: 'created_date', label: 'Newest Product'},
+                {value: 'price,asc', label: 'Price: low to high'},
+                {value: 'price,desc', label: 'Price: high to low'}
+            ],
         }
     }
     componentDidMount() {
         const code = this.props.match.params.code;
         const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
         // const page = (Number(this.props.match.params.page - 1)||0);
-      
+
         const callback = (data) => {
             if (data) {
                 this.setState({
@@ -27,8 +35,8 @@ class MobileCategories extends Component {
                 })
             }
         }
-
-        this.props.fetchProductListCategory(code, page, callback);
+        // this.props.fetchAllProducts({ page: 0, size }, callback);
+        this.props.fetchProductListCategory({ code, page: 0, size }, callback);
     }
     // componentDidUpdate(preProps, preState) {
     //     const code = this.props.match.params.code;
@@ -43,7 +51,6 @@ class MobileCategories extends Component {
         // this.setState({
         //     selected: e1.selected
         // })
-
         const code = this.props.match.params.code;
         const currentPage = Number(this.props.match.params.page) || 1;
 
@@ -60,26 +67,62 @@ class MobileCategories extends Component {
                     })
                 }
             }
-            this.props.fetchProductListCategory(code, e1.selected, callback);
+            this.props.fetchProductListCategory({ code, page: e1.selected, size, sort : this.state.sort }, callback);
         }
 
     }
+    onChange = (e) => {
+        const code = this.props.match.params.code;
+        const callback = (data) => {
+            if (data) {
+                this.setState({
+                    products: data.list,
+                    total: data.total,
+                    currentPage: data.currentPage,
+                    pageSize: data.pageSize,
+                    sort : e.target.value
+                }, () => {
+                    this.props.history.push(`/product/${code}`);
+                })
+            }
+        }
+        this.props.fetchProductListCategory({ code, page: 0, size, sort : e.target.value }, callback);
+
+        console.log(e.target.value);
+
+    }
+
+    onSort = (value) => {
+        this.setState({ selected: value, visibleSelect: false })
+        const code = this.props.match.params.code;
+        const callback = (data) => {
+            if (data) {
+                this.setState({
+                    products: data.list,
+                    total: data.total,
+                    currentPage: data.currentPage,
+                    pageSize: data.pageSize,
+                }, () => {
+                    this.props.history.push(`/product/${code}`);
+                })
+            }
+        }
+        this.props.fetchProductListCategory({ code, page: 0, size, sort : value }, callback);
+      
+
+    }
     render() {
-        const { products, addToCart, total, pageSize, selected } = this.state;
+        const { products, addToCart, total, pageSize, selected,visibleSelect, sorts } = this.state;
         const { addCompare, removeCompare, addWishList, removeWishList, categories, cart, compare, wishList, addCart, removeCart } = this.props;
         const currentPage = Number(this.props.match.params.page) || 1;
         const totalPage = Math.ceil(total / pageSize) || '';
         const code = this.props.match.params.code;
-        
+        const currentSort = sorts.find(c => c.value === selected);
+        console.log(currentSort);
 
         return (
 
             <div>
-                {/* {selected !== undefined && selected + 1 !== currentPage ? <Redirect to={`/product/${code}/${selected + 1}`}></Redirect> : ''
-                    
-
-                } */}
-                {/* Page Banner Section Start */}
                 <div className="page-banner-section section">
                     <div className="page-banner-wrap row row-0 d-flex align-items-center ">
                         {/* Page Banner */}
@@ -132,16 +175,26 @@ class MobileCategories extends Component {
                                             </div> */}
                                             {/* Product Short */}
                                             <div className="product-short">
-                                                <p>Short by</p>
-                                                <select name="sortby" className="nice-select">
-                                                    <option value="trending">Trending items</option>
-                                                    <option value="sales">Best sellers</option>
-                                                    <option value="rating">Best rated</option>
-                                                    <option value="date">Newest items</option>
-                                                    <option value="price-asc">Price: low to high</option>
-                                                    <option value="price-desc">Price: high to low</option>
-                                                </select>
+                                                <p>Sort by</p>
+                                                <div className={visibleSelect ? "nice-select open" : "nice-select"}>
+                                                <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{currentSort && currentSort.label || "Newest Product"}</span>
+                                                <ul className="list">
+                                                    <li onClick={() => this.onSort()} className={!selected ? "option selected focus" : "option"}>Newest Product</li>
+                                                    {sorts.map((item, index) => {
+                                                        console.log(currentSort);
+                                                        return <li
+                                                            key={index}
+                                                            onClick={() => this.onSort(item.value)}
+                                                            className={selected === item.value ? "option selected focus" : "option"}
+                                                            value={item.value}
+                                                        >
+                                                            {item.label}
+                                                        </li>
+                                                    })}
+                                                </ul>
                                             </div>
+                                            </div>
+                                            
                                             {/* Product Pages */}
                                             <div className="product-pages">
                                                 <p>Pages {currentPage} of {totalPage}</p>
@@ -203,7 +256,7 @@ class MobileCategories extends Component {
                                                             <h5 className="price">${item.price}</h5>
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
-                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                 })}
                                                             </div>
                                                         </div>
@@ -230,7 +283,7 @@ class MobileCategories extends Component {
                                                         <div className="left-content">
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
-                                                                    return <i key={index} className={"fa fa-star" + (index < item.rating ? '' : '-o')} />
+                                                                    return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
                                                                 })}
                                                             </div>
                                                             <div className="desc">
@@ -364,8 +417,8 @@ const mapStateToProps = (state) => {
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchProductListCategory: (code, page, callback) => {
-            dispatch(fetchProductByCategoriesRequest(code, page, callback));
+        fetchProductListCategory: (params, callback) => {
+            dispatch(fetchProductByCategoriesRequest(params, callback));
         },
         addWishList: (product) => {
             dispatch(addWishListRequest(product));

@@ -201,28 +201,29 @@ export const fetchBannerRequest = () => {
 }
 // FETCH PRODUCT BY CATEGORIES
 
-export const fetchProductByCategories = (products) => {
+export const fetchProductByCategories = ({list, currentPage, total}) => {
     return {
         type: Types.FETCH_PRODUCTS_BYCATEGORIES,
-        products
+        products : list,
+        page : currentPage,
+        total
     }
 }
 
-export const fetchProductByCategoriesRequest = (code, page, callback) => {
+export const fetchProductByCategoriesRequest = (params, callback) => {
     return (dispatch) => {
-        return callAPI('api/product/list?code=' + code + '&size=8' + '&page=' + page, 'GET', null).then(res => {
-
-            dispatch(fetchProductByCategories(res.data.list));
-            if (typeof callback === 'function') {
+        return callAPI('api/product/list?' + qs.stringify(params), 'GET', null).then(res => {
+            if (res.data && res.data.success) {
+                dispatch(fetchProductByCategories(res.data));
                 callback(res.data)
+            }else {
+                callback();
             }
-        }).catch(() => {
-            if (typeof callback === 'function') {
-                callback()
-            }
-        });
+        })
     }
 }
+
+
 
 // cart init 
 export const getCartFromLocal = (cart) => {
@@ -596,6 +597,7 @@ export const sendMessageRequest = (body, callback) => {
     return (dispatch) => {
         return callAPI('api/message', 'POST', body).then(res => {
             if (res.data) {
+                // callback(res.data);
             }
         }).catch(() => {
 
@@ -635,7 +637,7 @@ export const getMessageRequest = (roomId, callback) => {
 }
 
 //search product
-export const searchProduct = (product, total, currentPage) => {
+export const searchProduct = ({product, total, currentPage}) => {
     return {
         type: Types.SEARCH_PRODUCT,
         product,
@@ -654,5 +656,54 @@ export const searchProductRequest = (params, callback) => {
                 callback();
             }
         })
+    }
+}
+
+// FETCH REVIEW
+export const fetchReview = ({reviews, currentPage, total})=>{
+    return {
+        type : Types.FETCH_REVIEW,
+        reviews,
+        currentPage,
+        total
+    }
+}
+
+export const fetchReviewRequest = (params, callback) =>{
+    return(dispatch)=>{
+        return callAPI('api/product/listRating?' + qs.stringify(params),'GET', null).then(res=>{
+            if (res.data && res.data.success) {
+                dispatch(fetchReview(res.data));
+                callback(res.data)
+            }else {
+                dispatch(fetchReview({}));
+                callback();
+            }
+        })
+    }
+}
+
+// ADD REVIEW
+
+export const addReview = (review) =>{
+    return {
+        type: Types.ADD_REVIEW,
+        review
+    }
+}
+
+export const addReviewRequest=(body, callback)=>{
+    return(dispatch) =>{
+        return callAPI('api/product/rating', 'POST', body).then(res => {
+            dispatch(addReview(res.data.details));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                console.log(e.response);
+                callback();
+            }
+        });
     }
 }
