@@ -19,6 +19,14 @@ import Checkout from '../components/products/Checkout';
 import BestDealsPage from '../pages/BestDealsPage';
 import TemplateAdmin from '../components/chat/TemplateAdmin';
 import SearchProduct from '../components/search/SearchProduct';
+import AboutusPage from '../pages/AboutusPage';
+import ContactPage from '../pages/ContactPage';
+import TermCondition from '../pages/TermCondition';
+import FaqPage from '../pages/FaqPage';
+import Users from '../components/admin/Users';
+import Brands from '../components/admin/Brands';
+import BrandPage from '../pages/BrandPage';
+import CategoryByBrand from '../pages/CategoryByBrand';
 
 export const routes = [
     {
@@ -96,14 +104,44 @@ export const routes = [
         exact : false,
         main: (props) => <SearchProduct {...props}/>
     },
+    {
+        path:'/about',
+        exact : false,
+        main: () => <AboutusPage/>
+    },
+    {
+        path:'/contact',
+        exact : false,
+        main: () => <ContactPage/>
+    },
+    {
+        path:'/term',
+        exact : false,
+        main: () => <TermCondition/>
+    },
+    {
+        path:'/faq',
+        exact : false,
+        main: () => <FaqPage/>
+    },
+    {
+        path:'/listBrand/:id/:page?',
+        exact : false,
+        main: (props) => <BrandPage {...props}/>
+    },
+    {
+        path:'/code/:category?/:brand?/:page?',
+        exact : false,
+        main: (props) => <CategoryByBrand {...props}/>
+    }
 
     
 ];
 export const routesAdmin = [
     {
-        path: '/admin',
+        path: '/',
         exact: true,
-        main: () => <AdminPage />
+        main: () => <ProductPage />
     },
     {
         path: '/login',
@@ -121,8 +159,18 @@ export const routesAdmin = [
         main: () => <Categories/>
     },
     {
+        path: '/brands',
+        exact: false,
+        main: () => <Brands/>
+    },
+    {
         path:'/chat-box',
         exact : false,
         main: ()=> <TemplateAdmin/>
+    },
+    {
+        path:'/users',
+        exact : false,
+        main: ()=> <Users/>
     }
 ];

@@ -637,7 +637,7 @@ export const getMessageRequest = (roomId, callback) => {
 }
 
 //search product
-export const searchProduct = ({product, total, currentPage}) => {
+export const searchProduct = (product, total, currentPage) => {
     return {
         type: Types.SEARCH_PRODUCT,
         product,
@@ -649,6 +649,7 @@ export const searchProductRequest = (params, callback) => {
     return (dispatch) => {
         return callAPI('api/product/search?'+qs.stringify(params), 'GET').then(res => {
             if (res.data && res.data.success) {
+                
                 dispatch(searchProduct(res.data.list, res.data.total, res.data.currentPage));
                 callback(res.data);
             } else {
@@ -705,5 +706,57 @@ export const addReviewRequest=(body, callback)=>{
                 callback();
             }
         });
+    }
+}
+
+
+
+//fetch product by Brand
+
+export const fetchProductByBrand = ({list, currentPage, total}) => {
+    return {
+        type: Types.FETCH_PRODUCT_BY_BRAND,
+        products : list,
+        page : currentPage,
+        total
+    }
+}
+
+export const fetchProductByBrandRequest = (params, callback) => {
+    return (dispatch) => {
+        return callAPI('api/product/listBrand?' + qs.stringify(params), 'GET', null).then(res => {
+            console.log(res.data);
+            if (res.data && res.data.success) {
+                dispatch(fetchProductByBrand(res.data));
+                callback(res.data)
+            }else {
+                callback();
+            }
+        })
+    }
+}
+
+//fetch product by Brand
+
+export const fetchProductCategoryByBrand = ({list, currentPage, total}) => {
+    return {
+        type: Types.FETCH_PRODUCT_CATEGORY_BY_BRAND,
+        products : list,
+        page : currentPage,
+        total
+    }
+}
+
+export const fetchProductCategoryByBrandRequest = (params, callback) => {
+    return (dispatch) => {
+        return callAPI('api/product/listCategoryByBrand?' + qs.stringify(params), 'GET', null).then(res => {
+            console.log(res.data);
+            if (res.data && res.data.success) {
+                dispatch(fetchProductCategoryByBrand(res.data));
+                callback(res.data)
+            }else {
+                callback();
+            }
+        })
     }
 }

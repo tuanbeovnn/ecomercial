@@ -132,7 +132,7 @@ class WishListPage extends Component {
                                                                 </button>
                                                             </td>
 
-                                                            <td onClick={() => { removeWishList(item.id) }} className="pro-remove"><a ><i className="fa fa-trash-o" /></a></td>
+                                                            <td onClick={() => { removeWishList(item.id) }} className="pro-remove"><a ><i className="fas fa-trash-alt"></i></a></td>
                                                         </tr>
                                                     )
                                                 })}

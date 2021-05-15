@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { deleteProductRequest, fetchProductRequest } from '../../redux/actions/AdminActions';
 import ModalProducts from './ModalProducts';
 import ReactPaginate from 'react-paginate';
-import { Form } from 'react-bootstrap';
 import ModalProductDetails from './ModalProductDetails';
 import ModalUpdateProduct from './ModalUpdateProduct';
+import swal from 'sweetalert';
 const size = 8;
 class ProductPage extends Component {
 
@@ -19,12 +19,23 @@ class ProductPage extends Component {
     }
     state = {
         visible: false,
-        visibleUpdate : false,
+        visibleUpdate: false,
         product: {}
     }
 
     onDelete = (productId) => {
-        this.props.deleteProduct(productId);
+        swal("Are you sure?", {
+            dangerMode: true,
+            buttons: true,
+        }).then((willdelete) => {
+            if (willdelete) {
+                this.props.deleteProduct(productId);
+                swal("Poof! Your imaginary file has been deleted!", { icon: "success", });
+            } else {
+                swal("Your imaginary file is safe!");
+            }
+        })
+
     }
 
     handlePageClick = (e1) => {
@@ -33,10 +44,10 @@ class ProductPage extends Component {
         this.props.fetchAllProducts({ page: e1.selected, size }, callback);
     }
 
-    
+
     render() {
         const { allProducts, page, total } = this.props;
-        const { visible, product,visibleUpdate } = this.state;
+        const { visible, product, visibleUpdate } = this.state;
         // const page = Number(this.props.match.params.page) || 1;
         const totalPage = Math.ceil(total / size) || '';
         return (
@@ -52,9 +63,7 @@ class ProductPage extends Component {
                             <div className="input-group">
                                 <input type="text" className="form-control" placeholder="Enter keyword..." />
                                 <span className="input-group-btn">
-                                    <button className="btn btn-secondary" type="button">
-                                        <span className="fa fa-search mr-5"></span>Search
-                        </button>
+                                <ModalProducts />
                                 </span>
                             </div>
                         </div>
@@ -82,7 +91,7 @@ class ProductPage extends Component {
                                     </ul>
                                 </div> */}
                             </div>
-                            <ModalProducts />
+                           
                         </div>
 
                     </div>
@@ -111,12 +120,12 @@ class ProductPage extends Component {
                                     <tbody>
                                         {allProducts.map((item, index) => {
 
-                                            const tech = JSON.parse(item.technicalInfo);
+                                            // const tech = JSON.parse(item.technicalInfo);
                                             return (
                                                 <tr key={index}>
                                                     <td style={{ width: 10 }}>{index + page * size + 1}</td>
                                                     <td style={{ width: '10%' }}>{item.name}</td>
-                                                    <td style={{ width: '5%' }}>{item.price}</td>
+                                                    <td style={{ width: '10%' }}>{item.price.toLocaleString() } e</td>
                                                     {/* <td style={{width:50}}>{item.originalPrice}</td> */}
                                                     <td style={{ width: 50 }}>{item.discount}%</td>
                                                     <td style={{ width: '20%' }}><img style={{ width: 54, height: 64 }} src={item.image[0]} /></td>
@@ -127,12 +136,16 @@ class ProductPage extends Component {
                                                     <td style={{ width: '5%' }}>{item.quantity}</td>
                                                     <td style={{ width: '5%' }}>{item.rating}</td>
                                                     <td style={{ width: '20%' }}>
-                                                        <button onClick={() => this.onDelete(item.id)} className="btn btn-outline-danger" type="button"><i className="fas fa-trash-alt"></i></button>&nbsp;&nbsp;
+                                                        <button
+                                                            onClick={() => this.onDelete(item.id)}
+                                                            className="btn btn-outline-danger" type="button">
+                                                            <i className="fas fa-trash-alt"></i>
+                                                        </button>&nbsp;&nbsp;
                                                         <button
                                                             className="btn btn-outline-warning"
                                                             type="button"
                                                             onClick={() => this.setState({ visibleUpdate: true, product: item })}
-                                                            ><i className="fas fa-wrench"></i>
+                                                        ><i className="fas fa-wrench"></i>
                                                         </button>&nbsp;&nbsp;
                                                         <button
                                                             className="btn btn-outline-info"
@@ -149,7 +162,7 @@ class ProductPage extends Component {
                                     </tbody>
                                 </table>
                                 <ModalProductDetails visible={visible} onHide={() => { this.setState({ visible: false }) }} product={product} />
-                                <ModalUpdateProduct  visibleUpdate={visibleUpdate} onHide={() => { this.setState({ visibleUpdate: false }) }} product={product}/>
+                                <ModalUpdateProduct visibleUpdate={visibleUpdate} onHide={() => { this.setState({ visibleUpdate: false }) }} product={product} />
                             </div>
                         </div>
                         <div className="card-footer">

@@ -192,13 +192,13 @@ class Login extends Component {
                                     </div>
 
                                     <a onClick={() => { this.setState({ facebookLogin: !this.state.facebookLogin }) }} className="facebook-login">
-                                        Login with <i className="fa fa-facebook" />
+                                        Login with <i className="fab fa-facebook" />
                                     </a>
                                     <a href="#" className="twitter-login">
-                                        Login with <i className="fa fa-twitter" />
+                                        Login with <i className="fab fa-twitter" />
                                     </a>
                                     <a href="#" className="google-plus-login">
-                                        Login with <i className="fa fa-google-plus" />
+                                        Login with <i className="fab fa-google-plus" />
                                     </a>
                                 </div>
                             </div>

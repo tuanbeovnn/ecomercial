@@ -90,7 +90,6 @@ class ReviewPage extends Component {
 
     render() {
         const { reviews, total, page } = this.state;
-        console.log(reviews);
         const totalPage = Math.ceil(total / size) || '';
         return (
             <div>

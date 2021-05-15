@@ -1,27 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchCategoriesRequest } from '../../redux/actions/AdminActions';
-import ModalUpdateCategory from './ModalUpdateCategory';
-class Categories extends Component {
+import { fetchBrandProductRequest, fetchCategoriesRequest } from '../../redux/actions/AdminActions';
+import ModalUpdateBrand from './ModalUpdateBrand';
+class Brands extends Component {
     state = {
         visible: false,
         visibleUpdate: false,
-        visibleAdd: false,
-        cate: {},
+        brand: {},
         isCreate: true
     }
     componentDidMount() {
-        this.props.fetchAllCategories();
+        this.props.fetchBrand();
     }
-    render() {
-        const { allCategories } = this.props;
-        const { visible, product, visibleUpdate, cate,isCreate, visibleAdd } = this.state;
 
+
+    render() {
+        const { brands } = this.props;
+        console.log(brands);
+        const { visible, product, visibleUpdate, brand, isCreate, visibleAdd } = this.state;
         return (
-            
+
             <main>
                 <div className="container-fluid">
-                    <h1 className="mt-4">Categories</h1>
+                    <h1 className="mt-4">Brands</h1>
                     <ol className="breadcrumb mb-4">
                         <li className="breadcrumb-item"><a href="index.html">Dashboard</a></li>
                         <li className="breadcrumb-item active">Tables</li>
@@ -40,14 +41,13 @@ class Categories extends Component {
                         <div className="col-6 display">
                             <div className="col-3">
                             </div>
-                            {/* <ModalCategory /> */}
-                            <button onClick={() => this.setState({ isCreate: true, visibleAdd : true})}type="button" className="btn btn-outline-primary">Add</button>
-                            <ModalUpdateCategory isCreate={isCreate} visibleUpdate={visibleUpdate} visibleAdd={visibleAdd} onHide={() => { this.setState({ visibleUpdate: false, isCreate:false }) }} cate={cate}/>
+                            <button onClick={() => this.setState({ isCreate: true, visibleAdd: true })} type="button" className="btn btn-outline-primary">Add</button>
+                            <ModalUpdateBrand isCreate={isCreate} visibleUpdate={visibleUpdate} visibleAdd={visibleAdd} onHide={() => { this.setState({ visibleUpdate: false, isCreate: false }) }} brand={brand} />
                         </div>
 
                     </div>
                     <div className="card mb-4">
-                        <div className="card-header"><i className="fas fa-table mr-1" />DataTable Categories</div>
+                        <div className="card-header"><i className="fas fa-table mr-1" />DataTable Brands</div>
                         <div className="card-body">
                             <div className="table-responsive">
                                 <table className="table table-bordered" id="dataTable" width="100%" cellSpacing={0}>
@@ -60,7 +60,7 @@ class Categories extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {allCategories.map((item, index) => {
+                                        {brands.map((item, index) => {
                                             return (
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
@@ -72,7 +72,7 @@ class Categories extends Component {
                                                         <button
                                                             className="btn btn-outline-warning"
                                                             type="button"
-                                                            onClick={() => this.setState({ visibleUpdate: true, cate: item, isCreate : false })}
+                                                            onClick={() => this.setState({ visibleUpdate: true, brand: item, isCreate : false })}
                                                         ><i className="fas fa-wrench"></i>
                                                         </button>
                                                     </td>
@@ -94,15 +94,15 @@ class Categories extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        allCategories: state.AdminReducer.categories
+        brands: state.AdminReducer.brands
     }
 }
 
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        fetchAllCategories: () => {
-            dispatch(fetchCategoriesRequest());
+        fetchBrand: () => {
+            dispatch(fetchBrandProductRequest());
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(Categories);
+export default connect(mapStateToProps, mapDispatchToProps)(Brands);

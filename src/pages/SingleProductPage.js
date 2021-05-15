@@ -16,10 +16,14 @@ class SingleProductPage extends Component {
             addToCart: true,
             qty: 1,
             tab: 0,
-            reviews: []
+            reviews: [],
+            visibleSelect: false,
+            color: 'Choose',
+
 
         }
     }
+
     componentDidMount() {
         const code = this.props.match.params.code;
         const callback = (data) => {
@@ -32,7 +36,9 @@ class SingleProductPage extends Component {
                 })
             }
         }
+
         this.props.fetchProductDetails(code, callback);
+
     }
 
     componentDidUpdate(preProps, preState) {
@@ -48,9 +54,17 @@ class SingleProductPage extends Component {
                         relatedProduct
                     })
                 }
+
             }
             this.props.fetchProductDetails(code, callback);
         }
+        // if (this.state.product.id && this.state.product.id !== preState.product.id) {
+        //     console.log(this.slider1);
+        //     if (this.slider1 && this.slider1.slickGoTo) {
+        //         console.log(this.slider1.slickGoTo);
+        //         this.slider1.slickGoTo(1);
+        //     }
+        // }
 
     }
 
@@ -78,7 +92,8 @@ class SingleProductPage extends Component {
 
 
     render() {
-        const { product, relatedProduct, qty, reviews } = this.state;
+        const { product, relatedProduct, qty, reviews, visibleSelect, selected, color } = this.state;
+        console.log(product);
 
         const { categories, cart, addCart, removeCart, compare, wishList, addWishList, removeWishList, addCompare, removeCompare } = this.props;
 
@@ -91,6 +106,7 @@ class SingleProductPage extends Component {
         const existCart = cart.find(p => p.id === product.id);
 
         const categoryProduct = categories && categories.find(cate => cate.code === product.categoryCode);
+
         const settings = {
             dots: true,
             infinite: true,
@@ -170,7 +186,7 @@ class SingleProductPage extends Component {
                                                         return (
                                                             <div className="align-items-center justify-content-between" key={index}>
                                                                 <div className="big-image">
-                                                                    <img src={item} alt={item} />
+                                                                    <img style={{ width: 420, height: 580 }} src={item} alt={item} />
                                                                 </div>
                                                             </div>
                                                         )
@@ -187,7 +203,7 @@ class SingleProductPage extends Component {
                                                 {product.image.map((item, index) => {
                                                     return (
                                                         <div key={index} className="thumb-image">
-                                                            <img key={index} src={item} alt={item} />
+                                                            <img style={{ width: 175, height: 180 }} key={index} src={item} alt={item} />
                                                         </div>
                                                     )
                                                 })}
@@ -215,7 +231,7 @@ class SingleProductPage extends Component {
                                             })}
                                         </div>
                                         <div className="desc">
-                                            <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora inform </p>
+                                            <p>{product.description}</p>
                                         </div>
                                         <span className="availability">Availability: <span>{product.status}</span></span>
                                         <div className="quantity-colors">
@@ -234,16 +250,16 @@ class SingleProductPage extends Component {
                                             </div>
                                             <div className="colors">
                                                 <h5>Color</h5>
-
-                                                <div className="nice-select">
-                                                    <span className="current">red</span>
-                                                    <ul className="list">
-                                                        <li data-value="red" className="option selected">red</li>
-                                                        <li data-value="black" className="option">black</li>
-                                                        <li data-value="yellow" className="option">yellow</li>
-                                                        <li data-value="grey" className="option">grey</li>
-                                                    </ul>
-                                                </div>
+                                                {product.id ?
+                                                    <div className={visibleSelect ? "nice-select open" : "nice-select"}>
+                                                        <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{color}</span>
+                                                        <ul className="list">
+                                                            {product.color.map((item, index) => {
+                                                                return <li key={index} onClick={() => { this.setState({ color: item, visibleSelect: false }); this.slider1.slickGoTo(index) }} className={color === item ? "option selected focus" : "option"}>{item}</li>
+                                                            })}
+                                                        </ul>
+                                                    </div>
+                                                    : ""}
                                             </div>
                                         </div>
                                         <div className="actions">
@@ -263,20 +279,20 @@ class SingleProductPage extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="tags">
+                                        {/* <div className="tags">
                                             <h5>Tags:</h5>
                                             <a >Electronic</a>
                                             <a >Smartphone</a>
                                             <a >Phone</a>
                                             <a >Charger</a>
                                             <a >Powerbank</a>
-                                        </div>
+                                        </div> */}
                                         <div className="share">
                                             <h5>Share: </h5>
-                                            <a ><i className="fa fa-facebook" /></a>
-                                            <a ><i className="fa fa-twitter" /></a>
-                                            <a ><i className="fa fa-instagram" /></a>
-                                            <a ><i className="fa fa-google-plus" /></a>
+                                            <a ><i className="fab fa-facebook" /></a>
+                                            <a ><i className="fab fa-twitter" /></a>
+                                            <a ><i className="fab fa-instagram" /></a>
+                                            <a ><i className="fab fa-google-plus" /></a>
                                         </div>
                                     </div>
                                 </div>
@@ -286,28 +302,24 @@ class SingleProductPage extends Component {
                             <div className="col-lg-10 col-12 ml-auto mr-auto">
                                 <ul className="single-product-tab-list nav">
                                     <li>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 0 }) }} className={this.state.tab === 0 ? "active" : ""} >description</a>
+                                        <a onClick={(e) => { e.preventDefault(); this.setState({ tab: 0 }) }} className={this.state.tab === 0 ? "active" : ""} >description</a>
                                     </li>
                                     <li>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 1 }) }} className={this.state.tab === 1 ? "active" : ""}>specifications</a>
+                                        <a onClick={(e) => { e.preventDefault(); this.setState({ tab: 1 }) }} className={this.state.tab === 1 ? "active" : ""}>specifications</a>
                                     </li>
                                     <li>
-                                        <a href="#" onClick={(e) => { e.preventDefault(); this.setState({ tab: 2 }) }} className={this.state.tab === 2 ? "active" : ""}>reviews</a>
+                                        <a onClick={(e) => { e.preventDefault(); this.setState({ tab: 2 }) }} className={this.state.tab === 2 ? "active" : ""}>reviews</a>
                                     </li>
                                 </ul>
                                 <div className="single-product-tab-content tab-content">
                                     <div className={this.state.tab === 0 ? "tab-pane fade show active" : "tab-pane fade"} id="product-description">
                                         <div className="row">
                                             <div className="single-product-description-content col-lg-8 col-12">
-                                                <h4>Introducing Flex 3310</h4>
-                                                <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora in</p>
-                                                <h4>Stylish Design</h4>
-                                                <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci veli</p>
-                                                <h4>Digital Camera, FM Radio &amp; many more...</h4>
-                                                <p>enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia res eos qui ratione voluptatem sequi Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci veli</p>
+                                                <h4>{product.name}</h4>
+                                                <p>{product.description}</p>
                                             </div>
                                             <div className="single-product-description-image col-lg-4 col-12">
-                                                <img src="/images/single-product/description.png" alt="description" />
+                                                <img src={product.image && product.image[0]} />
                                             </div>
                                         </div>
                                     </div>
@@ -326,7 +338,7 @@ class SingleProductPage extends Component {
                                         <div className="product-ratting-wrap">
                                             {product.id ? <ReviewPage productId={product.id} /> : ""}
 
-                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -445,7 +457,7 @@ const mapDispatchToProps = (dispatch, props) => {
         fetchReviews: (productId, callback) => {
             dispatch(fetchReviewRequest(productId, callback));
         }
-        
+
     }
 }
 export default connect(mapStateToProps, mapDispatchToProps)(SingleProductPage);

@@ -1,69 +1,113 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByCategoriesRequest, removeCartRequest, searchProductRequest, wishListRemoveRequest } from '../../redux/actions';
-import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-router-dom';
+import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductCategoryByBrandRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../redux/actions/index';
+import { BrowserRouter as Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import qs from 'qs';
-const pageSize = 12;
-class SearchProduct extends Component {
+
+const size = 3;
+class CategoryByBrand extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            pageSize: 12,
-            tab: 0
+            products: [],
+            addToCart: true,
+            tab: 0,
+            visibleSelect: false,
+            sorts: [
+                { value: 'rating,desc', label: 'Best rated' },
+                { value: 'created_date', label: 'Newest Product' },
+                { value: 'price,asc', label: 'Price: low to high' },
+                { value: 'price,desc', label: 'Price: high to low' }
+            ]
+
         }
     }
     componentDidMount() {
 
+        console.log(this.props);
+        const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
+        // const page = (Number(this.props.match.params.page - 1)||0);
+        const category = this.props.match.params.category;
+        const brand = this.props.match.params.brand;
+      
+        const callback = (data) => {
+
+        }
+        this.props.fetchProductCategoryByBrand({ category, brand, page, size }, callback);
     }
-    componentDidUpdate(prevProps) {
-        const queryStringOld = prevProps.location.search;
+
+    componentDidUpdate(preProps, preState) {
+        const queryStringOld = preProps.location.search;
         const queryOld = queryStringOld && qs.parse(queryStringOld.slice(1)) || {};
-        const pageOld = queryOld.page;
-        const oldName = queryOld.name;
-        const oldCode = queryOld.code;
-        
-        
+        const oldSort = queryOld.sort;
+
+        const pageOld = preProps.match.params.page;
+        // const oldId = preProps.match.params.id;
+        const oldCategory = preProps.match.params.category;
+        const oldBrand = preProps.match.params.brand;
+
         const queryString = this.props.location.search;
         const query = queryString && qs.parse(queryString.slice(1)) || {};
-        const { code, name, page } = query;
+        const sort = query.sort;
 
-        if (page !== pageOld || name !== oldName || code !== oldCode) {
+        // const id = this.props.match.params.id;
+        const category = this.props.match.params.category;
+        const brand = this.props.match.params.brand;
+        const page = this.props.match.params.page;
+
+
+        if (page !== pageOld || category !== oldCategory || sort !== oldSort || brand !== oldBrand) {
             const pageNumber = Math.max(Number(page - 1) || 0, 0);
-            const params = { code, name, page: pageNumber, size: pageSize };
+            // const params = { code, name, page: pageNumber, size: pageSize };
             const callback = (data) => { }
             // console.log(params);
-            this.props.searchProduct(params, callback);
+            // console.log(id);
+            this.props.fetchProductCategoryByBrand({ category, brand, page: pageNumber, size, sort }, callback);
         }
+
     }
 
-    handlePageClick = (e) => {
-        console.log(e.selected);
-        if (e.selected !== -1) {
-            const queryString = this.props.location.search;
-            const query = queryString && qs.parse(queryString.slice(1)) || {};
-            const { code, name } = query;
-            const params = { code, name, page: e.selected + 1};
-            console.log(params);
-            const url = '/search?' + qs.stringify(params);
-            this.props.history.push(url);
+    handlePageClick = (e1) => {
+
+        const category = this.props.match.params.category;
+        const brand = this.props.match.params.brand;
+        const currentPage = Number(this.props.match.params.page) || 1;
+
+        const queryString = this.props.location.search;
+        const query = queryString && qs.parse(queryString.slice(1)) || {};
+        const sort = query.sort || 'price,asc';
+        
+        if (e1.selected + 1 !== currentPage) {
+            // this.props.history.push(`/code/${id}/${e1.selected + 1}?sort=${sort}`);
+            this.props.history.push(`/code/${category}/${brand}/${e1.selected + 1}?sort=${sort}`);
         }
+
+    }
+
+
+    onSort = (value) => {
+        this.setState({ selected: value, visibleSelect: false })
+     
+        const category = this.props.match.params.category;
+        const brand = this.props.match.params.brand;
+
+        this.props.history.push(`/code/${category}/${brand}/1?sort=${value}`);
 
     }
     render() {
+        const { selected, visibleSelect, sorts } = this.state;
+        const { addCompare, removeCompare, addWishList, removeWishList, categoryByBrand, categories, cart, compare, wishList, addCart, removeCart, total } = this.props;
+        const currentPage = Number(this.props.match.params.page) || 1;
+        const totalPage = Math.ceil(total / size) || '';
 
-        const { total, currentPage, products, categories, cart  } = this.props;
-        console.log(products);
-        const { addCompare, removeCompare, addWishList, removeWishList, compare, wishList, addCart, removeCart} = this.props;
-        const totalPage = Math.ceil(total / pageSize) || 1;
+        const currentSort = sorts.find(c => c.value === selected);
+        console.log(categoryByBrand);
+
+
         return (
 
             <div>
-                {/* {selected !== undefined && selected + 1 !== currentPage ? <Redirect to={`/product/${code}/${selected + 1}`}></Redirect> : ''
-                    
-
-                } */}
-                {/* Page Banner Section Start */}
                 <div className="page-banner-section section">
                     <div className="page-banner-wrap row row-0 d-flex align-items-center ">
                         {/* Page Banner */}
@@ -116,26 +160,37 @@ class SearchProduct extends Component {
                                             </div> */}
                                             {/* Product Short */}
                                             <div className="product-short">
-                                                <p>Short by</p>
-                                                <select name="sortby" className="nice-select">
-                                                    <option value="trending">Trending items</option>
-                                                    <option value="sales">Best sellers</option>
-                                                    <option value="rating">Best rated</option>
-                                                    <option value="date">Newest items</option>
-                                                    <option value="price-asc">Price: low to high</option>
-                                                    <option value="price-desc">Price: high to low</option>
-                                                </select>
+                                                <p>Sort by</p>
+                                                <div className={visibleSelect ? "nice-select open" : "nice-select"}>
+                                                    <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{currentSort && currentSort.label || "Newest Product"}</span>
+                                                    <ul className="list">
+                                                        <li onClick={() => this.onSort()} className={!selected ? "option selected focus" : "option"}>Newest Product</li>
+                                                        {sorts.map((item, index) => {
+                                                            return <li
+                                                                key={index}
+                                                                onClick={() => this.onSort(item.value)}
+                                                                className={selected === item.value ? "option selected focus" : "option"}
+                                                                value={item.value}
+                                                            >
+                                                                {item.label}
+                                                            </li>
+                                                        })}
+                                                    </ul>
+                                                </div>
                                             </div>
+
                                             {/* Product Pages */}
                                             <div className="product-pages">
-                                                <p>Pages {currentPage +1} of {totalPage}</p>
+                                                <p>Pages {currentPage} of {totalPage}</p>
                                             </div>
                                         </div>{/* Shop Top Bar End */}
                                     </div>
                                 </div>
-                                
+                                {/* Shop Product Wrap Start */}
+                                {/* Shop Product Wrap Start */}
                                 <div className={this.state.tab === 0 ? "shop-product-wrap row grid" : "shop-product-wrap row list"}>
-                                    {products.map((item, index) => {
+
+                                    {categoryByBrand.map((item, index) => {
                                         let technicalInfo;
                                         try {
                                             technicalInfo = JSON.parse(item.technicalInfo);
@@ -148,13 +203,12 @@ class SearchProduct extends Component {
                                         const existWishList = wishList.find(p => p.id === item.id);
                                         return (
                                             <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                                {/* Product Start */}
 
                                                 <div className="ee-product">
                                                     {/* Image */}
                                                     <div className="image">
                                                         <Link className="img" to={"/details/" + item.code}>
-                                                            <img src={item.image[0]} alt={item.image} />
+                                                            <img src={item.image[0]} alt={item.name} />
                                                         </Link>
                                                         <div className="wishlist-compare">
                                                             <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>
@@ -269,7 +323,7 @@ class SearchProduct extends Component {
                                             containerClassName={"pagination"}
                                             subContainerClassName={"pages pagination"}
                                             activeClassName={"active"}
-                                            initialPage={currentPage}
+                                            initialPage={currentPage - 1}
                                         />
                                         {/* <ul className="pagination">
                                             <li>
@@ -336,20 +390,21 @@ class SearchProduct extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        categories: state.Ecomercial.categories,
+        categoryByBrand: state.Ecomercial.categoryByBrand,
         wishList: state.Ecomercial.wishList,
         compare: state.Ecomercial.compare,
-        cart: state.Ecomercial.cart,
-        products: state.Ecomercial.searchProduct,
         total: state.Ecomercial.total,
         currentPage: state.Ecomercial.currentPage,
+
+        // categories: state.Ecomercial.categories,
+        cart: state.Ecomercial.cart
 
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
     return {
-        searchProduct: (params, callback) => {
-            dispatch(searchProductRequest(params, callback));
+        fetchProductListCategory: (params, callback) => {
+            dispatch(fetchProductByCategoriesRequest(params, callback));
         },
         addWishList: (product) => {
             dispatch(addWishListRequest(product));
@@ -369,8 +424,11 @@ const mapDispatchToProps = (dispatch, props) => {
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
             //dispatch((dispatch) => { dispatch({ type: 'CART_REMOVE', id: id }) });
+        },
+        fetchProductCategoryByBrand: (params, callback) => {
+            dispatch(fetchProductCategoryByBrandRequest(params, callback));
         }
     }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(SearchProduct);
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryByBrand);
 

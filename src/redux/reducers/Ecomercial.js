@@ -1,4 +1,4 @@
-import { FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, REMOVE_COMPARE, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL, CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE, FETCH_TIME_END, COMPARE_INIT, ADD_COMPARE, FETCH_STORE, SEARCH_PRODUCT } from "../const/ActionTypes";
+import {FETCH_PRODUCT_CATEGORY_BY_BRAND, FETCH_PRODUCT_BY_BRAND, FETCH_CATEGORIES, FETCH_PRODUCTS_FEATURE, LOG_IN, REMOVE_COMPARE, FETCH_PRODUCT_NEW, FETCH_PRODUCTS_BESTDEAL, FETCH_PRODUCT_BESTSELL, CART_INIT, FETCH_BANNER, FETCH_PRODUCTS_BYCATEGORIES, CART_ADD, CART_REMOVE, REGISTER, USER_INIT, UPDATE_USER, FETCH_BRAND, WISHLIST_INIT, ADD_WISHLIST, WISHLIST_REMOVE, FETCH_TIME_END, COMPARE_INIT, ADD_COMPARE, FETCH_STORE, SEARCH_PRODUCT } from "../const/ActionTypes";
 import jwt_decode from "jwt-decode";
 
 
@@ -23,7 +23,8 @@ const initialState = {
     total:0,
     currentPage: 0,
     page: 0,
-    total: 0,
+    productBrand: [],
+    categoryByBrand: []
 };
 
 export default (state = initialState, action) => {
@@ -159,6 +160,20 @@ export default (state = initialState, action) => {
             copyState.currentPage = action.currentPage;
             return copyState;
         }
+        case FETCH_PRODUCT_BY_BRAND : {
+            copyState.productBrand = action.products;
+            copyState.total = action.total;
+            copyState.currentPage = action.currentPage;
+            return copyState;
+        }
+
+        case FETCH_PRODUCT_CATEGORY_BY_BRAND : {
+            copyState.categoryByBrand = action.products;
+            copyState.total = action.total;
+            copyState.currentPage = action.currentPage;
+            return copyState;
+        }
+
         default:
             return copyState
     }

@@ -7,7 +7,7 @@ class ModalUpdateProduct extends Component {
 
     state = {
         technicalInfo: [],
-        files: []
+        files: [],
 
     }
 
@@ -72,7 +72,7 @@ class ModalUpdateProduct extends Component {
             const day = date.getDate();
             const m = (month < 10 ? '0' : '') + month;
             const d = (day < 10 ? '0' : '') + day;
-            console.log(date);
+            
             this.setState({
                 ...product,
                 endTime: `${year}-${m}-${d}`,
@@ -94,7 +94,6 @@ class ModalUpdateProduct extends Component {
                 data.append("files", files[i]);
             }
             this.props.uploadImage(data, (imageUp) => {
-                console.log(imageUp);
                 if (imageUp) {
                     this.setState({
                         url: imageUp
@@ -125,7 +124,7 @@ class ModalUpdateProduct extends Component {
     handleUpdateProduct = (imageUp) => {
 
         const { brandCode, categoryCode, code, description, discount, image, name, originalPrice, status, technicalInfo, quantity, endTime } = this.state;
-        console.log(this.state)
+       
         const tech = {};
         technicalInfo.map((item) => {
             tech[item.key] = item.value
@@ -144,13 +143,13 @@ class ModalUpdateProduct extends Component {
                 error: true,
                 message: message,
             })
-            console.log(message);
+           
         } else {
             const body = { brandCode, categoryCode, code, description, discount: Number(discount), image: imageUp || image, name, originalPrice: Number(originalPrice), status,
                  technicalInfo: techString, quantity: Number(quantity), endTime };
-            console.log(body);
+        
             const { product } = this.props;
-            console.log(product.id);
+            
             this.props.updateProduct(product.id, body, (data) => {
                 if (data && data.success) {
                     this.setState(
@@ -172,7 +171,7 @@ class ModalUpdateProduct extends Component {
 
         const { visibleUpdate, product, onHide, allCategories, allBrands } = this.props;
         const { technicalInfo } = this.state;
-        console.log(this.state);
+        
         return (
             <div className="col-3">
                 <Modal

@@ -15,55 +15,48 @@ class ModalProducts extends Component {
         files: '',
         technicalInfo: [
             { key: '', value: '' }
-        ]
+        ],
+        color: [],
+        categoryCode: "mobile",
+        brandCode: "apple",
+        status: "in stock"
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
-        const { files, url, technicalInfo } = this.state;
-        // const tech = {};
-        // technicalInfo.map((item)=>{
-        //     tech[item.key] = item.value
-
-        // })
-        // const techString = JSON.stringify(tech);
-        // console.log(techString);
+        const { files } = this.state;
         if (files) {
             let data = new FormData();
             for (let i = 0; i < files.length; i++) {
                 data.append("files", files[i]);
             }
             this.props.uploadImage(data, (imageUp) => {
-                console.log(imageUp);
                 if (imageUp) {
                     this.setState({
                         url: imageUp
                     })
                     this.handleAddProduct(imageUp);
-                    swal({
-                        title: "Good job!",
-                        text: "Add product Successfully!",
-                        icon: "success",
-                        button: " Ok!",
-                    });
-                    this.onClose();
+                    // swal({
+                    //     title: "Good job!",
+                    //     text: "Add product Successfully!",
+                    //     icon: "success",
+                    //     button: " Ok!",
+                    // });
+                    // this.onClose();
                 }
             })
         }
 
     }
-
     handleAddProduct = (imageUp) => {
-
-        const { brandCode, categoryCode, code, description, discount, image, name, originalPrice, status, technicalInfo, quantity } = this.state;
-
+        const { brandCode, categoryCode, code, description, discount,
+            image, name, originalPrice, status, technicalInfo, quantity, color } = this.state;
+        const tempColor = color.split(';');
         const tech = {};
         technicalInfo.map((item) => {
             tech[item.key] = item.value
-
         })
         const techString = JSON.stringify(tech);// string to backend
-
         if (!name || !description || !categoryCode || !brandCode || !quantity || !originalPrice) {
             let message = 'Name is required';
             if (!description) message = 'Description is required';
@@ -76,9 +69,9 @@ class ModalProducts extends Component {
                 message: message,
             })
         } else {
-            const body = { brandCode, categoryCode, code, description, discount: Number(discount), image: imageUp, name, originalPrice: Number(originalPrice), status, technicalInfo: techString, quantity: Number(quantity) };
-            console.log(body);
+            const body = { brandCode, categoryCode, code, description, discount: Number(discount), image: imageUp, name, originalPrice: Number(originalPrice), status, technicalInfo: techString, quantity: Number(quantity), color: tempColor };
             this.props.addProduct(body, (data) => {
+                console.log(body);
                 if (data && data.success) {
                     this.setState(
                         {
@@ -111,6 +104,7 @@ class ModalProducts extends Component {
         })
     }
 
+
     onChange = (e) => {
         this.setState(
             {
@@ -137,7 +131,7 @@ class ModalProducts extends Component {
             lgShow: false
         })
     }
-    onClear=(e)=>{
+    onClear = (e) => {
         e.preventDefault()
         this.form.reset() // resets uncontrolled fields ("username")
     }
@@ -146,6 +140,8 @@ class ModalProducts extends Component {
     render() {
         const { allCategories, allBrands } = this.props;
         const { lgShow, technicalInfo, error } = this.state;
+        console.log(error);
+
         return (
             <div className="col-3">
                 <button onClick={() => this.setState({ lgShow: true })} type="button" className="btn btn-outline-primary">Add</button>
@@ -165,7 +161,7 @@ class ModalProducts extends Component {
                             <Container>
                                 <Row>
                                     {error ?
-                                        <div className="col-12 mb-30" style={{color:'red'}}>
+                                        <div className="col-12 mb-30" style={{ color: 'red' }}>
                                             <span>{this.state.message}</span>
                                         </div>
                                         : ''}
@@ -248,6 +244,7 @@ class ModalProducts extends Component {
                                                 required="required"
                                                 name="categoryCode"
                                                 onChange={this.onChange}
+                                                defaultValue=""
 
                                             >
                                                 {allCategories.map((item, index) => {
@@ -274,16 +271,30 @@ class ModalProducts extends Component {
 
                                             </select>
                                         </div>
-                                        <label>Status :</label>
-                                        <select
-                                            className="form-control"
-                                            required="required"
-                                            name="status"
-                                            onChange={this.onChange}
-                                        >
-                                            <option value="In Stock">In Stock</option>
-                                            <option value="Out Stock">Out Stock</option>
-                                        </select>
+                                        <div className="form-group">
+                                            <label>Status :</label>
+                                            <select
+                                                className="form-control"
+                                                required="required"
+                                                name="status"
+                                                onChange={this.onChange}
+                                            >
+                                                <option value="In Stock">In Stock</option>
+                                                <option value="Out Stock">Out Stock</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label>Color :</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="color"
+                                                onChange={this.onChange}
+                                                defaultValue="Choose"
+
+                                            />
+                                        </div>
+
                                         <br />
                                     </Col>
                                     <Col xs={12}>

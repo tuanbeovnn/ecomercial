@@ -5,11 +5,11 @@ import qs from 'qs';
 
 
 // fetch product
-export const fetchproduct = ({list, currentPage, total}) => {
+export const fetchproduct = ({ list, currentPage, total }) => {
     return {
         type: Types.FETCH_PRODUCT_ADMIN,
-        products : list,
-        page : currentPage,
+        products: list,
+        page: currentPage,
         total
     }
 }
@@ -122,11 +122,11 @@ export const deleteProductRequest = (id) => {
     console.log(id);
     return (dispatch) => {
         return callAPI('api/product/remove/' + id, 'DELETE').then(res => {
-           console.log(res.data);
+            console.log(res.data);
             if (res.data && res.data.success) {
                 dispatch(deleteProduct(id));
             }
-        }).catch((err)=>{
+        }).catch((err) => {
             console.log(err);
         })
     }
@@ -141,12 +141,12 @@ export const fetchBrandProduct = (brands) => {
     }
 }
 
-export const fetchBrandProductRequest = () =>{
-    return (dispatch) =>{
-        return callAPI('api/brand/list', 'GET', null).then(res=>{
+export const fetchBrandProductRequest = () => {
+    return (dispatch) => {
+        return callAPI('api/brand/list', 'GET', null).then(res => {
             if (res.data && res.data.success) {
                 dispatch(fetchBrandProduct(res.data.details));
-            }else {
+            } else {
                 dispatch(fetchBrandProduct({}));
             }
         })
@@ -176,16 +176,17 @@ export const fetchCategoriesRequest = () => {
 
 //add product
 
-export const addProduct = (product) =>{
+export const addProduct = (product) => {
     return {
-        type : Types.ADD_PRODUCT_ADMIN,
+        type: Types.ADD_PRODUCT_ADMIN,
         product
     }
 }
 
-export const addProductRequest=(body, callback)=>{
-    return(dispatch) =>{
+export const addProductRequest = (body, callback) => {
+    return (dispatch) => {
         return callAPI('api/product/add', 'POST', body).then(res => {
+            console.log(res.data.details);
             dispatch(addProduct(res.data.details));
             if (typeof callback === 'function') {
                 callback(res.data)
@@ -234,6 +235,196 @@ export const updateProductRequest = (id, body, callback) => {
         }).catch(() => {
             if (typeof callback === 'function') {
                 callback()
+            }
+        });
+    }
+}
+
+
+// FETCH_ROLES_ADMIN
+export const fetchUserRoles = ({ list, currentPage, total }) => {
+    return {
+        type: Types.FETCH_USER_ROLES_ADMIN,
+        roles: list,
+        page: currentPage,
+        total
+    }
+}
+
+
+export const fetchUserRolesRequest = (params, callback) => {
+    return (dispatch) => {
+        return callAPI('api/user/list?' + qs.stringify(params), 'GET', null).then(res => {
+            if (res.data && res.data.success) {
+                dispatch(fetchUserRoles(res.data));
+                callback(res.data);
+            } else {
+                callback();
+            }
+        })
+    }
+}
+
+// fetch categories 
+
+export const fetchRoles = (roles) => {
+    return {
+        type: Types.FETCH_ROLES_ADMIN,
+        roles
+    }
+}
+
+export const fetchRolesRequest = () => {
+    return (dispatch) => {
+        return callAPI('api/role/list', 'GET', null).then(res => {
+            if (res.data) {
+                dispatch(fetchRoles(res.data.details));
+            } else {
+                dispatch(fetchRoles({}));
+            }
+        })
+    }
+}
+
+//UPDATE USER ROLE
+
+
+export const updateRole = (data) => {
+    return {
+        type: Types.UPDATE_ROLE_ADMIN,
+        data
+    }
+}
+
+export const updateRoleRequest = (id, body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/user/updateRole/' + id, 'PUT', body).then(res => {
+            dispatch(updateRole(res.data.details));
+            if (typeof callback === 'function') {
+                callback(res.data.details)
+            }
+        }).catch(() => {
+            if (typeof callback === 'function') {
+                callback()
+            }
+        });
+    }
+}
+
+// ADD CATEGORY
+
+export const addCategory = (data) => {
+    return {
+        type: Types.ADD_CATEGORY,
+        data
+    }
+}
+
+export const addCategoryRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/category/add', 'POST', body).then(res => {
+
+            dispatch(addCategory(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+
+                callback();
+            }
+        });
+    }
+}
+
+export const updateCategory = (data) => {
+    return {
+        type: Types.UPDATE_CATEGORY,
+        data
+    }
+}
+
+export const updateCategoryRequest = (id, body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/category/' + id, 'PUT', body).then(res => {
+            console.log(res.data);
+            dispatch(updateCategory(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                console.log(e.response);
+                callback();
+            }
+        });
+    }
+}
+
+export const addBrands = (data) => {
+    return {
+        type: Types.ADD_BRANDS,
+        data
+    }
+}
+
+export const addBrandsRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/brand/add', 'POST', body).then(res => {
+            dispatch(addBrands(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    }
+}
+// BRAND UPDATE
+export const updateBrands = (data) => {
+    return {
+        type: Types.UPDATE_BRANDS,
+        data
+    }
+}
+
+export const updateBrandsRequest = (id, body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/brand/' + id, 'PUT', body).then(res => {
+
+            dispatch(updateBrands(res.data));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+
+                callback();
+            }
+        });
+    }
+}
+
+
+export const accountStatus = (id) => {
+    return {
+        type: Types.ACCOUNT_STATUS,
+        id
+    }
+}
+
+export const accountStatusRequest = (id, callback) => {
+    return (dispatch) => {
+        return callAPI('api/user/deactive/' + id, 'POST', null).then(res => {
+            dispatch(accountStatus(id));
+            if (typeof callback === 'function') {
+                callback(res.data)
+            }
+        }).catch((e) => {
+            if (typeof callback === 'function') {
+                callback();
             }
         });
     }

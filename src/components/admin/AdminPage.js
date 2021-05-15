@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import LoginPage from './LoginPage';
 import { connect } from 'react-redux';
-import {getUserFromStorageRequest} from '../../redux/actions/AdminActions';
+import { getUserFromStorageRequest } from '../../redux/actions/AdminActions';
 
 class AdminPage extends Component {
     constructor(props) {
@@ -17,12 +17,12 @@ class AdminPage extends Component {
     componentDidMount() {
         this.props.getUserFromToken();
     }
-    
+
     render() {
         const { children, userInfo } = this.props;
         if (!userInfo || !userInfo.id) {
             return (
-                <LoginPage/>
+                <LoginPage />
             )
         }
         const { toggleMenu, collapse } = this.state;
@@ -30,7 +30,7 @@ class AdminPage extends Component {
             <div style={{ height: '100vh' }} className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
                 <div className="admin" style={{ height: '100vh' }}>
                     <nav className="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-                        <a className="navbar-brand" href="index.html">Start Bootstrap</a><button className="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" onClick={() => this.setState({ toggleMenu: !toggleMenu })}><i className="fas fa-bars" /></button>{/* Navbar Search*/}
+                        <a className="navbar-brand" href="index.html">Thrive</a><button className="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" onClick={() => this.setState({ toggleMenu: !toggleMenu })}><i className="fas fa-bars" /></button>{/* Navbar Search*/}
                         <form className="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
                             <div className="input-group">
                                 <input className="form-control" type="text" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2" />
@@ -70,12 +70,14 @@ class AdminPage extends Component {
                                             </div>
                                         </a>
                                         <div className={collapse ? "collapse" : "collapse show"} id="collapseLayouts" aria-labelledby="headingOne" data-parent="#sidenavAccordion">
-                                            <nav className={collapse ? "sb-sidenav-menu-nested nav" : "sb-sidenav-menu-nested nav show" }>
+                                            <nav className={collapse ? "sb-sidenav-menu-nested nav" : "sb-sidenav-menu-nested nav show"}>
                                                 {/* <Router className="nav-link" href="tables.html">Product </Router> */}
                                                 <Link className="nav-link" to="/admin/products">Products </Link>
                                                 <Link className="nav-link" to="/admin/categories">Categories </Link>
+                                                <Link className="nav-link" to="/admin/brands">Brands </Link>
                                                 <Link className="nav-link" to="/admin/chat-box">Chat Box </Link>
-                                                <a className="nav-link" href="tables.html">Supplier </a>
+                                                {/* <a className="nav-link" href="tables.html">Supplier </a> */}
+                                                <Link className="nav-link" to="/admin/users">Users</Link>
                                             </nav>
                                         </div>
                                         <a className="nav-link collapsed" data-toggle="collapse" data-target="#collapsePages" aria-expanded="false" aria-controls="collapsePages"><div className="sb-nav-link-icon"><i className="fas fa-book-open" /></div>
@@ -95,11 +97,11 @@ class AdminPage extends Component {
                                                 </div>
                                             </nav>
                                         </div>
-                                    </div>
+                                    </div>  
                                 </div>
                                 <div className="sb-sidenav-footer">
                                     <div className="small">Logged in as:</div>
-                                    Start Bootstrap
+                                    {userInfo.email}
                                 </div>
                             </nav>
                         </div>
@@ -129,4 +131,4 @@ const mapDispatchToProps = (dispatch, props) => {
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(AdminPage);
+export default connect(mapStateToProps, mapDispatchToProps)(AdminPage);

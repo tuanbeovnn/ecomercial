@@ -10,7 +10,7 @@ class Checkout extends Component {
         country: 'China',
         checkTerm: false,
         currency: 'USD',
-        description:"mua",
+        description: "mua",
         intent: 'sale',
         method: '',
 
@@ -33,9 +33,8 @@ class Checkout extends Component {
     handelSubmit = (e) => {
         e.preventDefault();
         const { cart } = this.props;
-        console.log(cart);
-
-        const { currency, intent, method, firstName, lastName, mobile, zipCode, email, state, city, address, country,description } = this.state;
+       
+        const { currency, intent, method, firstName, lastName, mobile, zipCode, email, state, city, address, country, description } = this.state;
         if (!firstName || !lastName || !mobile || !zipCode || !email || !state || !city || !address || !country) {
             let message = 'firstName is required';
             if (!lastName) message = 'New is required';
@@ -62,36 +61,36 @@ class Checkout extends Component {
                 city,
                 address,
                 country,
-                details : cart.map(({ image, name, qty, id, price }) => {
+                details: cart.map(({ image, name, qty, id, price }) => {
                     return {
                         image: image && image[0],
                         name: name,
-                         productId: id,
-                         quantity: qty,
-                         price: price,
+                        productId: id,
+                        quantity: qty,
+                        price: price,
                         total: qty * price
                     }
                 })
-                
-            };
 
-            console.log("body", body);
-            // this.props.payment(body)
+            };
             this.props.addOrder(body, (data) => {
                 if (data) {
                     let price = 0;
                     cart.map((item) => {
                         price += item.price * item.qty;
                     })
-                    const body = { currency, intent, method, price,description }
-                    this.props.payment(body, (data) => {
+                    setTimeout(() => {
                         console.log(data);
-                        // if (data.success) {
-                        //     console.log(data.success);
-                        // window.location.href = data.details;
-                        //  window.open(data.details, '_blank');
-                        // }
-                    });
+                        const body = { currency, intent, method, price, description, id : data.id }
+                        this.props.payment(body, (data) => {
+                            if (data.success) {
+                                console.log(data.success);
+                                window.location.href = data.details;
+                                // window.open(data.details, '_blank');
+                            }
+                        });
+                    }, 1000)
+
                 }
             })
         }
@@ -99,8 +98,8 @@ class Checkout extends Component {
     }
     render() {
         const { visibleSelect, country, countries } = this.state;
-        const { cart } = this.props;
-
+        const { cart,user } = this.props;
+        console.log(user);
         let totalPrice = 0;
         cart.map((item) => {
             totalPrice += item.price * item.qty;
@@ -397,8 +396,7 @@ class Checkout extends Component {
                                                             <label htmlFor="accept_terms">I’ve read and accept the terms &amp; conditions</label>
                                                         </div>
                                                     </div>
-                                                    
-                                                    <button className="place-order" disabled={!this.state.checkTerm}><a></a>Place order</button>
+                                                    {user && user.id ? <button className="place-order" disabled={!this.state.checkTerm}><a></a>Place order</button> : "" }
                                                 </div>
                                             </div>
                                         </div>
@@ -429,6 +427,7 @@ class Checkout extends Component {
 const mapStateToProps = (state) => {
     return {
         cart: state.Ecomercial.cart,
+        user : state.Ecomercial.user
 
     }
 }

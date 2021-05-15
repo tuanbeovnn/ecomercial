@@ -96,6 +96,8 @@ class Regiter extends Component {
         }
 
     }
+
+    
     onChange = (e) => {
         let target = e.target;
         let name = target.name;

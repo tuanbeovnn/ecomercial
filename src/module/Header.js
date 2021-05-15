@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest, getWishListFromLocalRequest, searchProductRequest } from '../redux/actions/index';
+import { fetchBrandRequest, fetchCategoriesRequest, getCompareFromLocalRequest, getUserFromStorageRequest, getWishListFromLocalRequest, searchProductRequest } from '../redux/actions/index';
 import { connect } from 'react-redux';
 import MiniCart from '../components/products/MiniCart';
 import qs from 'qs';
@@ -21,62 +21,121 @@ class Header extends Component {
                 children: [
                     {
                         id: 1,
-                        name: "Shop Grid",
-                        url: "/",
+                        name: "Laptop",
+                        url: "/product/laptop",
+                        code: "laptop",
+                        
                         children: [
                             {
                                 id: 1,
-                                name: "Grid 1",
-                                url: "/"
+                                name: "Apple",
+                                url: "/apple"
+                            },
+                            {
+                                id: 2,
+                                name: "Sam Sung",
+                                url: "/samsung"
+                            },
+                            {
+                                id: 3,
+                                name: "Lenovo",
+                                url: "/lenovo"
+                            },
+                            {
+                                id: 4,
+                                name: "Sony",
+                                url: "/sony"
+                            },
+                            {
+                                id: 5,
+                                name: "LG",
+                                url: "/lg"
+                            },
+                            {
+                                id: 6,
+                                name: "Huawei",
+                                url: "/huawei"
                             }
                         ]
                     },
                     {
                         id: 2,
-                        name: "Sigle Product",
-                        url: "/",
+                        name: "Mobile",
+                        url: "/product/mobile",
+                        code: "mobile",
                         children: [
                             {
                                 id: 1,
-                                name: "Grid 2",
-                                url: "/"
+                                name: "Apple",
+                                url: "/apple"
+                            },
+                            {
+                                id: 2,
+                                name: "Sam Sung",
+                                url: "/samsung"
+                            },
+                            {
+                                id: 3,
+                                name: "Lenovo",
+                                url: "/lenovo"
+                            },
+                            {
+                                id: 4,
+                                name: "Sony",
+                                url: "/sony"
+                            },
+                            {
+                                id: 5,
+                                name: "LG",
+                                url: "/lg"
+                            },
+                            {
+                                id: 6,
+                                name: "Huawei",
+                                url: "/huawei"
+                            }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        name: "Tv & Entertainment",
+                        url: "/product/entertainment",
+                        code: "entertainment",
+                        children: [
+                            {
+                                id: 1,
+                                name: "Apple",
+                                url: "/apple"
+                            },
+                            {
+                                id: 2,
+                                name: "Sam Sung",
+                                url: "/samsung"
+                            },
+                            {
+                                id: 3,
+                                name: "Lenovo",
+                                url: "/lenovo"
+                            },
+                            {
+                                id: 4,
+                                name: "Sony",
+                                url: "/sony"
+                            },
+                            {
+                                id: 5,
+                                name: "LG",
+                                url: "/lg"
+                            },
+                            {
+                                id: 6,
+                                name: "Huawei",
+                                url: "/huawei"
                             }
                         ]
                     }
                 ],
                 typeMemu: 1,
-            },
-            {
-                id: 3,
-                name: "Pages",
-                url: "/",
-                children: [
-                    {
-                        id: 1,
-                        name: "Shop Grid",
-                        url: "/",
-                        children: [
-                            {
-                                id: 1,
-                                name: "Grid 1",
-                                url: "/"
-                            }
-                        ]
-                    },
-                    {
-                        id: 2,
-                        name: "Sigle Product",
-                        url: "/",
-                        children: [
-                            {
-                                id: 1,
-                                name: "Grid 2",
-                                url: "/"
-                            }
-                        ]
-                    }
-                ],
-                typeMemu: 2,
             }
         ],
     }
@@ -85,6 +144,7 @@ class Header extends Component {
         this.props.getUserFromToken();
         this.props.getCompare();
         this.props.getWishList();
+        this.props.fetchBrand();
         window.onscroll = () => {
             if (window.scrollY > 200 && !this.state.scroll) {
                 this.setState({
@@ -146,7 +206,8 @@ class Header extends Component {
 
     render() {
         const { menus, visibleSelect, selected, openToggle, scroll, header } = this.state;
-        const { categories, user, cart, wishList, compare } = this.props;
+        const { categories, user, cart, wishList, compare, brands } = this.props;
+
         let totalQty = 0;
         cart.map((item) => {
             totalQty += item.qty;
@@ -260,16 +321,16 @@ class Header extends Component {
                                                 if (item.children) {
                                                     if (item.typeMemu === 1) {
                                                         return (
-                                                            <li className="menu-item-has-children" key={item.id}><a href={item.url}>{item.name}</a>
+                                                            <li className="menu-item-has-children" key={item.id}><Link to={item.url}>{item.name}</Link>
                                                                 <ul className="sub-menu">
                                                                     {item.children.map((item2) => {
                                                                         if (item2.children) {
                                                                             return (
-                                                                                <li className="menu-item-has-children" key={item2.id}><a href={item2.url}>{item2.name}</a>
+                                                                                <li className="menu-item-has-children" key={item2.id}><Link to={"/product/" + item2.code}>{item2.name}</Link>
                                                                                     <ul className="sub-menu">
                                                                                         {item2.children.map((item3) => {
                                                                                             return (
-                                                                                                <li key={item3.id}><a href={item3.url}>{item3.name}</a></li>
+                                                                                                <li key={item3.id}><Link to={`/code/${item2.code}${item3.url}`}>{item3.name}</Link></li>
                                                                                             )
                                                                                         })}
                                                                                     </ul>
@@ -277,7 +338,7 @@ class Header extends Component {
                                                                             )
                                                                         } else {
                                                                             return (
-                                                                                <li key={item2.id}><a href={item2.url}>{item2.name}</a></li>
+                                                                                <li key={item2.id}><Link to={"/product/" + item2.code}>{item2.name}</Link></li>
                                                                             )
                                                                         }
                                                                     })}
@@ -289,42 +350,40 @@ class Header extends Component {
                                                     return <li className="active" key={item.id}><a href={item.url}>{item.name}</a></li>
                                                 }
                                             })}
-                                            <li className="menu-item-has-children"><a href="#">PAGES</a>
+                                            <li className="menu-item-has-children"><a>PAGES</a>
                                                 <ul className="mega-menu three-column">
-                                                    <li><a href="#">Column One</a>
+                                                    <li><a>Infomation</a>
                                                         <ul>
-                                                            <li><a href="about-us.html">About us</a></li>
+                                                            <li><Link to="/about">About us</Link></li>
                                                             <li><Link to="/bestdeal-page">Best Deals</Link></li>
-                                                            <li><a>Cart</a></li>
-                                                            <li><a href="checkout.html">Checkout</a></li>
+                                                            <li><Link to="/checkout">Checkout</Link></li>
                                                         </ul>
                                                     </li>
-                                                    <li><a href="#">Column Two</a>
+                                                    <li><a>Product Brands</a>
                                                         <ul>
-                                                            <li><a >Compare</a></li>
-                                                            <li><a href="faq.html">Faq</a></li>
-                                                            <li><a href="feature.html">Feature</a></li>
-                                                            <li><a href="login.html">Login</a></li>
-                                                            <li><a href="register.html">Register</a></li>
-                                                            <li><a href="store.html">Store</a></li>
+                                                            {brands.map((item, index) => {
+                                                                return (
+                                                                    <li key={index}><Link to={"/listBrand/" + item.id}>{item.name}</Link></li>
+                                                                )
+                                                            })}
                                                         </ul>
                                                     </li>
-                                                    <li><a href="#">Column Three</a>
+                                                    <li><a>Order</a>
                                                         <ul>
-                                                            <li><a href="terms-conditions.html">Terms &amp; Conditions</a></li>
+                                                            <li><Link to="/term">Terms &amp; Conditions</Link></li>
                                                             <li><a href="track-order.html">Track Order</a></li>
-                                                            <li><a href="wishlist.html">Wishlist</a></li>
+                                                            <li><Link to="/wishlist">Wishlist</Link></li>
                                                         </ul>
                                                     </li>
                                                 </ul>
                                             </li>
-                                            <li className="menu-item-has-children"><a href="blog-1-column-left-sidebar.html">BLOG</a>
+                                            {/* <li className="menu-item-has-children"><a href="blog-1-column-left-sidebar.html">BLOG</a>
                                                 <ul className="sub-menu">
                                                     <li><a href="blog-1-column-left-sidebar.html">Blog 1 Column Left Sidebar</a></li>
                                                     <li><a href="single-blog-left-sidebar.html">Single Blog Left Sidebar</a></li>
                                                 </ul>
-                                            </li>
-                                            <li><a>CONTACT</a></li>
+                                            </li> */}
+                                            <li><Link to="/contact">CONTACT</Link></li>
                                         </ul>
                                     </nav>
                                 </div>{/* Main Menu End */}
@@ -372,7 +431,8 @@ const mapStateToProps = state => {
         cart: state.Ecomercial.cart,
         wishList: state.Ecomercial.wishList,
         compare: state.Ecomercial.compare,
-        searchProduct: state.Ecomercial.searchProduct
+        searchProduct: state.Ecomercial.searchProduct,
+        brands: state.Ecomercial.brands
     }
 }
 const mapDispatchToProps = (dispatch, props) => {
@@ -391,6 +451,9 @@ const mapDispatchToProps = (dispatch, props) => {
         },
         searchProduct: (params, callback) => {
             dispatch(searchProductRequest(params, callback));
+        },
+        fetchBrand: () => {
+            dispatch(fetchBrandRequest());
         }
 
 

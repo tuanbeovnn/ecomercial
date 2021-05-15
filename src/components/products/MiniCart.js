@@ -33,17 +33,18 @@ class MiniCart extends Component {
                                         <Link className="title" to={"/details/" + item.code}>
                                           {item.name}
                                         </Link>
-                                        <span className="price">Price: ${item.price}</span>
+                                        <span className="price">Price: ${item.price.toLocaleString()}</span>
                                         <span className="qty">Qty: {item.qty}</span>
                                     </div>
-                                    <button onClick={()=>{removeCart(item.id)}}className="remove"><i className="fa fa-trash-o" /></button>
+                                 
+                                    <button onClick={()=>{removeCart(item.id)}}className="remove"><i className="fas fa-trash-alt"></i></button>
                                 </li>
                             )
                         })}
                     </ul>
                     {/* Mini Cart Bottom */}
                     <div className="mini-cart-bottom">
-                        <h4 className="sub-total">Total: <span>${totalPrice}</span></h4>
+                        <h4 className="sub-total">Total: <span>${totalPrice.toLocaleString()}</span></h4>
                         <div className="button">
                             <Link onClick={handdleClose} to="/checkout">CHECK OUT</Link>
                         </div>

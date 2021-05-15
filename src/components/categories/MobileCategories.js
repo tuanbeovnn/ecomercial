@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
 import { BrowserRouter as Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+import qs from 'qs';
 const size = 8;
 class MobileCategories extends Component {
     constructor(props) {
@@ -13,10 +14,10 @@ class MobileCategories extends Component {
             tab: 0,
             visibleSelect: false,
             sorts: [
-                {value: 'rating,desc', label: 'Best rated'},
-                {value: 'created_date', label: 'Newest Product'},
-                {value: 'price,asc', label: 'Price: low to high'},
-                {value: 'price,desc', label: 'Price: high to low'}
+                { value: 'rating,desc', label: 'Best rated' },
+                { value: 'created_date', label: 'Newest Product' },
+                { value: 'price,asc', label: 'Price: low to high' },
+                { value: 'price,desc', label: 'Price: high to low' }
             ],
         }
     }
@@ -24,6 +25,8 @@ class MobileCategories extends Component {
         const code = this.props.match.params.code;
         const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
         // const page = (Number(this.props.match.params.page - 1)||0);
+        // const id = this.props.match.params.id;
+        // console.log(id);
 
         const callback = (data) => {
             if (data) {
@@ -38,14 +41,44 @@ class MobileCategories extends Component {
         // this.props.fetchAllProducts({ page: 0, size }, callback);
         this.props.fetchProductListCategory({ code, page: 0, size }, callback);
     }
-    // componentDidUpdate(preProps, preState) {
-    //     const code = this.props.match.params.code;
-    //     const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
-    //     // const page = (Number(this.props.match.params.page - 1)||0);
-    //     console.log(preProps, preState);
-    //     console.log(this.props, this.state);
 
-    // }
+    componentDidUpdate(preProps, preState) {
+        const code = this.props.match.params.code;
+        // const page = Math.max(Number(this.props.match.params.page - 1) || 0, 0);
+
+        const queryStringOld = preProps.location.search;
+        const queryOld = queryStringOld && qs.parse(queryStringOld.slice(1)) || {};
+        const oldSort = queryOld.sort;
+
+        const pageOld = preProps.match.params.page;
+        const oldCode = preProps.match.params.code;
+
+        const queryString = this.props.location.search;
+        const query = queryString && qs.parse(queryString.slice(1)) || {};
+        const sort = query.sort;
+        
+        const page = this.props.match.params.page;
+
+
+        if (page !== pageOld || code !== oldCode || sort !== oldSort) {
+            console.log(code);
+            console.log(oldCode);
+            const pageNumber = Math.max(Number(page - 1) || 0, 0);
+            
+            const callback = (data) => {
+                if (data) {
+                    this.setState({
+                        products: data.list,
+                        total: data.total,
+                        currentPage: data.currentPage,
+                        pageSize: data.pageSize
+                    })
+                }
+            }
+            this.props.fetchProductListCategory({ code, page: pageNumber, size, sort }, callback);
+        }
+
+    }
 
     handlePageClick = (e1) => {
         // this.setState({
@@ -67,30 +100,11 @@ class MobileCategories extends Component {
                     })
                 }
             }
-            this.props.fetchProductListCategory({ code, page: e1.selected, size, sort : this.state.sort }, callback);
+            this.props.fetchProductListCategory({ code, page: e1.selected, size, sort: this.state.sort }, callback);
         }
 
     }
-    onChange = (e) => {
-        const code = this.props.match.params.code;
-        const callback = (data) => {
-            if (data) {
-                this.setState({
-                    products: data.list,
-                    total: data.total,
-                    currentPage: data.currentPage,
-                    pageSize: data.pageSize,
-                    sort : e.target.value
-                }, () => {
-                    this.props.history.push(`/product/${code}`);
-                })
-            }
-        }
-        this.props.fetchProductListCategory({ code, page: 0, size, sort : e.target.value }, callback);
 
-        console.log(e.target.value);
-
-    }
 
     onSort = (value) => {
         this.setState({ selected: value, visibleSelect: false })
@@ -107,12 +121,10 @@ class MobileCategories extends Component {
                 })
             }
         }
-        this.props.fetchProductListCategory({ code, page: 0, size, sort : value }, callback);
-      
-
+        this.props.fetchProductListCategory({ code, page: 0, size, sort: value }, callback);
     }
     render() {
-        const { products, addToCart, total, pageSize, selected,visibleSelect, sorts } = this.state;
+        const { products, addToCart, total, pageSize, selected, visibleSelect, sorts } = this.state;
         const { addCompare, removeCompare, addWishList, removeWishList, categories, cart, compare, wishList, addCart, removeCart } = this.props;
         const currentPage = Number(this.props.match.params.page) || 1;
         const totalPage = Math.ceil(total / pageSize) || '';
@@ -177,24 +189,23 @@ class MobileCategories extends Component {
                                             <div className="product-short">
                                                 <p>Sort by</p>
                                                 <div className={visibleSelect ? "nice-select open" : "nice-select"}>
-                                                <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{currentSort && currentSort.label || "Newest Product"}</span>
-                                                <ul className="list">
-                                                    <li onClick={() => this.onSort()} className={!selected ? "option selected focus" : "option"}>Newest Product</li>
-                                                    {sorts.map((item, index) => {
-                                                        console.log(currentSort);
-                                                        return <li
-                                                            key={index}
-                                                            onClick={() => this.onSort(item.value)}
-                                                            className={selected === item.value ? "option selected focus" : "option"}
-                                                            value={item.value}
-                                                        >
-                                                            {item.label}
-                                                        </li>
-                                                    })}
-                                                </ul>
+                                                    <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{currentSort && currentSort.label || "Newest Product"}</span>
+                                                    <ul className="list">
+                                                        <li onClick={() => this.onSort()} className={!selected ? "option selected focus" : "option"}>Newest Product</li>
+                                                        {sorts.map((item, index) => {
+                                                            return <li
+                                                                key={index}
+                                                                onClick={() => this.onSort(item.value)}
+                                                                className={selected === item.value ? "option selected focus" : "option"}
+                                                                value={item.value}
+                                                            >
+                                                                {item.label}
+                                                            </li>
+                                                        })}
+                                                    </ul>
+                                                </div>
                                             </div>
-                                            </div>
-                                            
+
                                             {/* Product Pages */}
                                             <div className="product-pages">
                                                 <p>Pages {currentPage} of {totalPage}</p>
@@ -219,13 +230,12 @@ class MobileCategories extends Component {
                                         const existWishList = wishList.find(p => p.id === item.id);
                                         return (
                                             <div key={index} className="col-xl-3 col-lg-4 col-md-6 col-12 pb-30 pt-10">
-                                                {/* Product Start */}
 
                                                 <div className="ee-product">
                                                     {/* Image */}
                                                     <div className="image">
                                                         <Link className="img" to={"/details/" + item.code}>
-                                                            <img src={item.image[0]} alt={item.image} />
+                                                            <img src={item.image[0]} alt={item.name} />
                                                         </Link>
                                                         <div className="wishlist-compare">
                                                             <a className={existCompare ? "added" : ""} data-tooltip="Compare" onClick={() => { existCompare ? removeCompare(item.id) : addCompare(item) }}>

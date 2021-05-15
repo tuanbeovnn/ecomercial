@@ -64,9 +64,8 @@ class Footer extends Component {
                                            
                                         </p>
                                         <p className="contact-info">
-                                            <span>Web</span>
+                                            <span>Mail</span>
                                             <a href="mailto:info@example.com">info@saunakovaasa.ml</a>
-                                            <a href="http://saunakovaasa.ml/">http://saunakovaasa.ml</a>
                                         </p>
                                     </div>
                                 </div>{/* Footer Widget End */}
@@ -76,13 +75,11 @@ class Footer extends Component {
                                         <h4 className="widget-title">CUSTOMER CARE</h4>
                                         <ul className="link-widget">
                                             <li><a href="#">About us</a></li>
-                                            <li><a href="#">Features</a></li>
+                                            <li><a href="#">Compare</a></li>
                                             <li><a href="#">My Account</a></li>
                                             <li><a href="#">Cart</a></li>
                                             <li><a href="#">Checkout</a></li>
                                             <li><a href="#">Wishlist</a></li>
-                                            <li><a href="#">blog</a></li>
-                                            <li><a href="#">Contact</a></li>
                                         </ul>
                                     </div>
                                 </div>{/* Footer Widget End */}
@@ -93,12 +90,8 @@ class Footer extends Component {
                                         <ul className="link-widget">
                                             <li><a href="#">Track your order</a></li>
                                             <li><a href="#">Locate Store</a></li>
-                                            <li><a href="#">Online Support</a></li>
                                             <li><a href="#">Terms &amp; Conditions</a></li>
-                                            <li><a href="#">Payment</a></li>
                                             <li><a href="#">Shipping &amp; Returns</a></li>
-                                            <li><a href="#">Gift coupon</a></li>
-                                            <li><a href="#">Special coupon</a></li>
                                         </ul>
                                     </div>
                                 </div>{/* Footer Widget End */}
