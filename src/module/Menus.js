@@ -24,7 +24,7 @@ class Menus extends Component {
                                     </button>
                                 </div>
                                 {/* Category Menu */}
-                                <nav className="category-menu">
+                                <nav className="category-menu" style={{display:"flex", justifyContent:"center"}}>
 
                                     <ul>
                                         {categories.map((item, index) => {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { getCartFromLocalRequest,removeCartRequest } from '../../redux/actions';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
+import { getCartFromLocalRequest, removeCartRequest } from '../../redux/actions';
 
 class MiniCart extends Component {
 
@@ -10,12 +10,12 @@ class MiniCart extends Component {
     }
 
     render() {
-        const { openToggle, handdleClose, cart,removeCart } = this.props;
+        const { openToggle, handdleClose, cart, removeCart } = this.props;
         let totalPrice = 0;
-        cart.map((item)=>{
-            totalPrice += item.price*item.qty;
+        cart.map((item) => {
+            totalPrice += item.price * item.qty;
         })
-       
+
         return (
             <div>
                 <div className={openToggle ? "mini-cart-wrap open" : "mini-cart-wrap"}>
@@ -28,16 +28,19 @@ class MiniCart extends Component {
                         {cart.map((item, index) => {
                             return (
                                 <li key={index}>
-                                    <a className="image"><img src={item.image[0]} alt={item.image} /></a>
+                                    {/* <a className="image"><img src={item.image[0]} alt={item.image} /></a> */}
+                                    <Link className="image" to={"/details/" + item.code}>
+                                        <img src={item.image[0]} alt={item.name} />
+                                    </Link>
                                     <div className="content">
                                         <Link className="title" to={"/details/" + item.code}>
-                                          {item.name}
+                                            {item.name}
                                         </Link>
                                         <span className="price">Price: ${item.price.toLocaleString()}</span>
                                         <span className="qty">Qty: {item.qty}</span>
                                     </div>
-                                 
-                                    <button onClick={()=>{removeCart(item.id)}}className="remove"><i className="fas fa-trash-alt"></i></button>
+
+                                    <button onClick={() => { removeCart(item.id) }} className="remove"><i className="fas fa-trash-alt"></i></button>
                                 </li>
                             )
                         })}

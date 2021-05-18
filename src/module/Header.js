@@ -21,7 +21,7 @@ class Header extends Component {
                 children: [
                     {
                         id: 1,
-                        name: "Laptop",
+                        name: "Computer & Laptop",
                         url: "/product/laptop",
                         code: "laptop",
                         
@@ -60,7 +60,7 @@ class Header extends Component {
                     },
                     {
                         id: 2,
-                        name: "Mobile",
+                        name: "Phone & Tablet",
                         url: "/product/mobile",
                         code: "mobile",
                         children: [
@@ -132,6 +132,44 @@ class Header extends Component {
                                 name: "Huawei",
                                 url: "/huawei"
                             }
+                        ]
+                    },
+                    {
+                        id: 4,
+                        name: "KitChen Appliances",
+                        url: "/product/kitchen",
+                        code: "kitchen",
+                        children: [
+                            {
+                                id: 1,
+                                // name: "Apple",
+                                // url: "/other"
+                            },
+                            {
+                                id: 2,
+                                name: "Other",
+                                url: "/other"
+                            }
+                            
+                        ]
+                    },
+                    {
+                        id: 5,
+                        name: "Accessories",
+                        url: "/product/accessories",
+                        code: "accessories",
+                        children: [
+                            {
+                                id: 1,
+                                // name: "Apple",
+                                // url: "/apple"
+                            },
+                            {
+                                id: 2,
+                                // name: "Sam Sung",
+                                // url: "/samsung"
+                            }
+                            
                         ]
                     }
                 ],
@@ -306,7 +344,7 @@ class Header extends Component {
                                 {/* Logo Start */}
                                 <div className="header-logo">
                                     <Link to="/">
-                                        <img src="/images/logo.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
+                                        <img src="/images/nho.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
                                         <img className="theme-dark" src="/images/logo-light.png" alt="E&E - Electronics eCommerce Bootstrap4 HTML Template" />
                                     </Link>
 
@@ -371,7 +409,7 @@ class Header extends Component {
                                                     <li><a>Order</a>
                                                         <ul>
                                                             <li><Link to="/term">Terms &amp; Conditions</Link></li>
-                                                            <li><a href="track-order.html">Track Order</a></li>
+                                                            <li><Link to="/track">Track Order</Link></li>
                                                             <li><Link to="/wishlist">Wishlist</Link></li>
                                                         </ul>
                                                     </li>

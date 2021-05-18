@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { loginAdminRequest } from '../../redux/actions/AdminActions';
 import { Redirect } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 class LoginPage extends Component {
 
     constructor(props) {
@@ -18,15 +19,18 @@ class LoginPage extends Component {
         const body = { email, password };
         this.props.userLogin(body, (data) => {
             console.log(data);
-            if (!data) {
-                this.setState(
-                    {
-                        error: true
-                    }
-                )
+            if (data) {
+                const loginAdmin = jwtDecode(data.accessToken);
+                if (loginAdmin.roles.includes("ADMIN")) {
+                    this.setState({ success: true }
+                    )
+                } else {
+                    this.setState({ error: true, message: "You do not have permission !" })
+                }
             } else {
                 this.setState({
-                    success: true
+                    error: true,
+                    message: "Email or Password is wrong !"
                 })
             }
         })
@@ -34,16 +38,18 @@ class LoginPage extends Component {
     }
     onChange = (e) => {
         this.setState({
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
+            error : false,
+            message: ""
         })
     }
     render() {
-        const { error, success } = this.state;
-       
+        const { error, success, message } = this.state;
+
         return (
-         
+            
             <div className="bg-primary admin">
-                   {success ? <Redirect to="/admin/control" /> : ''}
+                {success ? <Redirect to="/admin/control" /> : ''}
                 <div id="layoutAuthentication">
                     <div id="layoutAuthentication_content">
                         <main>
@@ -53,7 +59,9 @@ class LoginPage extends Component {
                                         <div className="card shadow-lg border-0 rounded-lg mt-5">
                                             <div className="card-header"><h3 className="text-center font-weight-light my-4">Login</h3></div>
                                             <div className="card-body">
+
                                                 <form action="#" onSubmit={this.handleSubmit}>
+                                                    <div>{error ? message : ""}</div>
                                                     <div className="form-group">
                                                         <label className="small mb-1" htmlFor="inputEmailAddress">Email</label>
                                                         <input className="form-control py-4"

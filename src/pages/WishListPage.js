@@ -67,7 +67,7 @@ class WishListPage extends Component {
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
                                 <h1>Wishlist</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                {/* <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p> */}
                                 <div className="breadcrumb">
                                     <ul>
                                         <li><a >HOME</a></li>
@@ -79,11 +79,11 @@ class WishListPage extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a ><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a ><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a ><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a ><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -152,7 +152,7 @@ class WishListPage extends Component {
                         <div className="row">
                             {/* Banner */}
                             <div className="col-12">
-                                <div className="banner"><a ><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div>
+                                {/* <div className="banner"><a ><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div> */}
                             </div>
                         </div>
                     </div>

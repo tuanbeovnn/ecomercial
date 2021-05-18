@@ -5,14 +5,23 @@ import { BrowserRouter as Router, Route, Link, Switch, Redirect } from 'react-ro
 import ReactPaginate from 'react-paginate';
 import qs from 'qs';
 const pageSize = 12;
+const size = 8;
 class SearchProduct extends Component {
     constructor(props) {
         super(props)
         this.state = {
             pageSize: 12,
-            tab: 0
+            tab: 0,
+            sorts: [
+                { value: 'rating,desc', label: 'Best rated' },
+                { value: 'created_date', label: 'Newest Product' },
+                { value: 'price,asc', label: 'Price: low to high' },
+                { value: 'price,desc', label: 'Price: high to low' }
+            ],
+            visibleSelect: false
         }
     }
+
     componentDidMount() {
 
     }
@@ -22,40 +31,60 @@ class SearchProduct extends Component {
         const pageOld = queryOld.page;
         const oldName = queryOld.name;
         const oldCode = queryOld.code;
-        
-        
+        const oldSort = queryOld.sort;
+
+
         const queryString = this.props.location.search;
         const query = queryString && qs.parse(queryString.slice(1)) || {};
-        const { code, name, page } = query;
+        const { code, name, page, sort } = query;
 
-        if (page !== pageOld || name !== oldName || code !== oldCode) {
+
+    
+        console.log(oldSort, sort, query);
+        if (page !== pageOld || name !== oldName || code !== oldCode || sort !== oldSort) {
             const pageNumber = Math.max(Number(page - 1) || 0, 0);
-            const params = { code, name, page: pageNumber, size: pageSize };
+            const params = { code, name, page: pageNumber, size: pageSize, sort };
             const callback = (data) => { }
-            // console.log(params);
-            this.props.searchProduct(params, callback);
+            console.log(params);
+            this.props.searchProduct(params, callback); 
         }
     }
 
     handlePageClick = (e) => {
-        console.log(e.selected);
         if (e.selected !== -1) {
             const queryString = this.props.location.search;
             const query = queryString && qs.parse(queryString.slice(1)) || {};
-            const { code, name } = query;
-            const params = { code, name, page: e.selected + 1};
+            const { name } = query;
+            const params = { name, page: e.selected };
             console.log(params);
             const url = '/search?' + qs.stringify(params);
             this.props.history.push(url);
         }
-
     }
+
+
+    onSort = (value) => {
+
+        this.setState({ selected: value, visibleSelect: false })
+        const queryString = this.props.location.search;
+        const query = queryString && qs.parse(queryString.slice(1)) || {};
+        const { name } = query;
+        const params = { name, page: 0, size, sort: value};
+        const url = '/search?' + qs.stringify(params);
+  
+        console.log(url);
+        this.props.history.push(url);
+    }
+
+
     render() {
 
-        const { total, currentPage, products, categories, cart  } = this.props;
-        console.log(products);
-        const { addCompare, removeCompare, addWishList, removeWishList, compare, wishList, addCart, removeCart} = this.props;
+        const { total, currentPage, products, categories, cart } = this.props;
+        const { sorts, visibleSelect, selected } = this.state
+        const { addCompare, removeCompare, addWishList, removeWishList, compare, wishList, addCart, removeCart } = this.props;
         const totalPage = Math.ceil(total / pageSize) || 1;
+        const currentSort = sorts.find(c => c.value === selected);
+        console.log(currentSort);
         return (
 
             <div>
@@ -73,19 +102,19 @@ class SearchProduct extends Component {
                                 <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
                                 <div className="breadcrumb">
                                     <ul>
-                                        <li><a href="#">HOME</a></li>
-                                        <li><a href="#">SHOP Grid VIEW</a></li>
+                                        <li><a>HOME</a></li>
+                                        <li><a>SHOP Grid VIEW</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -116,24 +145,32 @@ class SearchProduct extends Component {
                                             </div> */}
                                             {/* Product Short */}
                                             <div className="product-short">
-                                                <p>Short by</p>
-                                                <select name="sortby" className="nice-select">
-                                                    <option value="trending">Trending items</option>
-                                                    <option value="sales">Best sellers</option>
-                                                    <option value="rating">Best rated</option>
-                                                    <option value="date">Newest items</option>
-                                                    <option value="price-asc">Price: low to high</option>
-                                                    <option value="price-desc">Price: high to low</option>
-                                                </select>
+                                                <p>Sort by</p>
+                                                <div className={visibleSelect ? "nice-select open" : "nice-select"}>
+                                                    <span onClick={() => this.setState({ visibleSelect: !visibleSelect })} className="current">{currentSort && currentSort.label || "Newest Product"}</span>
+                                                    <ul className="list">
+                                                        <li onClick={() => this.onSort()} className={!selected ? "option selected focus" : "option"}>Newest Product</li>
+                                                        {sorts.map((item, index) => {
+                                                            return <li
+                                                                key={index}
+                                                                onClick={() => this.onSort(item.value)}
+                                                                className={selected === item.value ? "option selected focus" : "option"}
+                                                                value={item.value}
+                                                            >
+                                                                {item.label}
+                                                            </li>
+                                                        })}
+                                                    </ul>
+                                                </div>
                                             </div>
                                             {/* Product Pages */}
                                             <div className="product-pages">
-                                                <p>Pages {currentPage +1} of {totalPage}</p>
+                                                <p>Pages {currentPage + 1} of {totalPage}</p>
                                             </div>
                                         </div>{/* Shop Top Bar End */}
                                     </div>
                                 </div>
-                                
+
                                 <div className={this.state.tab === 0 ? "shop-product-wrap row grid" : "shop-product-wrap row list"}>
                                     {products.map((item, index) => {
                                         let technicalInfo;
@@ -182,7 +219,7 @@ class SearchProduct extends Component {
                                                         </div>
                                                         {/* Price & Ratting */}
                                                         <div className="price-ratting">
-                                                            <h5 className="price">${item.price}</h5>
+                                                            <h5 className="price">${item.price.toLocaleString()}</h5>
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
                                                                     return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
@@ -369,6 +406,9 @@ const mapDispatchToProps = (dispatch, props) => {
         removeCart: (id) => {
             dispatch(removeCartRequest(id));
             //dispatch((dispatch) => { dispatch({ type: 'CART_REMOVE', id: id }) });
+        },
+        fetchProductListCategory: (params, callback) => {
+            dispatch(fetchProductByCategoriesRequest(params, callback));
         }
     }
 }

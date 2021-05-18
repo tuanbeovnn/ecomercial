@@ -36,8 +36,14 @@ class SingleProductPage extends Component {
                 })
             }
         }
-
+        
         this.props.fetchProductDetails(code, callback);
+    
+            // if (this.slider1 && this.slider1.slickGoTo) {
+            //     console.log(this.slider1.slickGoTo);
+            //     this.slider1.slickGoTo(1);
+            // }
+        
 
     }
 
@@ -58,13 +64,13 @@ class SingleProductPage extends Component {
             }
             this.props.fetchProductDetails(code, callback);
         }
-        // if (this.state.product.id && this.state.product.id !== preState.product.id) {
-        //     console.log(this.slider1);
-        //     if (this.slider1 && this.slider1.slickGoTo) {
-        //         console.log(this.slider1.slickGoTo);
-        //         this.slider1.slickGoTo(1);
-        //     }
-        // }
+        if (this.state.product.id && this.state.product.id !== preState.product.id) {
+            console.log(this.slider1);
+            if (this.slider1 && this.slider1.slickGoTo) {
+                console.log(this.slider1.slickGoTo);
+                this.slider1.slickGoTo(1);
+            }
+        }
 
     }
 
@@ -142,7 +148,8 @@ class SingleProductPage extends Component {
         };
         const existCompare = compare.find(p => p.id === product.id);
         const existWishList = wishList.find(p => p.id === product.id);
-
+        console.log(product.description);
+        console.log(product.description?.split("\n"));
         return (
             <div>
                 {/* Page Banner Section Start */}
@@ -152,7 +159,7 @@ class SingleProductPage extends Component {
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
                                 <h1>Product Details</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                {/* <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p> */}
                                 <div className="breadcrumb">
                                     <ul>
                                         <li><a >HOME</a></li>
@@ -163,11 +170,11 @@ class SingleProductPage extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a ><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a ><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a ><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a ><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -231,7 +238,11 @@ class SingleProductPage extends Component {
                                             })}
                                         </div>
                                         <div className="desc">
-                                            <p>{product.description}</p>
+                                            {product.description?.split("\n").map((item, index) => {
+                                                return (
+                                                    <p key={index}>{item}</p>
+                                                )
+                                            })}
                                         </div>
                                         <span className="availability">Availability: <span>{product.status}</span></span>
                                         <div className="quantity-colors">
@@ -316,7 +327,11 @@ class SingleProductPage extends Component {
                                         <div className="row">
                                             <div className="single-product-description-content col-lg-8 col-12">
                                                 <h4>{product.name}</h4>
-                                                <p>{product.description}</p>
+                                                {product.description?.split("\n").map((item, index) => {
+                                                    return (
+                                                        <p key={index}>{item}</p>
+                                                    )
+                                                })}
                                             </div>
                                             <div className="single-product-description-image col-lg-4 col-12">
                                                 <img src={product.image && product.image[0]} />

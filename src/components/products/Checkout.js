@@ -79,12 +79,13 @@ class Checkout extends Component {
                     cart.map((item) => {
                         price += item.price * item.qty;
                     })
+                    console.log(body);
                     setTimeout(() => {
                         console.log(data);
                         const body = { currency, intent, method, price, description, id : data.id }
                         this.props.payment(body, (data) => {
                             if (data.success) {
-                                console.log(data.success);
+                                // console.log(data.success);
                                 window.location.href = data.details;
                                 // window.open(data.details, '_blank');
                             }
@@ -99,7 +100,7 @@ class Checkout extends Component {
     render() {
         const { visibleSelect, country, countries } = this.state;
         const { cart,user } = this.props;
-        console.log(user);
+        // console.log(user);
         let totalPrice = 0;
         cart.map((item) => {
             totalPrice += item.price * item.qty;
@@ -126,11 +127,11 @@ class Checkout extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -396,7 +397,9 @@ class Checkout extends Component {
                                                             <label htmlFor="accept_terms">I’ve read and accept the terms &amp; conditions</label>
                                                         </div>
                                                     </div>
-                                                    {user && user.id ? <button className="place-order" disabled={!this.state.checkTerm}><a></a>Place order</button> : "" }
+                                                    
+                                                    {/* {!user || !user.id ? <div style = {{display: 'flex', justifyContent:"center", color:"black", marginTop:10}}>Please Singin Before Purchase</div> : "" } */}
+                                                    <button className="place-order" disabled={!this.state.checkTerm }><a></a>Place order</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -413,7 +416,7 @@ class Checkout extends Component {
                         <div className="row">
                             {/* Banner */}
                             <div className="col-12">
-                                <div className="banner"><a href="#"><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div>
+                                {/* <div className="banner"><a href="#"><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div> */}
                             </div>
                         </div>
                     </div>

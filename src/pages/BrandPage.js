@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByBrandRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../redux/actions/index';
-import { BrowserRouter as Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 import ReactPaginate from 'react-paginate';
 import qs from 'qs';
 
@@ -85,8 +85,7 @@ class BrandPage extends Component {
         this.setState({ selected: value, visibleSelect: false })
         const id = this.props.match.params.id;
         const currentPage = Number(this.props.match.params.page) || 1;
-
-
+        console.log(`/listBrand/${id}/1?sort=${value}`);
         this.props.history.push(`/listBrand/${id}/1?sort=${value}`);
 
     }
@@ -120,11 +119,11 @@ class BrandPage extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}

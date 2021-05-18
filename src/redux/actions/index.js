@@ -760,3 +760,29 @@ export const fetchProductCategoryByBrandRequest = (params, callback) => {
         })
     }
 }
+
+// subscribe
+
+export const subscribeRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/email/subscribe', 'POST', body).then(res => {
+            if (res.data) {
+                // callback(res.data);
+            }
+        }).catch(() => {
+
+        })
+    }
+}
+// Leave a message
+export const leaveAmessageRequest = (body, callback) => {
+    return (dispatch) => {
+        return callAPI('api/email/leavemessage', 'POST', body).then(res => {
+            if (res.data) {
+                callback(res.data);
+            }
+        }).catch(() => {
+
+        })
+    }
+}

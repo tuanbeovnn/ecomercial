@@ -8,20 +8,20 @@ class BannerHome extends Component {
                 id: 1,
                 content:["HURRY UP!","One Plus 9 Series","29%"],
                 url: "#",
-                image: "/images/hero/hero-1.png"
+                image: "/images/hero/Onegreen.png"
             },
             {
                 id: 2,
                 content:["Osta ChromeBook","Flip C434","20%"],
                 url: "#",
-                image: "/images/hero/hero-2.png"
+                image: "/images/hero/silver.png"
 
             },
             {
                 id: 3,
                 content:["Koronto ja kuluton","Desktop Asus","59%"],
                 url: "#",
-                image: "/images/hero/hero-3.png"
+                image: "/images/hero/0AsusROG.png"
             }
         ]
     }

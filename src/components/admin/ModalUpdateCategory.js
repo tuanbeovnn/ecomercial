@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import { Modal, Button, Row, Col, Container, Form } from 'react-bootstrap';
 import { fetchRolesRequest, updateRoleRequest, addCategoryRequest, updateCategory, updateCategoryRequest } from '../../redux/actions/AdminActions';
 import { connect } from 'react-redux';
+import swal from 'sweetalert';
 class ModalUpdateCategory extends Component {
     state = {
         setLgShow: false,
         lgShow: false,
+        name: "",
+        code: ""
 
 
     }
@@ -20,24 +23,32 @@ class ModalUpdateCategory extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { name, code } = this.state;
-        const { cate } = this.props;
-        if (cate.id) {
+        const { category, allCategories } = this.props;
+        if (category && category.id) {
             const body = { code, name };
-            this.props.updateCate(cate.id, body, data => {
-                if (data && data.success) {
-                    this.setState(
-                        {
-                            success: true
-                        }
-                    )
+            if (allCategories.find(item => item.code === code)) {
+                this.setState({
+                    message: "The code has been exist!",
+                    error: true
+                })
+            } else if (allCategories.find(item => item.name === name)) {
+                this.setState({
+                    message: "The name has been exist!",
+                    error: true
+                })
+            } else {
+                this.props.updateCate(category.id, body, data => {
+                    if (data && data.success) {
+                        this.setState(
+                            {
+                                success: true
+                            }
+                        )
+                        this.props.onHide();
+                    }
+                })
+            }
 
-                } else {
-                    this.setState({
-                        error: true,
-
-                    })
-                }
-            })
         } else {
             if (!name || !code) {
                 let message = 'Name is required';
@@ -49,16 +60,19 @@ class ModalUpdateCategory extends Component {
             } else {
                 const body = { code, name };
                 this.props.addCategory(body, (data) => {
-                    if (data && data.success) {
+                    console.log(data);
+                    if (data && data.id) {
                         this.setState(
                             {
-                                success: true
+                                success: true,
+                                lgShow: false
                             }
                         )
+                        this.props.onHide();
                     } else {
                         this.setState({
                             error: true,
-                            message: data && data.message
+                            message: data.details.email
                         })
                     }
                 })
@@ -67,131 +81,89 @@ class ModalUpdateCategory extends Component {
 
     }
 
+
     componentDidUpdate(preProps, preState) {
-        if (preProps.cate.id !== this.props.cate.id) {
-            const { cate } = this.props;
+        if (preProps.category !== this.props.category) {
+            this.onClear();
+
+        }
+    }
+    onClear = () => {
+        if (this.props.category) {
             this.setState({
-                ...cate
+                ...this.props.category
+            })
+        } else {
+            this.setState({
+                name: "",
+                code: ""
             })
         }
     }
 
-
     render() {
-        const { visibleUpdate, onHide, cate, isCreate, visibleAdd } = this.props;
-        const { lgShow, error } = this.state;
-
+        const { onHide, category, visible } = this.props;
+        const { error } = this.state;
+        console.log(this.props);
         return (
 
             <div className="col-3">
-                {!isCreate ?
-                    <Modal
-                        size="lg"
-                        show={visibleUpdate}
-                        onHide={onHide}
-                        aria-labelledby="example-modal-sizes-title-lg"
-                    >
 
-                        <Modal.Header closeButton>
-                            <Modal.Title id="example-modal-sizes-title-lg">
-                                Update Category
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Modal.Body>
-                                <Container>
-                                    <Row>
-                                        <Col xs={6}>
-                                            <div className="form-group">
-                                                <label>Name :</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="name"
-                                                    onChange={this.onChange}
-                                                    value={this.state.name}
-                                                />
-                                            </div>
-                                        </Col>
-                                        <Col xs={6}>
-                                            <div className="form-group">
-                                                <label>Code :</label>
-                                                <input
-                                                    type="text"
-                                                    className="form-control"
-                                                    name="code"
-                                                    onChange={this.onChange}
-                                                    value={this.state.code}
-                                                />
-                                            </div>
+                <Modal
+                    size="lg"
+                    show={visible}
+                    onHide={onHide}
+                    aria-labelledby="example-modal-sizes-title-lg"
+                >
 
-                                        </Col>
-                                    </Row>
-                                </Container>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Button type="submit" variant="outline-success">Save</Button>
-                                <Button variant="outline-secondary" onClick={this.onClear}>Clear</Button>
-                            </Modal.Footer>
-                        </Form>
-                    </Modal>
+                    <Modal.Header closeButton>
+                        <Modal.Title id="example-modal-sizes-title-lg">
+                            {category && category.id ? "Update Category" : "Add Category"}
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Form onSubmit={this.handleSubmit}>
+                        <Modal.Body>
+                            <Container>
+                                <Row>
+                                    {error ?
+                                        <div className="col-12 mb-30" style={{ color: 'red' }}>
+                                            <span>{this.state.message}</span>
+                                        </div>
+                                        : ''}
+                                    <Col xs={6}>
+                                        <div className="form-group">
+                                            <label>Name :</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="name"
+                                                onChange={this.onChange}
+                                                value={this.state.name}
+                                            />
+                                        </div>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <div className="form-group">
+                                            <label>Code :</label>
+                                            <input
+                                                type="text"
+                                                className="form-control"
+                                                name="code"
+                                                onChange={this.onChange}
+                                                value={this.state.code}
+                                            />
+                                        </div>
 
-                    :
-                    <div>
-                        <Modal
-                            size="lg"
-                            show={visibleAdd}
-                            onHide={onHide}
-                            aria-labelledby="example-modal-sizes-title-lg"
-                        >
-                            <Form onSubmit={this.handleSubmit} ref={form => this.form = form}>
-                                <Modal.Header closeButton>
-                                    <Modal.Title id="example-modal-sizes-title-lg">
-                                        Add Category
-                    </Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    <Container>
-                                        <Row>
-
-                                            <Col xs={6}>
-                                                <div className="form-group">
-                                                    <label>Name :</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="name"
-                                                        onChange={this.onChange}
-                                                        required
-                                                    />
-                                                </div>
-                                            </Col>
-                                            <Col xs={6}>
-
-                                                <div className="form-group">
-                                                    <label>Code :</label>
-                                                    <input
-                                                        type="text"
-                                                        className="form-control"
-                                                        name="code"
-                                                        onChange={this.onChange}
-
-                                                    />
-                                                </div>
-                                                <br />
-                                            </Col>
-
-                                        </Row>
-                                    </Container>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                    <Button type="submit" variant="outline-success">Save</Button>
-                                    <Button variant="outline-secondary" onClick={this.onClear}>Clear</Button>
-                                </Modal.Footer>
-                            </Form>
-                        </Modal>
-                    </div>
-                }
+                                    </Col>
+                                </Row>
+                            </Container>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button type="submit" variant="outline-success">Save</Button>
+                            <Button variant="outline-secondary" onClick={this.onClear}> {category && category.id ? "Reset" : "Clear"}</Button>
+                        </Modal.Footer>
+                    </Form>
+                </Modal>
             </div>
 
         )
@@ -199,7 +171,7 @@ class ModalUpdateCategory extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        category: state.AdminReducer.category
+        allCategories: state.AdminReducer.categories
     }
 }
 

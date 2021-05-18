@@ -5,20 +5,17 @@ import ModalUpdateCategory from './ModalUpdateCategory';
 class Categories extends Component {
     state = {
         visible: false,
-        visibleUpdate: false,
-        visibleAdd: false,
-        cate: {},
-        isCreate: true
     }
     componentDidMount() {
         this.props.fetchAllCategories();
     }
     render() {
         const { allCategories } = this.props;
-        const { visible, product, visibleUpdate, cate,isCreate, visibleAdd } = this.state;
+        const { visible, category } = this.state;
+        console.log(category);
 
         return (
-            
+
             <main>
                 <div className="container-fluid">
                     <h1 className="mt-4">Categories</h1>
@@ -41,8 +38,8 @@ class Categories extends Component {
                             <div className="col-3">
                             </div>
                             {/* <ModalCategory /> */}
-                            <button onClick={() => this.setState({ isCreate: true, visibleAdd : true})}type="button" className="btn btn-outline-primary">Add</button>
-                            <ModalUpdateCategory isCreate={isCreate} visibleUpdate={visibleUpdate} visibleAdd={visibleAdd} onHide={() => { this.setState({ visibleUpdate: false, isCreate:false }) }} cate={cate}/>
+                            <button onClick={() => this.setState({ visible: true, category: null })} type="button" className="btn btn-outline-primary">Add</button>
+                            <ModalUpdateCategory visible={visible} onHide={() => { this.setState({ visible: false, category: false }) }} category={category} />
                         </div>
 
                     </div>
@@ -72,7 +69,7 @@ class Categories extends Component {
                                                         <button
                                                             className="btn btn-outline-warning"
                                                             type="button"
-                                                            onClick={() => this.setState({ visibleUpdate: true, cate: item, isCreate : false })}
+                                                            onClick={() => this.setState({ visible: true, category: item })}
                                                         ><i className="fas fa-wrench"></i>
                                                         </button>
                                                     </td>

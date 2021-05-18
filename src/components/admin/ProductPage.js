@@ -14,7 +14,7 @@ class ProductPage extends Component {
         if (allProducts.length === 0) {
             const callback = (data) => {
             }
-            this.props.fetchAllProducts({ page: 0, size }, callback);
+            this.props.fetchAllProducts({ name : "",page: 0, size }, callback);
         }
     }
     state = {
@@ -37,11 +37,28 @@ class ProductPage extends Component {
         })
 
     }
+    onChange = (e) => {
+        this.setState(
+            {
+                [e.target.name]: e.target.value,
+            }
+        )
+        const callback = (data) => {
+        }
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            
+            this.props.fetchAllProducts({ name: e.target.value, page: 0, size },()=>{});
+        }, 1000);
+    }
 
     handlePageClick = (e1) => {
         const callback = (data) => {
         }
-        this.props.fetchAllProducts({ page: e1.selected, size }, callback);
+        const {name} = this.state;
+        const request = { name: name || "", page: e1.selected, size };
+        
+        this.props.fetchAllProducts( request, callback);
     }
 
 
@@ -61,9 +78,9 @@ class ProductPage extends Component {
                     <div className="row pb-2">
                         <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6">
                             <div className="input-group">
-                                <input type="text" className="form-control" placeholder="Enter keyword..." />
+                                <input onChange={this.onChange} name="search" type="text" className="form-control" placeholder="Enter keyword..." />
                                 <span className="input-group-btn">
-                                <ModalProducts />
+                                    <ModalProducts />
                                 </span>
                             </div>
                         </div>
@@ -91,7 +108,7 @@ class ProductPage extends Component {
                                     </ul>
                                 </div> */}
                             </div>
-                           
+
                         </div>
 
                     </div>
@@ -125,7 +142,7 @@ class ProductPage extends Component {
                                                 <tr key={index}>
                                                     <td style={{ width: 10 }}>{index + page * size + 1}</td>
                                                     <td style={{ width: '10%' }}>{item.name}</td>
-                                                    <td style={{ width: '10%' }}>{item.price.toLocaleString() } e</td>
+                                                    <td style={{ width: '10%' }}>{item.price.toLocaleString()} e</td>
                                                     {/* <td style={{width:50}}>{item.originalPrice}</td> */}
                                                     <td style={{ width: 50 }}>{item.discount}%</td>
                                                     <td style={{ width: '20%' }}><img style={{ width: 54, height: 64 }} src={item.image[0]} /></td>
@@ -133,7 +150,7 @@ class ProductPage extends Component {
                                                     <td style={{ width: '8%' }}>{item.brandCode}</td>
                                                     {/* <td>TechnicalInfo: <br />{tech.description},<br /> {tech.machinename},<br /> {tech.ipaddress}</td> */}
                                                     <td style={{ width: '8%' }}>{item.status}</td>
-                                                    <td style={{ width: '5%' }}>{item.quantity}</td>
+                                                    <td style={{ width: '15%' }}>{item.quantity <= 10 ? "Nearly Sold Out: " + item.quantity : item.quantity} pcs</td>
                                                     <td style={{ width: '5%' }}>{item.rating}</td>
                                                     <td style={{ width: '20%' }}>
                                                         <button

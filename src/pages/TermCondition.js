@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import BrandLogo from './../components/ads/BrandLogo';
 export default class TermCondition extends Component {
     render() {
         return (
@@ -11,7 +11,7 @@ export default class TermCondition extends Component {
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
                                 <h1>Terms &amp; Conditions</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                {/* <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p> */}
                                 <div className="breadcrumb">
                                     <ul>
                                         <li><a href="#">HOME</a></li>
@@ -22,11 +22,11 @@ export default class TermCondition extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -54,20 +54,22 @@ export default class TermCondition extends Component {
                     </div>
                 </div>{/* Terms & Conditions Section End */}
                 {/* Brands Section Start */}
-                <div className="brands-section section mb-90">
+                {/* <div className="brands-section section mb-90">
                     <div className="container">
                         <div className="row">
-                            {/* Brand Slider Start */}
+                           
                             <div className="brand-slider col">
                                 <div className="brand-item col"><img src="/images/brands/brand-1.png" alt="Brands" /></div>
                                 <div className="brand-item col"><img src="/images/brands/brand-2.png" alt="Brands" /></div>
                                 <div className="brand-item col"><img src="/images/brands/brand-3.png" alt="Brands" /></div>
                                 <div className="brand-item col"><img src="/images/brands/brand-4.png" alt="Brands" /></div>
                                 <div className="brand-item col"><img src="/images/brands/brand-5.png" alt="Brands" /></div>
-                            </div>{/* Brand Slider End */}
+                            </div>
                         </div>
                     </div>
-                </div>{/* Brands Section End */}</div>
+                </div> */}
+                <BrandLogo/>
+        </div>
 
         )
     }

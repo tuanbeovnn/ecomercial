@@ -10,7 +10,7 @@ export function uploadAPI(endpoint, method = 'GET', body) {
         "type": "formData"
     }
     if (token || tokenAdmin) {
-        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer' + token 
+        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer ' + token 
     }
     return axios({
         method: method,
@@ -28,7 +28,7 @@ export default function callAPI(endpoint, method = 'GET', body) {
         "Accept": "application/json" 
     }
     if (token || tokenAdmin) {
-        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer' + token
+        headers.Authorization = tokenAdmin ? 'Bearer ' + tokenAdmin : 'Bearer ' + token
     }
     return axios({
         method: method,

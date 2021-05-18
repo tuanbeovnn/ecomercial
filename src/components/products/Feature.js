@@ -155,7 +155,7 @@ class Feature extends Component {
                                                                 </div>
                                                                 {/* Price & Ratting */}
                                                                 <div className="price-ratting">
-                                                                    <h5 className="price">${item.price}</h5>
+                                                                    <h5 className="price">${item.price.toLocaleString()}</h5>
                                                                     <div className="ratting">
                                                                         {new Array(5).fill(0).map((star, index) => {
                                                                             return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
@@ -220,7 +220,7 @@ class Feature extends Component {
                                                                         </div>
                                                                         {/* Price & Ratting */}
                                                                         <div className="price-ratting">
-                                                                            <h5 className="price">${item.price}</h5>
+                                                                            <h5 className="price">${item.price.toLocaleString()}</h5>
                                                                             <div className="ratting">
                                                                                 {new Array(5).fill(0).map((star, index) => {
                                                                                     return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />

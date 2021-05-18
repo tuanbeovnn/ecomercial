@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductCategoryByBrandRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../redux/actions/index';
-import { BrowserRouter as Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom'
 import ReactPaginate from 'react-paginate';
 import qs from 'qs';
 
-const size = 3;
+const size = 8;
 class CategoryByBrand extends Component {
     constructor(props) {
         super(props)
@@ -113,23 +113,23 @@ class CategoryByBrand extends Component {
                         {/* Page Banner */}
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
-                                <h1>SHOP Grid VIEW</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
-                                <div className="breadcrumb">
+                                <h1>SHOP BRAND VIEW</h1>
+                                {/* <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p> */}
+                                {/* <div className="breadcrumb">
                                     <ul>
                                         <li><a href="#">HOME</a></li>
                                         <li><a href="#">SHOP Grid VIEW</a></li>
                                     </ul>
-                                </div>
+                                </div> */}
                             </div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}

@@ -10,12 +10,17 @@ class AdminPage extends Component {
         this.state = {
             toggleMenu: true,
             collapse: true,
-
+            show: true
 
         }
     }
     componentDidMount() {
         this.props.getUserFromToken();
+    }
+
+    handleLogout = () => {
+        localStorage.removeItem('tokenAdmin');
+        window.location.href = "/admin";
     }
 
     render() {
@@ -25,7 +30,8 @@ class AdminPage extends Component {
                 <LoginPage />
             )
         }
-        const { toggleMenu, collapse } = this.state;
+        const { toggleMenu, collapse,show } = this.state;
+        console.log(show);
         return (
             <div style={{ height: '100vh' }} className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
                 <div className="admin" style={{ height: '100vh' }}>
@@ -41,12 +47,12 @@ class AdminPage extends Component {
                         </form>
                         {/* Navbar*/}
                         <ul className="navbar-nav ml-auto ml-md-0">
-                            <li className="nav-item dropdown">
+                            <li onClick={()=>{this.setState({show: !show})}} className={this.state.show ? "nav-item dropdown" : "nav-item dropdown show"}>
                                 <a className="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fas fa-user fa-fw" /></a>
-                                <div className="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                                    <a className="dropdown-item" >Settings</a><a className="dropdown-item" >Activity Log</a>
+                                <div className={this.state.show ? "dropdown-menu dropdown-menu-right" : "dropdown-menu dropdown-menu-right show"} aria-labelledby="userDropdown">
+                                    {/* <a className="dropdown-item" >Settings</a><a className="dropdown-item" >Activity Log</a> */}
                                     <div className="dropdown-divider" />
-                                    <a className="dropdown-item" href="login.html">Logout</a>
+                                    <a onClick={this.handleLogout} className="dropdown-item">Logout</a>
                                 </div>
                             </li>
                         </ul>

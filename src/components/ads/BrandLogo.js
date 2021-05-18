@@ -20,7 +20,6 @@ class BrandLogo extends Component {
             <div className="brands-section section mb-90">
                 <div className="container">
                     <div className="row">
-
                         <Slider className="brand-slider col" {...settings} >
                             {brands.map((item, index) => {
                                 return (

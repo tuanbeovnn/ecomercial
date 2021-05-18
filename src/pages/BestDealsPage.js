@@ -5,6 +5,7 @@ import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveReq
 import { Link } from 'react-router-dom';
 import CountDown from './../components/products/CountDown';
 import ReactLoading from 'react-loading';
+import BrandLogo from '../components/ads/BrandLogo';
 
 class BestDealsPage extends Component {
     state = {
@@ -105,7 +106,7 @@ class BestDealsPage extends Component {
 
         if (this.state.loading) {
             return (
-                <div style={{display:'flex', width:'100%', justifyContent:'center'}}>
+                <div style={{ display: 'flex', width: '100%', justifyContent: 'center' }}>
                     <ReactLoading type={"spinningBubbles"} color={'#F5D730'} height={'10%'} width={'10%'} />
                 </div>
 
@@ -120,23 +121,23 @@ class BestDealsPage extends Component {
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
                                 <h1>Best Deals</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                {/* <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p> */}
                                 <div className="breadcrumb">
                                     <ul>
-                                        <li><a href="#">HOME</a></li>
-                                        <li><a href="#">Shop</a></li>
-                                        <li><a href="#">Best Deals</a></li>
+                                        <li><a>HOME</a></li>
+                                        <li><a>Shop</a></li>
+                                        <li><a>Best Deals</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div> */}
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -167,7 +168,7 @@ class BestDealsPage extends Component {
                                     {/* Offer Time Wrap Start */}
                                     <div className="col mb-30">
                                         <div className="offer-time-wrap" style={{ backgroundImage: 'url(/images/bg/offer-products.jpg)' }}>
-                                            <h1><span>UP TO</span> 55%</h1>
+                                            <h1><span>UP TO</span> {time.discount} %</h1>
                                             <h3>QUALITY &amp; EXCLUSIVE <span>PRODUCTS</span></h3>
                                             <h4><span>LIMITED TIME OFFER</span> GET YOUR PRODUCT</h4>
                                             <CountDown />
@@ -315,14 +316,14 @@ class BestDealsPage extends Component {
                     </div>
                 </div>{/* Best Deals Product Section End */}
                 {/* Banner Section Start */}
-                <div className="banner-section section mb-60">
+                {/* <div className="banner-section section mb-60">
                     <div className="container">
                         <div className="row row-10">
-                            {/* Banner */}
+                           
                             <div className="col-md-3 mb-30">
                                 <div className="banner"><a href="#"><img src="/images/banner/banner-21.jpg" alt="Banner" /></a></div>
                             </div>
-                            {/* Banner */}
+                            
                             <div className="col-md-9">
                                 <div className="row row-10">
                                     <div className="col-md-6 col-12 mb-30"><div className="banner"><a href="#"><img src="/images/banner/banner-22.jpg" alt="Banner" /></a></div></div>
@@ -331,7 +332,8 @@ class BestDealsPage extends Component {
                             </div>
                         </div>
                     </div>
-                </div>{/* Banner Section End */}
+                </div> */}
+                <BrandLogo />
                 {/* Best Deals Product Section Start */}
                 <div className="product-section section mb-70">
                     <div className="container">
@@ -405,7 +407,7 @@ class BestDealsPage extends Component {
                                                                     </div>
                                                                     {/* Price & Ratting */}
                                                                     <div className="price-ratting">
-                                                                        <h5 className="price">${item.price}</h5>
+                                                                        <h5 className="price">${item.price.toLocaleString()}</h5>
                                                                         <div className="ratting">
                                                                             {new Array(5).fill(0).map((star, index) => {
                                                                                 return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
@@ -472,7 +474,7 @@ class BestDealsPage extends Component {
                                                                             </div>
                                                                             {/* Price & Ratting */}
                                                                             <div className="price-ratting">
-                                                                                <h5 className="price">${item.price}</h5>
+                                                                                <h5 className="price">${item.price.toLocaleString()}</h5>
                                                                                 <div className="ratting">
                                                                                     {new Array(5).fill(0).map((star, index) => {
                                                                                         return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />
@@ -501,7 +503,7 @@ class BestDealsPage extends Component {
                         <div className="row">
                             {/* Banner */}
                             <div className="col-12">
-                                <div className="banner"><a href="#"><img src="/images/banner/banner-10.jpg" alt="Banner" /></a></div>
+                                <div className="banner"><a href="#"><img src="/images/banner/bigbanner.png" alt="Banner" /></a></div>
                             </div>
                         </div>
                     </div>

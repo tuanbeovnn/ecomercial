@@ -16,7 +16,7 @@ export const fetchproduct = ({ list, currentPage, total }) => {
 
 export const fetchProductRequest = (params, callback) => {
     return (dispatch) => {
-        return callAPI('api/product/list?' + qs.stringify(params), 'GET', null).then(res => {
+        return callAPI('api/product/search?' + qs.stringify(params), 'GET', null).then(res => {
             if (res.data && res.data.success) {
                 dispatch(fetchproduct(res.data));
                 callback(res.data);
@@ -330,8 +330,11 @@ export const addCategoryRequest = (body, callback) => {
             }
         }).catch((e) => {
             if (typeof callback === 'function') {
-
-                callback();
+                console.log(e.response);
+                if (e.response.data) {
+                    callback(e.response.data);
+                }
+               
             }
         });
     }
@@ -377,7 +380,10 @@ export const addBrandsRequest = (body, callback) => {
             }
         }).catch((e) => {
             if (typeof callback === 'function') {
-                callback();
+                console.log(e.response);
+                if (e.response.data) {
+                    callback(e.response.data);
+                }
             }
         });
     }
@@ -429,3 +435,5 @@ export const accountStatusRequest = (id, callback) => {
         });
     }
 }
+
+

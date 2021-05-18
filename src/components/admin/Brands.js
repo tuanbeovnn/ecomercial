@@ -5,9 +5,6 @@ import ModalUpdateBrand from './ModalUpdateBrand';
 class Brands extends Component {
     state = {
         visible: false,
-        visibleUpdate: false,
-        brand: {},
-        isCreate: true
     }
     componentDidMount() {
         this.props.fetchBrand();
@@ -16,8 +13,7 @@ class Brands extends Component {
 
     render() {
         const { brands } = this.props;
-        console.log(brands);
-        const { visible, product, visibleUpdate, brand, isCreate, visibleAdd } = this.state;
+        const { visible, brand } = this.state;
         return (
 
             <main>
@@ -41,8 +37,8 @@ class Brands extends Component {
                         <div className="col-6 display">
                             <div className="col-3">
                             </div>
-                            <button onClick={() => this.setState({ isCreate: true, visibleAdd: true })} type="button" className="btn btn-outline-primary">Add</button>
-                            <ModalUpdateBrand isCreate={isCreate} visibleUpdate={visibleUpdate} visibleAdd={visibleAdd} onHide={() => { this.setState({ visibleUpdate: false, isCreate: false }) }} brand={brand} />
+                            <button onClick={() => this.setState({ visible: true, brand: null })} type="button" className="btn btn-outline-primary">Add</button>
+                            <ModalUpdateBrand visible={visible} onHide={() => { this.setState({ visible: false, brand: false }) }} brand={brand} />
                         </div>
 
                     </div>
@@ -72,7 +68,7 @@ class Brands extends Component {
                                                         <button
                                                             className="btn btn-outline-warning"
                                                             type="button"
-                                                            onClick={() => this.setState({ visibleUpdate: true, brand: item, isCreate : false })}
+                                                            onClick={() => this.setState({ visible: true, brand: item })}
                                                         ><i className="fas fa-wrench"></i>
                                                         </button>
                                                     </td>

@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { addCartRequest, addCompareRequest, addWishListRequest, compareRemoveRequest, fetchProductByCategoriesRequest, removeCartRequest, wishListRemoveRequest } from '../../redux/actions';
-import { BrowserRouter as Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Link, Switch } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import qs from 'qs';
+import Menus from '../../module/Menus';
 const size = 8;
 class MobileCategories extends Component {
     constructor(props) {
@@ -56,7 +57,7 @@ class MobileCategories extends Component {
         const queryString = this.props.location.search;
         const query = queryString && qs.parse(queryString.slice(1)) || {};
         const sort = query.sort;
-        
+
         const page = this.props.match.params.page;
 
 
@@ -64,7 +65,7 @@ class MobileCategories extends Component {
             console.log(code);
             console.log(oldCode);
             const pageNumber = Math.max(Number(page - 1) || 0, 0);
-            
+
             const callback = (data) => {
                 if (data) {
                     this.setState({
@@ -140,28 +141,32 @@ class MobileCategories extends Component {
                         {/* Page Banner */}
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
-                                <h1>SHOP Grid VIEW</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                <h1>PRODUCT CATEGORY GRID VIEW</h1>
+                                <p>Product category page is basically the bridge between your choosing and our product pages</p>
                                 <div className="breadcrumb">
-                                    <ul>
+                                    {/* <ul>
                                         <li><a href="#">HOME</a></li>
                                         <li><a href="#">SHOP Grid VIEW</a></li>
-                                    </ul>
+                                    </ul> */}
                                 </div>
                             </div>
                         </div>
+
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/12.png" alt="Banner" /></a></div> */}
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            {/* <div className="banner"><a href="#"><img src="/images/banner/bannerlogo.png" alt="Banner" /></a></div> */}
                         </div>
                     </div>
-                </div>{/* Page Banner Section End */}
+                </div>
+
                 {/* Product Section Start */}
+                {/* <Menus/> */}
                 <div className="product-section section mt-90 mb-90">
+
                     <div className="container">
                         <div className="row">
                             <div className="col-12">
@@ -256,6 +261,9 @@ class MobileCategories extends Component {
                                                         <div className="category-title">
                                                             <a className="cat">{categoryProduct && categoryProduct.name}</a>
                                                             <h5 className="title">
+                                                                {/* <Link to={"/details/" + item.code}>
+                                                                    {item.name}
+                                                                </Link> */}
                                                                 <Link to={"/details/" + item.code}>
                                                                     {item.name}
                                                                 </Link>
@@ -263,7 +271,7 @@ class MobileCategories extends Component {
                                                         </div>
                                                         {/* Price & Ratting */}
                                                         <div className="price-ratting">
-                                                            <h5 className="price">${item.price}</h5>
+                                                            <h5 className="price">${item.price.toLocaleString()}</h5>
                                                             <div className="ratting">
                                                                 {new Array(5).fill(0).map((star, index) => {
                                                                     return <i key={index} className={"fat fa-star" + (index < item.rating ? '' : '-o')} />

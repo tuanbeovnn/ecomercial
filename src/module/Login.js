@@ -101,7 +101,7 @@ class Login extends Component {
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
                             <div className="banner">
                                 <a href="#">
-                                    <img src="/images/banner/banner-15.jpg" alt="Banner" />
+                                    {/* <img src="/images/banner/banner-15.jpg" alt="Banner" /> */}
                                 </a>
                             </div>
                         </div>
@@ -109,7 +109,7 @@ class Login extends Component {
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
                             <div className="banner">
                                 <a href="#">
-                                    <img src="/images/banner/banner-14.jpg" alt="Banner" />
+                                    {/* <img src="/images/banner/banner-14.jpg" alt="Banner" /> */}
                                 </a>
                             </div>
                         </div>

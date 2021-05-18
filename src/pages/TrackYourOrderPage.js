@@ -11,7 +11,7 @@ export default class TrackYourOrderPage extends Component {
                         <div className="col-lg-4 col-12 order-lg-2 d-flex align-items-center justify-content-center">
                             <div className="page-banner">
                                 <h1>Track your order</h1>
-                                <p>similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita</p>
+                                <p>EASILY TRACK YOUR PARCELS USING OUR WEBSITE</p>
                                 <div className="breadcrumb">
                                     <ul>
                                         <li><a href="#">HOME</a></li>
@@ -22,11 +22,11 @@ export default class TrackYourOrderPage extends Component {
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-1">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-15.jpg" alt="Banner" /></a></div>
+                            <div className="banner"><a><img src="/images/banner/Track-your-order.png" alt="Banner" /></a></div>
                         </div>
                         {/* Banner */}
                         <div className="col-lg-4 col-md-6 col-12 order-lg-3">
-                            <div className="banner"><a href="#"><img src="/images/banner/banner-14.jpg" alt="Banner" /></a></div>
+                            <div className="banner"><a href="#"><img src="/images/banner/delivery-banner.png" alt="Banner" /></a></div>
                         </div>
                     </div>
                 </div>{/* Page Banner Section End */}
@@ -36,7 +36,7 @@ export default class TrackYourOrderPage extends Component {
                         <div className="row align-items-center">
                             <div className="track-order-title text-center col-12 mb-80">
                                 <h2>Track your order...</h2>
-                                <p>To track your order please enter your Order ID in the box below and press the “Track” button. This was give to you on your receipt and in the confirmation email you should have reveived</p>
+                                <p>Enter the item ID in the field below. The item ID is a combination of letters and numbers that you can find next to the barcode on the address label.</p>
                             </div>
                             <div className="col-lg-6 col-md-7 col-12 mb-40">
                                 <div className="track-order-form">
@@ -50,7 +50,7 @@ export default class TrackYourOrderPage extends Component {
                                 </div>
                             </div>
                             <div className="col-lg-4 col-md-5 col-12 ml-auto mb-40">
-                                <div className="banner"><a href="#"><img src="/images/banner/banner-33.jpg" alt="Banner" /></a></div>
+                                <div className="banner"><a href="#"><img src="/images/banner/3D-jantunen-parcel-small.jpg" alt="Banner" /></a></div>
                             </div>
                         </div>
                     </div>

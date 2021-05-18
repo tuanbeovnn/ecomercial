@@ -41,8 +41,10 @@ export default (state = initialState, action) => {
         }
         case LOG_IN_ADMIN: {
             const dataLogin = jwt_decode(action.data.accessToken);
-            localStorage.setItem('tokenAdmin', action.data.accessToken);
-            copyState.userAdmin = dataLogin;
+            if (dataLogin.roles.includes("ADMIN")) {
+                localStorage.setItem('tokenAdmin', action.data.accessToken);
+                copyState.userAdmin = dataLogin;
+            }
             return copyState;
         }
         case USER_INIT_ADMIN: {

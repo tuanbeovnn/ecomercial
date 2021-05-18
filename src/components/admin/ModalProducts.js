@@ -36,13 +36,13 @@ class ModalProducts extends Component {
                         url: imageUp
                     })
                     this.handleAddProduct(imageUp);
-                    // swal({
-                    //     title: "Good job!",
-                    //     text: "Add product Successfully!",
-                    //     icon: "success",
-                    //     button: " Ok!",
-                    // });
-                    // this.onClose();
+                    swal({
+                        title: "Good job!",
+                        text: "Add product Successfully!",
+                        icon: "success",
+                        button: " Ok!",
+                    });
+                    this.onClose();
                 }
             })
         }
@@ -71,8 +71,9 @@ class ModalProducts extends Component {
         } else {
             const body = { brandCode, categoryCode, code, description, discount: Number(discount), image: imageUp, name, originalPrice: Number(originalPrice), status, technicalInfo: techString, quantity: Number(quantity), color: tempColor };
             this.props.addProduct(body, (data) => {
-                console.log(body);
+              
                 if (data && data.success) {
+                    
                     this.setState(
                         {
                             success: true
