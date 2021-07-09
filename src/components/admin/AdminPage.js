@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getUserFromStorageRequest } from '../../redux/actions/AdminActions';
 
 class AdminPage extends Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -30,7 +31,7 @@ class AdminPage extends Component {
                 <LoginPage />
             )
         }
-        const { toggleMenu, collapse,show } = this.state;
+        const { toggleMenu, collapse, show } = this.state;
         console.log(show);
         return (
             <div style={{ height: '100vh' }} className={toggleMenu ? "sb-nav-fixed" : "sb-nav-fixed sb-sidenav-toggled"}>
@@ -47,7 +48,7 @@ class AdminPage extends Component {
                         </form>
                         {/* Navbar*/}
                         <ul className="navbar-nav ml-auto ml-md-0">
-                            <li onClick={()=>{this.setState({show: !show})}} className={this.state.show ? "nav-item dropdown" : "nav-item dropdown show"}>
+                            <li onClick={() => { this.setState({ show: !show }) }} className={this.state.show ? "nav-item dropdown" : "nav-item dropdown show"}>
                                 <a className="nav-link dropdown-toggle" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i className="fas fa-user fa-fw" /></a>
                                 <div className={this.state.show ? "dropdown-menu dropdown-menu-right" : "dropdown-menu dropdown-menu-right show"} aria-labelledby="userDropdown">
                                     {/* <a className="dropdown-item" >Settings</a><a className="dropdown-item" >Activity Log</a> */}
@@ -103,7 +104,7 @@ class AdminPage extends Component {
                                                 </div>
                                             </nav>
                                         </div>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <div className="sb-sidenav-footer">
                                     <div className="small">Logged in as:</div>

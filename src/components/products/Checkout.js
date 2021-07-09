@@ -79,18 +79,17 @@ class Checkout extends Component {
                     cart.map((item) => {
                         price += item.price * item.qty;
                     })
-                    console.log(body);
                     setTimeout(() => {
                         console.log(data);
                         const body = { currency, intent, method, price, description, id : data.id }
                         this.props.payment(body, (data) => {
                             if (data.success) {
-                                // console.log(data.success);
-                                window.location.href = data.details;
-                                // window.open(data.details, '_blank');
+                                console.log(data.success);
+                                // window.location.href = data.details;
+                                window.open(data.details, '_blank');
                             }
                         });
-                    }, 1000)
+                    }, 2000)
 
                 }
             })
@@ -348,7 +347,8 @@ class Checkout extends Component {
                                                             </tbody>
                                                         </table>
                                                         <p>Sub Total <span>${totalPrice.toLocaleString()}</span></p>
-                                                        <h4>Grand Total <span>${totalPrice.toLocaleString()}</span></h4>
+                                                        <p>Tax <span>10 %</span></p>
+                                                        <h4>Grand Total <span>${(totalPrice*0.9)}</span></h4>
                                                     </div>
                                                 </div>
                                                 {/* Payment Method */}
@@ -398,8 +398,8 @@ class Checkout extends Component {
                                                         </div>
                                                     </div>
                                                     
-                                                    {/* {!user || !user.id ? <div style = {{display: 'flex', justifyContent:"center", color:"black", marginTop:10}}>Please Singin Before Purchase</div> : "" } */}
-                                                    <button className="place-order" disabled={!this.state.checkTerm }><a></a>Place order</button>
+                                                    {!user || !user.id ? <div style = {{display: 'flex', justifyContent:"center", color:"black", marginTop:10}}>Please Singin Before Purchase</div> : "" }
+                                                    <button className="place-order" disabled={!this.state.checkTerm || !user || !user.id}><a></a>Place order</button>
                                                 </div>
                                             </div>
                                         </div>

@@ -81,13 +81,6 @@
   --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-.admin .btn:hover::before {
-  background-color: transparent;
-
-}
-.admin .btn::before {
-  background-color: transparent;
-}
 
 .admin * {
   -webkit-box-sizing: border-box;
@@ -8508,7 +8501,7 @@
   z-index: 1030;
 }
 
-.sb-nav-fixed .admin  #layoutSidenav #layoutSidenav_nav {
+.admin .sb-nav-fixed #layoutSidenav #layoutSidenav_nav {
   position: fixed;
   top: 0;
   right: 0;
@@ -8519,20 +8512,20 @@
   z-index: 1038;
 }
 
-.sb-nav-fixed .admin  #layoutSidenav #layoutSidenav_nav .sb-sidenav {
+.admin .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
   padding-top: 56px;
 }
 
-.sb-nav-fixed .admin  #layoutSidenav #layoutSidenav_nav .sb-sidenav .sb-sidenav-menu {
+.admin .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav .sb-sidenav-menu {
   overflow-y: auto;
 }
 
-.sb-nav-fixed .admin  #layoutSidenav #layoutSidenav_content {
+.admin .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
   padding-left: 225px;
   top: 56px;
 }
 
-.sb-nav-fixed .admin  .sb-topnav {
+.admin .sb-nav-fixed .sb-topnav {
   position: fixed;
   top: 0;
   right: 0;
@@ -9492,12 +9485,12 @@
   margin-left: -225px;
 }
 
-.sb-sidenav-toggled .admin #layoutSidenav #layoutSidenav_nav {
+.admin .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
   -webkit-transform: translateX(0);
           transform: translateX(0);
 }
 
-.sb-sidenav-toggled .admin #layoutSidenav #layoutSidenav_content :before {
+.admin .sb-sidenav-toggled #layoutSidenav #layoutSidenav_content :before {
   content: "";
   display: block;
   position: absolute;
@@ -12781,14 +12774,14 @@
     -webkit-transition: margin 0.15s ease-in-out;
     transition: margin 0.15s ease-in-out;
   }
-  .sb-sidenav-toggled .admin #layoutSidenav #layoutSidenav_nav {
+  .admin .sb-sidenav-toggled #layoutSidenav #layoutSidenav_nav {
     -webkit-transform: translateX(-225px);
             transform: translateX(-225px);
   }
-  .sb-sidenav-toggled .admin #layoutSidenav #layoutSidenav_content {
+  .admin .sb-sidenav-toggled #layoutSidenav #layoutSidenav_content {
     margin-left: -225px;
   }
-  .sb-sidenav-toggled .admin #layoutSidenav #layoutSidenav_content :before {
+  .admin .sb-sidenav-toggled #layoutSidenav #layoutSidenav_content :before {
     display: none;
   }
 }

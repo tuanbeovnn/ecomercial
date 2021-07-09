@@ -1,4 +1,4 @@
-import { FETCH_PRODUCT, FETCH_PRODUCT_FEATURE_ALL, LOG_IN } from "../const/ActionTypes";
+
 import jwt_decode from "jwt-decode";
 import { FETCH_USER_ROLES_ADMIN, ADD_NEW_ROOM, ADD_PRODUCT_ADMIN, DELETE_PRODUCT_ADMIN, FETCH_BRAND_ADMIN, FETCH_CATEGORY_ADMIN, FETCH_PRODUCT_ADMIN, FETCH_ROLES_ADMIN, FETCH_ROOM, LOG_IN_ADMIN, UPDATE_PRODUCT_ADMIN, USER_INIT_ADMIN, UPDATE_ROLE_ADMIN, ADD_CATEGORY, UPDATE_CATEGORY, ADD_BRANDS, UPDATE_BRANDS, ACCOUNT_STATUS } from "../const/AdminActionTypes";
 
@@ -17,10 +17,11 @@ const initialState = {
     totalRole: 0,
     roles: []
 };
-
-export default (state = initialState, action) => {
+const AdminReducer = (state = initialState, action) => {
     const copyState = { ...state }
+    console.log(action.type);
     switch (action.type) {
+        
         case FETCH_PRODUCT_ADMIN: {
             copyState.productAll = action.products;
             copyState.page = action.page;
@@ -141,3 +142,5 @@ export default (state = initialState, action) => {
             return copyState
     }
 }
+
+export default AdminReducer;

@@ -37,22 +37,22 @@ export default class AboutusPage extends Component {
                         <div className="row row-30 mb-40">
                             {/* About Image */}
                             <div className="about-image col-lg-6 mb-50">
-                                <img src="/images/about/about-1.png" alt />
+                                {/* <img src="/images/about/about-1.png" alt /> */}
                             </div>
                             {/* About Content */}
                             <div className="about-content col-lg-6">
                                 <div className="row">
                                     <div className="col-12 mb-50">
-                                        <h1>WELCOME TO <span>E&amp;E.</span></h1>
-                                        <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
+                                        <h1>WELCOME TO <span>THRIVE.</span></h1>
+                                        <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
                                     </div>
                                     <div className="col-12 mb-50">
                                         <h4>WE START AT 2015</h4>
-                                        <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
+                                        <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
                                     </div>
                                     <div className="col-12 mb-50">
                                         <h4>WIN BEST ONLINE SHOP AT 2017</h4>
-                                        <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
+                                        <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a complete account of the system, and expound the actual teachings of the eat explorer of the truth, the mer of human.</p>
                                     </div>
                                 </div>
                             </div>
@@ -74,53 +74,53 @@ export default class AboutusPage extends Component {
                         <div className="about-mission-vission-goal row row-20 mb-40">
                             <div className="col-lg-4 col-md-6 col-12 mb-40">
                                 <h3>OUR VISSION</h3>
-                                <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
+                                <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
                             </div>
                             <div className="col-lg-4 col-md-6 col-12 mb-40">
                                 <h3>OUR MISSION</h3>
-                                <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
+                                <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
                             </div>
                             <div className="col-lg-4 col-md-6 col-12 mb-40">
                                 <h3>OUR GOAL</h3>
-                                <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
+                                <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born an will give you a ete account of the system, and expound the actual teangs the eat explorer of the truth, the mer of human tas assumenda est, omnis dolor repellend</p>
                             </div>
                         </div>
                         <div className="row mb-30">
                             {/* About Section Title */}
                             <div className="about-section-title col-12 mb-50">
                                 <h3>YOU CAN CHOOSE US BECAUSE <br />WE ALWAYS PROVIDE IMPORTANCE...</h3>
-                                <p>E&amp;E provide how all this mistaken idea of denouncing pleasure and sing pain was born will give you a complete account of the system, and expound the actual</p>
+                                <p>Thrive provide how all this mistaken idea of denouncing pleasure and sing pain was born will give you a complete account of the system, and expound the actual</p>
                             </div>
                             {/* About Feature */}
                             <div className="about-feature col-lg-7 col-12">
                                 <div className="row">
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>FAST DELIVERY</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>QUALITY PRODUCT</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>SECURE PAYMENT</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>MONEY BACK GUARNTEE</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>EASY ORDER TRACKING</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>FREE RETURN</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                     <div className="col-md-6 col-12 mb-30">
                                         <h4>24/7 SUPPORT</h4>
-                                        <p>E&amp;E provide how all this mistaken dea of denouncing pleasure and sing </p>
+                                        <p>Thrive provide how all this mistaken dea of denouncing pleasure and sing </p>
                                     </div>
                                 </div>
                             </div>
